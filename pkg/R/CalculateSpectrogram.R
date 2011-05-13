@@ -22,7 +22,7 @@ function(HRVData, size, shift, sizesp=1024, verbose=NULL) {
 		cat("      Window: ",size," samples (shift ",shift," samples)\n",sep="")
 	}
 	
-	sizesp=sizesp*HRVData$Freq_HR
+	sizesp=floor(sizesp*HRVData$Freq_HR)
 	
 	if (sizesp < size)
 	{
