@@ -38,6 +38,8 @@ function(Verbose=FALSE) {
 	HRVData$NonLinearAnalysis<-list() # Non Linear analysis associated to the data
 
    	HRVData$Verbose = Verbose
+
+   	HRVData$Matplotlib = FALSE
 	
 	if (HRVData$Verbose) {
 		cat("   Data model created\n")
