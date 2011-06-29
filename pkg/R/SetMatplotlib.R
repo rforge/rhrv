@@ -3,18 +3,23 @@ function(HRVData,Matplotlib) {
 # ------------------------------
 # Sets matplotlib mode on or off
 # ------------------------------
-	if (HRVData$Verbose) {
-		if (Matplotlib == TRUE) {
-                	cat("** Matplotlib mode enabled **\n")
-		}
+   if (HRVData$Verbose) {
+      if (Matplotlib == TRUE) {
+         cat("** Enabling Matplotlib mode... **\n")
+      }
 
-		if (Matplotlib == FALSE) {
-                	cat("** Matplotlib mode disabled **\n")
-		}
-        }
+      if (Matplotlib == FALSE) {
+         cat("** Disabling Matplotlib mode...d **\n")
+      }
+   }
 
-   	HRVData$Matplotlib=Matplotlib
+   if (.Platform$OS.type!="unix" && Matplotlib==TRUE) {
+      cat("   --- ERROR: Matplotlib mode not available for this platform\n")
+      return(HRVData)
+   }
 
-   	return(HRVData)
+   HRVData$Matplotlib=Matplotlib
+
+   return(HRVData)
 }
 
