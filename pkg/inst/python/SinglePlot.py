@@ -31,8 +31,8 @@ f.close()
 
 
 if (verbose=='TRUE'):
-	print '      xvectorfile:',xvectorfile,' (',len(xvector),' samples )'
-	print '      yvectorfile:',yvectorfile,' (',len(yvector),' samples )'
+	print '      xvectorfile: '+xvectorfile+' ('+str(len(xvector))+' samples)'
+	print '      yvectorfile: '+yvectorfile+' ('+str(len(yvector))+' samples)'
 	sys.stdout.flush()
 
 plot(xvector,yvector,'-k')
