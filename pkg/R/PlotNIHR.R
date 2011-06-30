@@ -43,19 +43,22 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 	HRMax=max(HRVData$Beat$niHR)
 	HRDiff=HRMax-HRMin
 
+	if (!is.null(Tag)) {
+		if (Tag[1]=="all") {
+			Tag=levels(HRVData$Episodes$Type)
+		}
+
+		if (HRVData$Verbose) {
+			cat("   Episodes in plot:",Tag,"\n")
+		}
+	}
+
 	if (!HRVData$Matplotlib) {
 		plot(HRVData$Beat$Time,HRVData$Beat$niHR,type="l",xlab="time (sec.)",ylab="HR (beats/min.)",ylim=c(HRMin-0.1*HRDiff,HRMax))
 
 		grid()
 		
 		if (!is.null(Tag)) {
-			if (Tag[1]=="all") {
-				Tag=levels(HRVData$Episodes$Type)
-			}
-
-			if (HRVData$Verbose) {
-				cat("   Episodes in plot:",Tag,"\n")
-			}
 
 			# Data for representing episodes
 			EpisodesAuxLeft=HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag]
@@ -91,6 +94,7 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 		yvector=paste("/tmp/RHRV.",randomstring(),sep="")
 		write(md$Beat$niHR,file=yvector,ncolumns=1)
 
+
 		pythonscript=paste(system.file(package="RHRV"),"python","SinglePlot.py",sep=.Platform$file.sep)
 		if (HRVData$Verbose) {
 			cat("   Invoking python script:",pythonscript,"\n")
@@ -100,15 +104,21 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 		xtitle="time_[sec.]"
 		ytitle="HR_[beats/min.]"
 
-		pythonscript=paste(pythonscript,HRVData$Verbose,xvector,yvector,figuretitle,xtitle,ytitle)
+		pythonscript=paste(pythonscript,HRVData$Verbose,xvector,yvector,figuretitle,xtitle,ytitle,length(Tag))
+
+		for (i in 1:length(Tag)) {
+			startsvector=paste("/tmp/RHRV.",randomstring(),sep="")
+			write(HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag[i]],file=startsvector,ncolumns=1)
+			durationsvector=paste("/tmp/RHRV.",randomstring(),sep="")
+			write(HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag[i]],file=durationsvector,ncolumns=1)
+			pythonscript=paste(pythonscript,Tag[i],startsvector,durationsvector)
+		}
+
+		#cat("Calling --",pythonscript,"--\n",sep="")
 
 		res=system(pythonscript,intern=FALSE)
 		if (res!=0) {
 		   cat("   --- ERROR: invocation returned an error code ---\n   --- Check python and matplotlib installation ---\n")
-		}
-
-		if (!is.null(Tag)) {
-			cat("   --- Warning: episodes not supported in matplotlib mode (yet) ---\n")
 		}
 
 	}
