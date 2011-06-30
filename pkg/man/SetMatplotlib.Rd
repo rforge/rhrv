@@ -3,7 +3,7 @@
 \title{ Sets Matplotlib mode on or off }
 \description{Sets Matplotlib mode on or off. Matplotlib is a boolean component of the data structure HRVData that allows to specify if plotting functions are used to generate graphs. Matplotlib mode requires a working installation of Matplotlib, which is a python plotting library. For more information see http://matplotlib.sourceforge.net}
 \usage{
-SetMatplotlib(HRVData, Matploblib)
+SetMatplotlib(HRVData, Matplotlib)
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
