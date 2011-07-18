@@ -6,9 +6,6 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 #	Tag -> Tags of episodes to include in the plot
 #    "all" includes all types
 
-	randomstring <- function() {
-		return (paste(sample(c(rep(0:9,each=5),LETTERS,letters),15,replace=TRUE),collapse=''))
-	}
 
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
@@ -88,10 +85,10 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 
 	} else {
 
-		xvector=paste("/tmp/RHRV.",randomstring(),sep="")
+		xvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
 		write(HRVData$Beat$Time,file=xvector,ncolumns=1)
 
-		yvector=paste("/tmp/RHRV.",randomstring(),sep="")
+		yvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
 		write(HRVData$Beat$niHR,file=yvector,ncolumns=1)
 
 
@@ -107,14 +104,14 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 		pythonscript=paste(pythonscript,HRVData$Verbose,xvector,yvector,figuretitle,xtitle,ytitle,length(Tag))
 
 		for (i in 1:length(Tag)) {
-			startsvector=paste("/tmp/RHRV.",randomstring(),sep="")
+			startsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
 			write(HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag[i]],file=startsvector,ncolumns=1)
-			durationsvector=paste("/tmp/RHRV.",randomstring(),sep="")
+			durationsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
 			write(HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag[i]],file=durationsvector,ncolumns=1)
 			pythonscript=paste(pythonscript,Tag[i],startsvector,durationsvector)
 		}
 
-		#cat("Calling --",pythonscript,"--\n",sep="")
+		#cat("Calling:\n",pythonscript,"\n")
 
 		res=system(pythonscript,intern=FALSE)
 		if (res!=0) {
