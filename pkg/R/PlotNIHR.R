@@ -89,10 +89,10 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 	} else {
 
 		xvector=paste("/tmp/RHRV.",randomstring(),sep="")
-		write(md$Beat$Time,file=xvector,ncolumns=1)
+		write(HRVData$Beat$Time,file=xvector,ncolumns=1)
 
 		yvector=paste("/tmp/RHRV.",randomstring(),sep="")
-		write(md$Beat$niHR,file=yvector,ncolumns=1)
+		write(HRVData$Beat$niHR,file=yvector,ncolumns=1)
 
 
 		pythonscript=paste(system.file(package="RHRV"),"python","SinglePlot.py",sep=.Platform$file.sep)
