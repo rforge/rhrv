@@ -36,8 +36,8 @@ f.close()
 
 
 if (verbose=='TRUE'):
-	print '      xvectorfile: '+xvectorfile+' ('+str(len(xvector))+' samples)'
-	print '      yvectorfile: '+yvectorfile+' ('+str(len(yvector))+' samples)'
+	print ('      xvectorfile: '+xvectorfile+' ('+str(len(xvector))+' samples)')
+	print ('      yvectorfile: '+yvectorfile+' ('+str(len(yvector))+' samples)')
 	sys.stdout.flush()
 
 plot(xvector,yvector,'-k')
@@ -76,7 +76,7 @@ for i in range(numoftags):
 
 
 if (verbose=='TRUE' and numoftags!=0):
-	print '      Types of episodes to plot: '+str(numoftags)+' ('+(', '.join(tags))+')'
+	print ('      Types of episodes to plot: '+str(numoftags)+' ('+(', '.join(tags))+')')
 	sys.stdout.flush()
 
 
