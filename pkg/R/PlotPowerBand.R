@@ -18,6 +18,10 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	
 	if (HRVData$Verbose) {
 		cat("** Plotting power per band **\n")
+		if (HRVData$Matplotlib) {
+			cat("   Matplotlib mode enabled\n")
+		}
+
 	}
 
    if ((length(HRVData$FreqAnalysis) < indexFreqAnalysis) || (indexFreqAnalysis<1) ) {
@@ -32,6 +36,12 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 		cat("   --- ERROR: Power per band not present!! ---\n")
 		return(HRVData)
 	}
+
+	if (HRVData$Matplotlib) {
+		pythonscript=paste(system.file(package="RHRV"),"python","PowerBandPlot.py",sep=.Platform$file.sep)
+		pythonscript=paste(pythonscript,HRVData$Verbose,hr)
+	}
+	
 	 
 	# normalization
 	 if (normalized == TRUE) {
@@ -211,5 +221,10 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	if (HRVData$Verbose) {
 		cat("   Power per band plotted\n")
 	}	 
+
+	if (HRVData$Matplotlib) {
+		cat("Calling:\n",pythonscript,"\n")
+	}
+
 }
 
