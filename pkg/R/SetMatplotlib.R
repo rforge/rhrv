@@ -13,9 +13,12 @@ function(HRVData,Matplotlib) {
       }
    }
 
-   if (.Platform$OS.type!="unix" && Matplotlib==TRUE) {
-      cat("   --- ERROR: Matplotlib mode not available for this platform\n")
-      return(HRVData)
+   if (.Platform$OS.type=="windows" && Matplotlib==TRUE) {
+      cat("   --- Warning: Matplotlib mode is experimental in Windows platforms\n")
+   }
+
+   if (.Platform$OS.type=="unix" && Matplotlib==TRUE) {
+      cat("   --- ERROR: Matplotlib mode activated\n")
    }
 
    HRVData$Matplotlib=Matplotlib
