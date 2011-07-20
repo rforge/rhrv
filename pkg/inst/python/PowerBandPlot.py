@@ -8,9 +8,12 @@ import sys
 matplotlib.rc('xtick', labelsize=10) 
 matplotlib.rc('ytick', labelsize=10) 
 
+colors='green','red','blue','yellow','grey','pink','purple','maroon'
 
 
-# Usage: PowerBandPlot verbose HR xvector lfhfvector ulfvector
+
+
+# Usage: PowerBandPlot verbose HR xvector lfhfvector ulfvector vlfvector lfvector hfvector [ xvector2 hvector ] plottitle numoftags
 
 n=1
 verbose=sys.argv[n]
@@ -43,8 +46,54 @@ stringtitle=sys.argv[n]
 n=n+1
 stringtitle = stringtitle.replace('_',' ')
 
+numoftags=int(sys.argv[n])
+n=n+1
+
+tags=list()
+startsframe=list()
+endsframe=list()
+startstime=list()
+endstime=list()
+for i in range(numoftags):
+	tag=sys.argv[n]
+	tags.append(tag)
+	n=n+1
+
+	startsframevectorfile=sys.argv[n]
+	f=open(startsframevectorfile,'r')
+	startsframevector = f.readlines()
+	f.close()
+	#startsframevector=[float(x) for x in startsframevector]
+	startsframe.append([float(x) for x in startsframevector])
+	n=n+1
+
+	endsframevectorfile=sys.argv[n]
+	f=open(endsframevectorfile,'r')
+	endsframevector = f.readlines()
+	f.close()
+	endsframe.append([float(x) for x in endsframevector])
+	#endsframevector=[float(x) for x in endsframevector]
+	n=n+1
+
+	startstimevectorfile=sys.argv[n]
+	f=open(startstimevectorfile,'r')
+	startstimevector = f.readlines()
+	f.close()
+	#startstimevector=[float(x) for x in startstimevector]
+	startstime.append([float(x) for x in startstimevector])
+	n=n+1
+
+	endstimevectorfile=sys.argv[n]
+	f=open(endstimevectorfile,'r')
+	endstimevector = f.readlines()
+	f.close()
+	#endstimevector=[float(x) for x in endstimevector]
+	endstime.append([float(x) for x in endstimevector])
+	n=n+1
 
 
+
+# ----------------------------------
 
 if (verbose=='TRUE'):
 	print('      Plotting power bands')
@@ -54,6 +103,11 @@ if (plothr=='TRUE'):
 	numfilas=6
 else:
 	numfilas=5
+
+if (verbose=='TRUE' and numoftags!=0):
+	print ('      Types of episodes to plot: '+str(numoftags)+' ('+(', '.join(tags))+')')
+	sys.stdout.flush()
+
 
 f=open(xvectorfile,'r')
 xvector = f.readlines()
@@ -100,6 +154,10 @@ tick_params(axis='x',labelbottom='off')
 tick_params(axis='x',labeltop='on')
 ax1.yaxis.set_major_locator(MaxNLocator(5))
 ax1.xaxis.set_label_position("top")
+if (numoftags!=0):
+	for i in range(numoftags):
+		for j in range(len(startsframe[i])):
+			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
 
@@ -110,6 +168,10 @@ ylim(ymin=0)
 tick_params(axis='x',labelbottom='off')
 #ax2.yaxis.major.formatter.set_powerlimits((0,0))
 ax2.yaxis.set_major_locator(MaxNLocator(5))
+if (numoftags!=0):
+	for i in range(numoftags):
+		for j in range(len(startsframe[i])):
+			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
 ax3 = fig.add_subplot(numfilas,1,3,sharex=ax1)
@@ -118,6 +180,10 @@ ylabel('VLF')
 ylim(ymin=0)
 tick_params(axis='x',labelbottom='off')
 ax3.yaxis.set_major_locator(MaxNLocator(5))
+if (numoftags!=0):
+	for i in range(numoftags):
+		for j in range(len(startsframe[i])):
+			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
 ax4 = fig.add_subplot(numfilas,1,4,sharex=ax1)
@@ -126,6 +192,10 @@ ylabel('LF')
 ylim(ymin=0)
 tick_params(axis='x',labelbottom='off')
 ax4.yaxis.set_major_locator(MaxNLocator(5))
+if (numoftags!=0):
+	for i in range(numoftags):
+		for j in range(len(startsframe[i])):
+			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
 ax5 = fig.add_subplot(numfilas,1,5,sharex=ax1)
@@ -134,6 +204,10 @@ ylabel('HF')
 ylim(ymin=0)
 tick_params(axis='x',labelbottom='off')
 ax5.yaxis.set_major_locator(MaxNLocator(5))
+if (numoftags!=0):
+	for i in range(numoftags):
+		for j in range(len(startsframe[i])):
+			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
 if (plothr=='TRUE'):
@@ -144,6 +218,13 @@ if (plothr=='TRUE'):
 	#ylim(ymin=0)
 	ax6.yaxis.set_major_locator(MaxNLocator(5))
 	grid()
+
+	if (numoftags!=0):
+		for i in range(numoftags):
+			for j in range(len(startstime[i])):
+				axvspan(startstime[i][j], endstime[i][j], facecolor=colors[i], alpha=0.3)
+
+	
 
 suptitle(stringtitle, fontsize=16)
 

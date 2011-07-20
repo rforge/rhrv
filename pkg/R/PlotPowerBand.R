@@ -264,10 +264,26 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 		else
 			stringtitle="Power_bands_of_HRV"
 
-		pythonscript=paste(pythonscript,stringtitle)
+		pythonscript=paste(pythonscript,stringtitle,length(Tag))
+
+		if (!is.null(Tag)) {
+			for (i in 1:length(Tag)) {
+				startsframevector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(EpisodesAuxLeftFrame[HRVData$Episodes$Type %in% Tag[i]],file=startsframevector,ncolumns=1)
+				endsframevector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(EpisodesAuxRightFrame[HRVData$Episodes$Type %in% Tag[i]],file=endsframevector,ncolumns=1)
+				startstimevector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(EpisodesAuxLeft[HRVData$Episodes$Type %in% Tag[i]],file=startstimevector,ncolumns=1)
+				endstimevector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(EpisodesAuxRight[HRVData$Episodes$Type %in% Tag[i]],file=endstimevector,ncolumns=1)
+
+				pythonscript=paste(pythonscript,Tag[i],startsframevector,endsframevector,startstimevector,endstimevector)
+			}
+		}
 
 
-		#cat("Calling:\n",pythonscript,"\n")
+
+		cat("Calling:\n",pythonscript,"\n")
 		res=system(pythonscript,intern=FALSE)
 		if (res!=0) {
 		   cat("   --- ERROR: invocation returned an error code ---\n   --- Check python and matplotlib installation ---\n")

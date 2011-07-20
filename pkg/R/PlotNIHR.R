@@ -103,12 +103,15 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 
 		pythonscript=paste(pythonscript,HRVData$Verbose,xvector,yvector,figuretitle,xtitle,ytitle,length(Tag))
 
-		for (i in 1:length(Tag)) {
-			startsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
-			write(HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag[i]],file=startsvector,ncolumns=1)
-			durationsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
-			write(HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag[i]],file=durationsvector,ncolumns=1)
-			pythonscript=paste(pythonscript,Tag[i],startsvector,durationsvector)
+		
+		if (!is.null(Tag)) {
+			for (i in 1:length(Tag)) {
+				startsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag[i]],file=startsvector,ncolumns=1)
+				durationsvector=tempfile(pattern = "RHRV", tmpdir = tempdir())
+				write(HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag[i]],file=durationsvector,ncolumns=1)
+				pythonscript=paste(pythonscript,Tag[i],startsvector,durationsvector)
+			}
 		}
 
 		#cat("Calling:\n",pythonscript,"\n")
