@@ -7,6 +7,7 @@ import sys
 
 matplotlib.rc('xtick', labelsize=10) 
 matplotlib.rc('ytick', labelsize=10) 
+matplotlib.rc('legend', fontsize=10) 
 
 colors='green','red','blue','yellow','grey','pink','purple','maroon'
 
@@ -144,12 +145,17 @@ if (plothr=='TRUE'):
 	f.close()
 
 
+# ----------------------------------
+
 fig=figure()
+fig.subplots_adjust(left=0.12, right=0.95, bottom=0.08, top=0.79, hspace=0.20, wspace=0.20)
+
 ax1 = fig.add_subplot(numfilas,1,1)
 ax1.plot(xvector,lfhfvector,'-k')
-xlabel('No. of frames')
+xlabel('No. of frames',size=10)
 ylabel('LF/HF')
 ylim(ymin=0)
+autoscale(axis='x',tight='TRUE')
 tick_params(axis='x',labelbottom='off')
 tick_params(axis='x',labeltop='on')
 ax1.yaxis.set_major_locator(MaxNLocator(5))
@@ -157,16 +163,21 @@ ax1.xaxis.set_label_position("top")
 if (numoftags!=0):
 	for i in range(numoftags):
 		for j in range(len(startsframe[i])):
-			axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
+			if j==0:
+				axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3,label=tags[i])
+			else:
+				axvspan(startsframe[i][j], endsframe[i][j], facecolor=colors[i], alpha=0.3)
 grid()
 
+
+legend(bbox_to_anchor=(.5, 1.7), loc='lower center', borderaxespad=0.,fancybox=True,shadow=True,ncol=3)
 
 ax2 = fig.add_subplot(numfilas,1,2,sharex=ax1)
 ax2.plot(xvector,ulfvector,'-k')
 ylabel('ULF')
 ylim(ymin=0)
+autoscale(axis='x',tight='TRUE')
 tick_params(axis='x',labelbottom='off')
-#ax2.yaxis.major.formatter.set_powerlimits((0,0))
 ax2.yaxis.set_major_locator(MaxNLocator(5))
 if (numoftags!=0):
 	for i in range(numoftags):
@@ -178,6 +189,7 @@ ax3 = fig.add_subplot(numfilas,1,3,sharex=ax1)
 ax3.plot(xvector,vlfvector,'-k')
 ylabel('VLF')
 ylim(ymin=0)
+autoscale(axis='x',tight='TRUE')
 tick_params(axis='x',labelbottom='off')
 ax3.yaxis.set_major_locator(MaxNLocator(5))
 if (numoftags!=0):
@@ -190,6 +202,7 @@ ax4 = fig.add_subplot(numfilas,1,4,sharex=ax1)
 ax4.plot(xvector,lfvector,'-k')
 ylabel('LF')
 ylim(ymin=0)
+autoscale(axis='x',tight='TRUE')
 tick_params(axis='x',labelbottom='off')
 ax4.yaxis.set_major_locator(MaxNLocator(5))
 if (numoftags!=0):
@@ -202,6 +215,7 @@ ax5 = fig.add_subplot(numfilas,1,5,sharex=ax1)
 ax5.plot(xvector,hfvector,'-k')
 ylabel('HF')
 ylim(ymin=0)
+autoscale(axis='x',tight='TRUE')
 tick_params(axis='x',labelbottom='off')
 ax5.yaxis.set_major_locator(MaxNLocator(5))
 if (numoftags!=0):
@@ -216,6 +230,7 @@ if (plothr=='TRUE'):
 	ylabel('HRV')
 	xlabel('Time [sec.]',fontsize=10)
 	#ylim(ymin=0)
+	autoscale(axis='x',tight='TRUE')
 	ax6.yaxis.set_major_locator(MaxNLocator(5))
 	grid()
 
@@ -227,6 +242,7 @@ if (plothr=='TRUE'):
 	
 
 suptitle(stringtitle, fontsize=16)
+
 
 
 show()
