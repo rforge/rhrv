@@ -5,7 +5,7 @@ function(HRVData, indexFreqAnalysis=-1, size, shift, sizesp=1024, scale="linear"
 # -------------------------
 #  indexFreqAnalysis: index of an existing frequency analysis to use
 #  size, disp: size and displacement of window (sec.)
-#  sizesp: seconds for calculating spectrogram (zero padding)
+#  sizesp: points for calculating spectrogram (zero padding)
 #	ULF band: from 0 to 0.03Hz
 # 	VLF band: from 0.03 to 0.05Hz
 # 	LF band: from 0.05 to 0.15Hz

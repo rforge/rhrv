@@ -12,7 +12,7 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift, sizesp = 1024, 
   \item{indexFreqAnalysis}{ Reference to the data structure that will contain the variability analysis }
   \item{size}{ Size of window for calculating spectrogram (seconds) }
   \item{shift}{ Displacement of window for calculating spectrogram (seconds) }
-  \item{sizesp}{ Seconds for calculating spectrogram (zero padding) }
+  \item{sizesp}{ Points for calculating spectrogram (zero padding) }
   \item{scale}{ Scale used to plot spectrogram, linear or logarithmic }
   \item{ULFmin}{ Lower limit ULF band }
   \item{ULFmax}{ Upper limit ULF band }
