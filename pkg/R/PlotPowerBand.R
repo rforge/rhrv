@@ -281,9 +281,7 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 			}
 		}
 
-
-
-		cat("Calling:\n",pythonscript,"\n")
+		#cat("Calling:\n",pythonscript,"\n")
 		res=system(pythonscript,intern=FALSE)
 		if (res!=0) {
 		   cat("   --- ERROR: invocation returned an error code ---\n   --- Check python and matplotlib installation ---\n")

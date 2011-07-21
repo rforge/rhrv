@@ -12,9 +12,7 @@ matplotlib.rc('legend', fontsize=10)
 colors='green','red','blue','yellow','grey','pink','purple','maroon'
 
 
-
-
-# Usage: PowerBandPlot verbose HR xvector lfhfvector ulfvector vlfvector lfvector hfvector [ xvector2 hvector ] plottitle numoftags
+# Usage: PowerBandPlot verbose HR xvector lfhfvector ulfvector vlfvector lfvector hfvector [ xvector2 hvector ] plottitle numoftags [tag1 startsframe1 endsframe1 startstime1 endstime1 ...]
 
 n=1
 verbose=sys.argv[n]
@@ -104,6 +102,10 @@ if (plothr=='TRUE'):
 	numfilas=6
 else:
 	numfilas=5
+
+if (verbose=='TRUE' and plothr=='TRUE'):
+	print('      Heart rate included in the plot')
+	sys.stdout.flush()
 
 if (verbose=='TRUE' and numoftags!=0):
 	print ('      Types of episodes to plot: '+str(numoftags)+' ('+(', '.join(tags))+')')
@@ -239,11 +241,7 @@ if (plothr=='TRUE'):
 			for j in range(len(startstime[i])):
 				axvspan(startstime[i][j], endstime[i][j], facecolor=colors[i], alpha=0.3)
 
-	
-
 suptitle(stringtitle, fontsize=16)
-
-
 
 show()
 
