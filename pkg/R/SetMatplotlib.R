@@ -18,7 +18,11 @@ function(HRVData,Matplotlib) {
    }
 
    if (.Platform$OS.type=="unix" && Matplotlib==TRUE) {
-      cat("   --- ERROR: Matplotlib mode activated\n")
+      cat("   Matplotlib mode activated\n")
+   }
+
+   if (Matplotlib==FALSE) {
+      cat("   Matplotlib mode disabled\n")
    }
 
    HRVData$Matplotlib=Matplotlib
