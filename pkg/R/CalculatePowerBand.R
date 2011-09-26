@@ -102,6 +102,13 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$wavelet=wavelet
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$bandtolerance=bandtolerance
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$depth=powers$depth
+          # rule of thumb used to determine if wavelet analysis is descending too many levels
+          L=length(wave.filter(wavelet)$lpf)
+          N=length(HRVData$HR)
+          J=log2(N/(L-1)+1)                
+          if ((HRVData$Verbose)&&(powers$depth>J)){
+              cat("** Warning: Wavelet analysis requires descending too many levels **\n")
+        	}
           
    }
  #common metadata for both analysis

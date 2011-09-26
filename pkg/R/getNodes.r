@@ -13,7 +13,7 @@ getNodes=function(lowerf,upperf,sampling,error,relative)   {
    {
       nodes=MergeNodes(lowerNode,upperNode);
    }
-
+   
    return(nodes)
 
 }

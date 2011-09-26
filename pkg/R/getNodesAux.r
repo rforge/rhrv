@@ -3,10 +3,11 @@ getNodesAux=function(f,sampling,error,type,deltaOriginalInterval,relative)
 {   # auxliary variables
     found=FALSE;
     i=1;
-    bj=0;
+    n_interval_in=0;
     # Iterate until the node is found
     while(found==FALSE)
     {
+          bj=n_interval_in
           # width of the interval
           delta = sampling/(2^(i+1));
           # searching
@@ -14,12 +15,11 @@ getNodesAux=function(f,sampling,error,type,deltaOriginalInterval,relative)
           {
             interval= c(j*delta,(j+1)*delta);
             if (f %in% interval)
-            {
-                  bj=j;
-                  found =  getError(f,interval,type,deltaOriginalInterval,relative)<error;
-                  if ((found)||(f!=interval[1]&&f!=interval[2]))
-                    break
-            }
+                 n_interval_in=j
+            found =  getError(f,interval,type,deltaOriginalInterval,relative)<error;
+            if (found)
+               break       
+           
 
           }
           if (found==FALSE)
