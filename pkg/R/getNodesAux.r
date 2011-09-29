@@ -14,7 +14,7 @@ getNodesAux=function(f,sampling,error,type,deltaOriginalInterval,relative)
           for (j in (bj*2):(bj*2+1))
           {
             interval= c(j*delta,(j+1)*delta);
-            if (f %in% interval)
+            if (f %rhrv_in% interval)
                  n_interval_in=j
             found =  getError(f,interval,type,deltaOriginalInterval,relative)<error;
             if (found)
