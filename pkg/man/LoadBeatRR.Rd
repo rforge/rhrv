@@ -1,17 +1,18 @@
-\name{LoadBeatWFDB}
-\alias{LoadBeatWFDB}
-\title{ Imports data from a record in WFDB format }
+\name{LoadBeatRR}
+\alias{LoadBeatRR}
+\title{ Builds an array of beats positions from an ascii file }
 \description{
-  Basically, this algorithm reads the annotation file for the ECG register, and stores the information obtained in a data structure.
+  Reads an ascii file with data of beat positions and stores the values in a data structure. Values are relative to the previous value.
 }
 \usage{
-LoadBeatWFDB(HRVData, RecordName, RecordPath = ".", annotator = "qrs", verbose=NULL)
+miLoadBeatRR(HRVData, RecordName, RecordPath=".", scale = 1, datetime = "1/1/1900 0:0:0", verbose = NULL)
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
-  \item{RecordName}{ The WFDB file to be used }
+  \item{RecordName}{ The Ascii file to be used }
   \item{RecordPath}{ The path of the file }
-  \item{annotator}{ The extension of the file }
+  \item{scale}{ 1 if beat positions in seconds }
+  \item{datetime}{ Date and time (DD/MM/YYYY HH:MM:SS) }
   \item{verbose}{ Deprecated argument maintained for compatibility, use SetVerbose() instead }
 }
 \value{
