@@ -40,7 +40,7 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
        stop("   --- Band tolerance:",bandtolerance,"%, must be positive:",type," ---\n    --- Quitting now!! ---\n")
  }
  
- if (( type=="wavelet")&& (max(ULFmin,ULFmax, VLFmin, VLFmax, LFmin, LFmax, HFmin, HFmax)>md$Freq_HR)){
+ if (( type=="wavelet")&& (max(ULFmin,ULFmax, VLFmin, VLFmax, LFmin, LFmax, HFmin, HFmax)>HRVData$Freq_HR)){
        stop("   --- bandtolerance:",max(ULFmin,ULFmax, VLFmin, VLFmax, LFmin, LFmax, HFmin, HFmax)," bigger than sampling frequency. ---\n    --- Quitting now!! ---\n")
  }
  
