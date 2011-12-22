@@ -278,7 +278,7 @@ LoadBeatEDFPlus <- function(HRVData, RecordName, RecordPath = ".", annotationTyp
 								if(intToCharacter(annotation)==annotationType)
 								{
 									seconds=intToCharacter(seconds)
-									beats=c(beats,substr(seconds,2,nchar(seconds)))
+									beats=c(beats,as.numeric(substr(seconds,2,nchar(seconds))))
 								}
 								annotation=c()
 							}
