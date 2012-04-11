@@ -14,7 +14,6 @@ function(HRVData, Tag=NULL, verbose=NULL) {
 	
 	if (HRVData$Verbose) {
 		cat("** Plotting interpolated instantaneous heart rate **\n");
-
 	}
    
    if (!is.null(Tag) & is.null(HRVData$Episodes)) {
