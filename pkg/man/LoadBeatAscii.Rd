@@ -5,7 +5,7 @@
   Reads an ascii file with data of beat positions and stores the values in a data structure
 }
 \usage{
-miLoadBeatAscii(HRVData, RecordName, RecordPath=".", scale = 1, datetime = "1/1/1900 0:0:0", verbose = NULL)
+  LoadBeatAscii(HRVData, RecordName, RecordPath=".", scale = 1, datetime = "1/1/1900 0:0:0", verbose = NULL)
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
@@ -16,13 +16,13 @@ miLoadBeatAscii(HRVData, RecordName, RecordPath=".", scale = 1, datetime = "1/1/
   \item{verbose}{ Deprecated argument maintained for compatibility, use SetVerbose() instead }
 }
 \value{
-  Returns HRVData, the structure that contains beat positions register
+  Loads beats positions into the structure that contains RHRV information
 } 
 \references{
-L. Rodriguez-Linares, X. Vila, A. Mendez, M. Lado, D. Olivieri, "RHRV: An R-based software package for heart rate variability analysis of ECG recordings," 3rd Iberian Conference in Systems and Information Technologies (CISTI 2008), Proceedings I, 565-573, ISBN: 978-84-612-4476-8 (2008)
+  L. Rodriguez-Linares, L., A.J. Mendez, M.J. Lado, D.N. Olivieri, X.A. Vila, and I. Gomez-Conde, "An open source tool for heart rate variability spectral analysis", Computer Methods and Programs in Biomedicine 103(1):39-50, july 2011.
 }
 \author{
-I. Garcia
+  I. Garcia
 }
 \keyword{ IO }
 \keyword{ connection }
