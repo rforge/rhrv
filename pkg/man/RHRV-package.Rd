@@ -12,8 +12,8 @@ RHRV offers functions for performing power spectral analysis of heart rate data.
 \tabular{ll}{
 Package: \tab RHRV\cr
 Type: \tab Package\cr
-Version: \tab 2.5\cr
-Date: \tab 2010-07-30\cr
+Version: \tab 2.6\cr
+Date: \tab 2012-04-12\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -22,7 +22,7 @@ This is a package for developing heart rate variability studies of ECG records. 
 \author{
 M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
 
-Maintainer: A. Mendez <mrarthur@uvigo.es>
+Maintainer: Leandro Rodriguez-Linares <leandro@uvigo.es>
 }
 \note{
   An example including all the necessary steps to obtain and to analyze by episodes the power bands of a wfdb register is giving below:\cr\cr
