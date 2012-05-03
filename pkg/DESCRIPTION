@@ -1,7 +1,7 @@
 Package: RHRV
 Type: Package
 Title: Heart rate variability analysis of ECG data
-Version: 2.6
+Version: 2.6.1
 Date: 2012-04-12
 Author: M. Lado, A. Mendez, D. Olivieri, L. Rodriguez-Linares, X. Vila
 Maintainer: L. Rodriguez-Linares <leandro@uvigo.es>
