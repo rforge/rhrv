@@ -28,9 +28,9 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift,
   \item{HFmax}{ Upper limit HF band }
   \item{verbose}{ Deprecated argument maintained for compatibility, use SetVerbose() instead }
   \item{type}{ Type of analysis used to calculate the spectrogram. Possible options are "fourier" or "wavelet"} 
-  \item{wavelet}{ Mother wavelet used to calculate the spectrogram when a wavelet-based analysis is performed}
+  \item{wavelet}{ Mother wavelet used to calculate the spectrogram when a wavelet-based analysis is performed. The available wavelets are: "haar" wavelet; least asymmetric Daubechies wavelets of width 8 ("la8"), 16 ("la16") and 20 ("la20") samples; extremal phase Daubechies of width 4 ("d4"), 6 ("d6"), 8 ("d8") and 16 ("d16") samples; best localized wavelets of width 14 ("bl14") and 20 (" bl20") samples; Fejer-Korovkin wavelets of width 4 ("fk4"), 6 ("fk6"), 8 ("fk8"), 14("fk14") and 22 ("fk22") samples; minimum bandwidth wavelets of width 4 ("mb4"), 8 ("mb8"), 16 ("mb16") and 24 ("mb24"); and the biorthogonal wavelet "bs3.1"}
   \item{bandtolerance}{ Maximum error allowed when a wavelet-based analysis is performed. It can be specified as a absolute or a relative error depending on the "relative" parameter value}
-  \item{relative}{ Logic value specifying which kind of bandtolerance shall be used (relative or absolute)}
+  \item{relative}{ Logic value specifying which kind of bandtolerance shall be used (relative or absolute). The relative tolerance takes into account the width of each of the intervals of interest.}
 }
 \value{
   Returns HRVData, the structure that contains beat positions register, associated heart rate instantaneous values, filtered heart rate signal equally spaced, and the analysis structure including the power of the spectrogram at different bands of the heart rate signal
