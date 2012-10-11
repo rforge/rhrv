@@ -35,13 +35,13 @@ BoundModwpt<- function(x, wf="la8", n.levels=4, boundary="periodic",oldtargets)
           x <- y[[(1:yn)[crystals1 == j-1][index]]]
         if(n %% 2 == 0) {
           z <- .C("pmodwpt", as.double(x), N, as.integer(j),as.integer(2), L, ht, gt,
-                  W = W, V = V)[8:9]
+                  W = W, V = V, PACKAGE="RHRV")[8:9]
           y[[jj + 2*n + 1]] <- z$W
           y[[jj + 2*n]] <- z$V
         }
         else {
           z <- .C("pmodwpt", as.double(x), N, as.integer(j),as.integer(2), L, ht, gt,
-                  W = W, V = V)[8:9]
+                  W = W, V = V, PACKAGE="RHRV")[8:9]
           y[[jj + 2*n]] <- z$W
           y[[jj + 2*n + 1 ]] <- z$V
         }
