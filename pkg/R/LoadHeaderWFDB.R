@@ -31,8 +31,8 @@ function(HRVData, RecordName, RecordPath=".", verbose=NULL) {
 			cat("      Time information in header:",timeinfo,"\n")
 		}
 	} else {
+		timeinfo="00:00:00"
 		if (HRVData$Verbose) {
-			timeinfo="00:00:00"
 			cat("      No time information in header:",timeinfo,"\n")
 		}
 	}
@@ -44,8 +44,8 @@ function(HRVData, RecordName, RecordPath=".", verbose=NULL) {
 			cat("      Date information in header:",dateinfo,"\n")
 		}
 	} else {
+		dateinfo="01/01/1900"
 		if (HRVData$Verbose) {
-			dateinfo="01/01/1900"
 			cat("      No date information in header:",dateinfo,"\n")
 		}
 	}
