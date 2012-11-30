@@ -2,7 +2,7 @@
 \alias{CalculatePowerBand}
 \title{ Calculates power per band }
 \description{
-  Calculates the spectrogram of the heart rate signal and the power of the spectrogram of the heart rate signal at the HF, LF, VLF bands
+  Calculates  power of the heart rate signal at ULF, VLF, LF and HF bands
 }
 \usage{
 CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift, 
@@ -14,10 +14,9 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift,
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
   \item{indexFreqAnalysis}{ Reference to the data structure that will contain the variability analysis }
-  \item{size}{ Size of window for calculating spectrogram (seconds) }
-  \item{shift}{ Displacement of window for calculating spectrogram (seconds) }
-  \item{sizesp}{ Points for calculating spectrogram (zero padding) }
-  \item{scale}{ Scale used to plot spectrogram, linear or logarithmic }
+  \item{size}{ Size of window for calculations (seconds) }
+  \item{shift}{ Displacement of window for calculations (seconds) }
+  \item{sizesp}{ Points for calculation (zero padding) }
   \item{ULFmin}{ Lower limit ULF band }
   \item{ULFmax}{ Upper limit ULF band }
   \item{VLFmin}{ Lower limit VLF band }
@@ -26,6 +25,7 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift,
   \item{LFmax}{ Upper limit LF band }
   \item{HFmin}{ Lower limit HF band }
   \item{HFmax}{ Upper limit HF band }
+  \item{scale}{ Deprecated argument }
   \item{verbose}{ Deprecated argument maintained for compatibility, use SetVerbose() instead }
   \item{type}{ Type of analysis used to calculate the spectrogram. Possible options are "fourier" or "wavelet"} 
   \item{wavelet}{ Mother wavelet used to calculate the spectrogram when a wavelet-based analysis is performed. The available wavelets are: "haar" wavelet; least asymmetric Daubechies wavelets of width 8 ("la8"), 16 ("la16") and 20 ("la20") samples; extremal phase Daubechies of width 4 ("d4"), 6 ("d6"), 8 ("d8") and 16 ("d16") samples; best localized wavelets of width 14 ("bl14") and 20 (" bl20") samples; Fejer-Korovkin wavelets of width 4 ("fk4"), 6 ("fk6"), 8 ("fk8"), 14("fk14") and 22 ("fk22") samples; minimum bandwidth wavelets of width 4 ("mb4"), 8 ("mb8"), 16 ("mb16") and 24 ("mb24"); and the biorthogonal wavelet "bs3.1"}
@@ -33,16 +33,13 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift,
   \item{relative}{ Logic value specifying which kind of bandtolerance shall be used (relative or absolute). The relative tolerance takes into account the width of each of the intervals of interest.}
 }
 \value{
-  Returns HRVData, the structure that contains beat positions register, associated heart rate instantaneous values, filtered heart rate signal equally spaced, and the analysis structure including the power of the spectrogram at different bands of the heart rate signal
+  Returns HRVData, the structure that contains beat positions register, associated heart rate instantaneous values, filtered heart rate signal equally spaced, and the analysis structure including spectral power at different bands of the heart rate signal
 }
 \references{
-L. Rodriguez-Linares, X. Vila, A. Mendez, M. Lado, D. Olivieri, "RHRV: An R-based software package for heart rate variability analysis of ECG recordings," 3rd Iberian Conference in Systems and Information Technologies (CISTI 2008), Proceedings I, 565-573, ISBN: 978-84-612-4476-8 (2008)
+L. Rodriguez-Linares, L., A.J. Mendez, M.J. Lado, D.N. Olivieri, X.A. Vila, and I. Gomez-Conde, "An open source tool for heart rate variability spectral analysis", Computer Methods and Programs in Biomedicine 103(1):39-50, july 2011.
 }
 \author{
 M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
-}
-\seealso{
-  \code{\link{CalculateSpectrogram}} for spectrogram calculation
 }
 \note{
   An example including all the necessary steps to obtain the power\cr 

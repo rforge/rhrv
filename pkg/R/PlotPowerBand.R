@@ -1,5 +1,5 @@
 PlotPowerBand <-
-function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ymaxratio=10, ymaxnorm=1, Tag=NULL, verbose=NULL) {
+function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, ymaxratio=NULL, ymaxnorm=1, Tag=NULL, verbose=NULL) {
 # --------------------
 # Plots power per band
 # --------------------
@@ -34,6 +34,11 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	}
 
 	
+
+	# if (is.null(ymax)) {
+	# 	ymax = max(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF) )
+	# }
+	
 	 
 	# normalization
 	 if (normalized == TRUE) {
@@ -47,14 +52,6 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
  		}
 	}
 			
-	# For normalized plots, axis y is in the interval (0-ymax)
-	if (normalized == FALSE) {
-		ymaxv=c(0,ymax)
-	}
-	else {
-		ymaxv=c(0,ymaxnorm)
-	}
-	
 	
 	if (hr)
 		numfilas=6
@@ -83,7 +80,9 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
          HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag]
       EpisodesAuxRightFrame=EpisodesAuxRight*lframes/(tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)) # Beg of episodes (frames)
       EpisodesAuxType=HRVData$Episodes$Type[HRVData$Episodes$Type %in% Tag]
-      cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
+      if (HRVData$Verbose) {
+      	cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
+      }
       
       Pal=rainbow(length(Tag))
       Bor=Pal[match(EpisodesAuxType,Tag)]
@@ -98,6 +97,10 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	par(mfrow=c(numfilas,1),omi=c(0,0,0,0),mai=c(0,0,0,0),mar=c(2,4,1,1),oma=c(1,0,2,0),mgp=c(1.5,.5,0))
 
 # ---------- LF/HF ----------
+	if (is.null(ymaxratio)) {
+		ymaxratio = max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF)
+	}
+
 	mfg=c(1,1,numfilas,1)
 	plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF,type='l',xlab="",ylab="LF/HF",ylim=c(0,ymaxratio*1.1))
 	if (!is.null(Tag)) {
@@ -120,6 +123,14 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	}
 
 # ---------- ULF ----------
+	if (normalized==TRUE) {
+		ymaxv=c(0,ymaxnorm)
+	} else if (!is.null(ymax)) {
+		ymaxv=c(0,ymax)
+	} else {
+		ymaxv = c(0,max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF))
+	}
+
 	mfg=c(1,2,numfilas,1)
 	plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
 			HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF,type='l',xlab="",ylab="ULF",ylim=ymaxv)
@@ -134,6 +145,14 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	}
 
 # ---------- VLF ----------
+	if (normalized==TRUE) {
+		ymaxv=c(0,ymaxnorm)
+	} else if (!is.null(ymax)) {
+		ymaxv=c(0,ymax)
+	} else {
+		ymaxv = c(0,max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF))
+	}
+
 	mfg=c(1,3,numfilas,1)
 	plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
 			HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF,type='l',xlab="",ylab="VLF",ylim=ymaxv)
@@ -148,6 +167,14 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	}
 
 # ---------- LF ----------
+	if (normalized==TRUE) {
+		ymaxv=c(0,ymaxnorm)
+	} else if (!is.null(ymax)) {
+		ymaxv=c(0,ymax)
+	} else {
+		ymaxv = c(0,max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF))
+	}
+
 	mfg=c(1,4,numfilas,1)
 	plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
 			HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF,type='l',xlab="",ylab="LF",ylim=ymaxv)
@@ -162,6 +189,14 @@ function(HRVData, indexFreqAnalysis, normalized=FALSE, hr=FALSE, ymax=160000, ym
 	}
 
 # ---------- HF ----------
+	if (normalized==TRUE) {
+		ymaxv=c(0,ymaxnorm)
+	} else if (!is.null(ymax)) {
+		ymaxv=c(0,ymax)
+	} else {
+		ymaxv = c(0,max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF))
+	}
+
 	mfg=c(1,5,numfilas,1)
 	texto4="No. of frames"
 	plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),

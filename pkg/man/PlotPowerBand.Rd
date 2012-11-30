@@ -6,7 +6,7 @@
 }
 \usage{
 PlotPowerBand(HRVData, indexFreqAnalysis, normalized = FALSE, 
-		hr = FALSE, ymax = 160000, ymaxratio = 10, ymaxnorm = 1, 
+		hr = FALSE, ymax = NULL, ymaxratio = NULL, ymaxnorm = 1, 
 		Tag = NULL, verbose=NULL)
 }
 \arguments{
