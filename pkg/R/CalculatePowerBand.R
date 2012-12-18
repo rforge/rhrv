@@ -73,9 +73,9 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           for (i in 1:nw) {
             beg=1+(shiftsamples*(i-1))
             window = signal[beg:(beg + sizesamples - 1)]
-            window = window - mean(window)
             window = window*hamming
-            spectrum = spec.pgram(window,detrend=FALSE,plot=FALSE,taper=0)
+            window = window - mean(window)
+            spectrum = spec.pgram(window,,demean=FALSE,detrend=FALSE,plot=FALSE,fast=TRUE,taper=0)
             freqs=HRVData$Freq_HR*spectrum$freq
             # cat("Window no.:",i,"\n")
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i]=mean(spectrum$spec)*hammingfactor
