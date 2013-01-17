@@ -211,13 +211,13 @@ function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, yma
 		cat("   Plotted HF\n")
 	} 
 
-# ---------- HRV ----------
+# ---------- HR ----------
 	if (numfilas==6) {
 		mfg=c(1,6,numfilas,1)
 		# lsecs is the duration of the record in seconds for plotting heart rate signal
 		lsecs=tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)
 		plot(seq(from=0,to=lsecs,length.out=length(HRVData$HR)),
-				 HRVData$HR,type='l',xlab="Time (sec.)",ylab="HRV")
+				 HRVData$HR,type='l',xlab="Time (sec.)",ylab="HR")
 		if (HRVData$Verbose) {
 			cat("   Plotted HRV\n")
 		}
