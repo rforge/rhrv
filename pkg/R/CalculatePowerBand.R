@@ -13,7 +13,6 @@ function(HRVData, indexFreqAnalysis=-1, size, shift, scale="linear", ULFmin=0, U
 #  wavelet: nama of the wavelet for analysis
 #  bandtolerance: bandtolerance in % for the wavelet tree decomposition
   
-
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
 		SetVerbose(HRVData,verbose)
@@ -50,16 +49,23 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
         	}
 
           shiftsamples = shift*HRVData$Freq_HR
-          sizesamples=floor(size*HRVData$Freq_HR)
-          signal=HRVData$HR/60.0
-          hamming=0.54-0.46*cos(2*pi*(0:(sizesamples-1))/(sizesamples-1))
+          sizesamples = floor(size*HRVData$Freq_HR)
+          sizesamples2 = sizesamples
+          if (sizesamples2%%2) {
+            sizesamples2 = sizesamples2+1
+          }
+          freqs = seq(from=0,to=HRVData$Freq_HR/2,length.out=sizesamples2)
+
+          hamming=0.54-0.46*cos(2*pi*(0:(sizesamples2-1))/(sizesamples2-1))
           hammingfactor=1.586
-          freqs_tmp = seq(from=-(HRVData$Freq_HR/2),to=HRVData$Freq_HR/2,length.out=sizesamples)
-          freqs = freqs_tmp[(length(freqs_tmp)/2+1):length(freqs_tmp)]
+
+          signal=1000.0/(HRVData$HR/60.0)  # msec.
 
           power <- function (spec_arg,freq_arg,fmin,fmax) {
-            band = spec_arg$spec[freq_arg>=fmin & freq_arg<fmax]
-            powerinband = hammingfactor*sum(band)/length(spec_arg$spec)
+            band = spec_arg[freq_arg>=fmin & freq_arg<fmax]
+            # powerinband = sum(band)/(2*length(spec_arg)**2)
+            powerinband = hammingfactor*sum(band)/(2*length(spec_arg)**2)
+
             return(powerinband)
           }
 
@@ -80,11 +86,17 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           for (i in 1:nw) {
             beg=1+(shiftsamples*(i-1))
             window = signal[beg:(beg + sizesamples - 1)]
-            window = window*hamming
+            window=window*hamming
             window = window - mean(window)
 
-            spec = spec.pgram(window,detrend=FALSE,plot=FALSE,taper=0)
-            freqs = md$Freq_HR*spec$freq
+            if (length(window)%%2) {
+              # cat ("Odd number of samples: zero added\n")
+              window = c(window,0)
+            }
+
+            spec_tmp=Mod(fft(window))**2
+            spec = spec_tmp[1:(length(spec_tmp)/2)]
+            
 
             # cat("Window no.:",i,"\n")
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i]=power(spec,freqs,0,HRVData$Freq_HR/2)
