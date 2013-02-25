@@ -3,7 +3,7 @@ useDynLib(RHRV)
 # Export all names
 #exportPattern(".")
 
-export("AddEpisodes", "AnalyzeHRbyEpisodes", "AvgIntegralCorrelation", "BuildNIHR", "BuildTakensVector", "CalculateApEn", "CalculateFracDim", "CalculatePowerBand", "CalculateRfromCorrelation", "CreateFreqAnalysis", "CreateHRVData", "CreateNonLinearAnalysis", "CreateTimeAnalysis", "EditNIHR", "FilterNIHR", "GenerateEpisodes", "IntegralCorrelation", "InterpolateNIHR", "LoadApneaWFDB", "LoadBeatAscii", "LoadBeatEDFPlus", "LoadBeatPolar", "LoadBeat", "LoadBeatRR", "LoadBeatSuunto", "LoadBeatWFDB", "LoadEpisodesAscii", "LoadHeaderWFDB", "PlotHR", "PlotNIHR", "PlotPowerBand", "ReadFromFile", "SetVerbose", "SplitHRbyEpisodes", "SplitPowerBandByEpisodes", "WriteToFile"
+export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes", "AvgIntegralCorrelation", "BuildNIHR", "BuildTakensVector", "CalculateApEn", "CalculateFracDim", "CalculatePowerBand", "CalculateRfromCorrelation", "CreateFreqAnalysis", "CreateHRVData", "CreateNonLinearAnalysis", "CreateTimeAnalysis", "EditNIHR", "FilterNIHR", "GenerateEpisodes", "IntegralCorrelation", "InterpolateNIHR", "LoadApneaWFDB", "LoadBeatAscii", "LoadBeatEDFPlus", "LoadBeatPolar", "LoadBeat", "LoadBeatRR", "LoadBeatSuunto", "LoadBeatWFDB", "LoadEpisodesAscii", "LoadHeaderWFDB", "PlotHR", "PlotNIHR", "PlotPowerBand", "ReadFromFile", "SetVerbose", "SplitHRbyEpisodes", "SplitPowerBandByEpisodes", "WriteToFile"
 )
 
 # Import all packages listed as Imports or Depends
