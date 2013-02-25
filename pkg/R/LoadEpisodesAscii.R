@@ -1,9 +1,10 @@
 LoadEpisodesAscii <-
-function(HRVData, FileName, Tag="", InitTime="0:0:0", verbose=NULL) {	
+function(HRVData, FileName, RecordPath=".", Tag="", InitTime="0:0:0", verbose=NULL, header = TRUE) {	
 #-------------------------------
 # Loads episodes from ascii file
 #-------------------------------
 #	FileName -> file containing episodes
+# RecordPath -> path to the file containing episodes
 #   Tag -> specifies type of episodes
 #	InitTime -> time (HH:MM:SS) absolute time of beginning of the record (subtracted from time of episodes)
 
@@ -14,9 +15,12 @@ function(HRVData, FileName, Tag="", InitTime="0:0:0", verbose=NULL) {
 #  	01:30:00        OBS_APNEA	60.0	81.0
 #  	...
 
-#  	First line of file is discarded
+#  	First line of file is discarded if the header argument is set to TRUE
 #  	Duration in seconds
 	
+  dir = getwd()
+  setwd(RecordPath)
+
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
 		SetVerbose(HRVData,verbose)
@@ -24,8 +28,16 @@ function(HRVData, FileName, Tag="", InitTime="0:0:0", verbose=NULL) {
 	
 	if (HRVData$Verbose) {
 		cat("** Loading episodes file:",FileName,"**\n")
+		cat("   Path:", RecordPath, "\n")
 	}
-	x=read.table(FileName,skip=1)
+  if (header){
+    # skip first line
+    x=read.table(FileName,skip=1)  
+  }else{
+    # Do not skip the first line,
+    x=read.table(FileName,skip=0)  
+  }
+	
 
 	if (HRVData$Verbose) {
    	if (Tag=="") {
@@ -95,6 +107,7 @@ function(HRVData, FileName, Tag="", InitTime="0:0:0", verbose=NULL) {
    	cat("   Number of episodes:",length(HRVData$Episodes$InitTime),"\n")
 	}
 
+  setwd(dir)
 	return(HRVData)
 }
 
