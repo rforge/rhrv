@@ -29,13 +29,24 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
    	# SDNN
    	HRVData$TimeAnalysis[[num+1]]$SDNN=sd(HRVData$Beat$RR)
 
-   	WindowMin=0.0
-   	WindowMax=size
+   	WindowMin=head(HRVData$Beat$Time,n=1)
+   	WindowMax=WindowMin + size
    	WindowIndex=1
    	RRWindowMean=c(0)
    	RRWindowSD=c(0)
    	while (WindowMax < tail(HRVData$Beat$Time,1)) {
-      	RRWindow=HRVData$Beat$RR[HRVData$Beat$Time > WindowMin & HRVData$Beat$Time < WindowMax]
+      	RRWindow=HRVData$Beat$RR[HRVData$Beat$Time >= WindowMin & HRVData$Beat$Time < WindowMax]
+        # check if there is an interval without beats
+        if (length(RRWindow) == 0){
+          message = paste(sep="", "Interval without beats from ",WindowMin,
+                          " to ",WindowMax," seconds!!\n  Returning NA in SDANN and SDNNIDX\n")
+          warning(message)
+          # introduce the NAs to ensure that the user notices the warning
+          RRWindowMean[WindowIndex] = NA
+          RRWindowSD[WindowIndex] = NA
+          # there is no need to compute more windows
+          break;
+        }
       	RRWindowMean[WindowIndex]=mean(RRWindow)
       	RRWindowSD[WindowIndex]=sd(RRWindow)
       	WindowMin = WindowMin+size
@@ -43,10 +54,15 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
       	WindowIndex = WindowIndex+1
    	}
 
+    numberOfWindows = WindowIndex-1
    	if (HRVData$Verbose) {
-      	cat("   Number of windows:",WindowIndex-1,"\n")
+       cat("   Number of windows:",numberOfWindows,"\n")
    	}
 
+    
+    if (numberOfWindows <= 1){
+      warning("There is no window or just one window. Cannot compute the standard deviation!! Returning NA in SDANN\n")
+    }
    	# SDANN
    	HRVData$TimeAnalysis[[num+1]]$SDANN=sd(RRWindowMean) 
 
@@ -54,10 +70,13 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
    	HRVData$TimeAnalysis[[num+1]]$SDNNIDX=mean(RRWindowSD) 
 
    	# pNN50
-	NRRs=length(HRVData$Beat$RR)
+	  NRRs=length(HRVData$Beat$RR)
    	RRDiffs = HRVData$Beat$RR[2:NRRs]-HRVData$Beat$RR[1:NRRs-1]
    	RRDiffs50=RRDiffs[abs(RRDiffs)>50]
    	HRVData$TimeAnalysis[[num+1]]$pNN50=100.0*length(RRDiffs50)/length(RRDiffs)
+
+    # SDSD
+    HRVData$TimeAnalysis[[num+1]]$SDSD = sd(RRDiffs)
 
    	# rMSSD
    	HRVData$TimeAnalysis[[num+1]]$rMSSD=sqrt(mean(RRDiffs^2))
@@ -90,8 +109,9 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
       	cat("   Data has now",num+1,"time analyses\n")
       	cat("      SDNN:",HRVData$TimeAnalysis[[num+1]]$SDNN,"msec. \n")
       	cat("      SDANN:",HRVData$TimeAnalysis[[num+1]]$SDANN,"msec. \n")
-     	cat("      SDNNIDX:",HRVData$TimeAnalysis[[num+1]]$SDNNIDX,"msec. \n")
+     	  cat("      SDNNIDX:",HRVData$TimeAnalysis[[num+1]]$SDNNIDX,"msec. \n")
       	cat("      pNN50:",HRVData$TimeAnalysis[[num+1]]$pNN50,"%\n")
+      	cat("      SDSD:",HRVData$TimeAnalysis[[num+1]]$SDSD,"msec.\n")
       	cat("      r-MSSD:",HRVData$TimeAnalysis[[num+1]]$rMSSD,"msec.\n")
       	cat("      IRRR:",HRVData$TimeAnalysis[[num+1]]$IRRR,"msec.\n")
       	cat("      MADRR:",HRVData$TimeAnalysis[[num+1]]$MADRR,"msec.\n")
