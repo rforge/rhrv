@@ -54,7 +54,7 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           if (sizesamples2%%2) {
             sizesamples2 = sizesamples2+1
           }
-          freqs = seq(from=0,to=HRVData$Freq_HR/2,length.out=sizesamples2)
+          
 
           hamming=0.54-0.46*cos(2*pi*(0:(sizesamples2-1))/(sizesamples2-1))
           hammingfactor=1.586
@@ -83,6 +83,8 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
             cat("   Windowing signal... ",nw," windows \n",sep="")
           }
 
+          
+
           for (i in 1:nw) {
             beg=1+(shiftsamples*(i-1))
             window = signal[beg:(beg + sizesamples - 1)]
@@ -96,14 +98,15 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
 
             spec_tmp=Mod(fft(window))**2
             spec = spec_tmp[1:(length(spec_tmp)/2)]
+            freqs = seq(from=0,to=HRVData$Freq_HR/2,length.out=length(spec))
             
-
             # cat("Window no.:",i,"\n")
-            HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i]=power(spec,freqs,0,HRVData$Freq_HR/2)
+            HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i]=power(spec,freqs,0.0,0.5*HRVData$Freq_HR)
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[i]=power(spec,freqs,ULFmin,ULFmax)
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[i]=power(spec,freqs,VLFmin,VLFmax)
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[i]=power(spec,freqs,LFmin,LFmax)
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[i]=power(spec,freqs,HFmin,HFmax)
+
 
             # cat("  Power ULFBand: ",HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[i],"Hz^2\n")
             # cat("  Power VLFBand: ",HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[i],"Hz^2\n")
