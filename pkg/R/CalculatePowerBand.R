@@ -1,5 +1,5 @@
 CalculatePowerBand<-
-function(HRVData, indexFreqAnalysis=-1, size, shift, scale="linear", ULFmin=0, ULFmax=0.03, VLFmin=0.03, VLFmax=0.05, LFmin=0.05, LFmax=0.15, HFmin=0.15, HFmax=0.4, verbose=NULL,type="fourier",wavelet="d4",bandtolerance=0.1,relative=FALSE) {
+function(HRVData, indexFreqAnalysis=-1, size, shift, sizesp=NULL, scale="linear", ULFmin=0, ULFmax=0.03, VLFmin=0.03, VLFmax=0.05, LFmin=0.05, LFmax=0.15, HFmin=0.15, HFmax=0.4, verbose=NULL,type="fourier",wavelet="d4",bandtolerance=0.1,relative=FALSE) {
 # -------------------------
 # Calculates power per band
 # -------------------------
@@ -47,19 +47,22 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           if (HRVData$Verbose) {
               cat("** Using Fourier analysis **\n")
         	}
-
+          signal=1000.0/(HRVData$HR/60.0)  # msec.
+          signalLen = length(signal)
           shiftsamples = shift*HRVData$Freq_HR
           sizesamples = floor(size*HRVData$Freq_HR)
-          sizesamples2 = sizesamples
-          if (sizesamples2%%2) {
-            sizesamples2 = sizesamples2+1
+          
+          if (is.null(sizesp)){
+            sizesp = 2^ceiling(log2(sizesamples))
+          }
+          if (sizesp <= sizesamples){
+            lenZeroPadding = 0  
+          }else{
+            lenZeroPadding = sizesp - sizesamples
           }
           
-
-          hamming=0.54-0.46*cos(2*pi*(0:(sizesamples2-1))/(sizesamples2-1))
+          hamming=0.54-0.46*cos(2*pi*(0:(sizesamples-1))/(sizesamples-1))
           hammingfactor=1.586
-
-          signal=1000.0/(HRVData$HR/60.0)  # msec.
 
           power <- function (spec_arg,freq_arg,fmin,fmax) {
             band = spec_arg[freq_arg>=fmin & freq_arg<fmax]
@@ -74,7 +77,7 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           begnw=1
           repeat {
               begnw=begnw+shiftsamples
-              if ((begnw+sizesamples-1)>=length(signal)) {
+              if ((begnw+sizesamples-1)>=signalLen) {
                   break
               }
             nw=nw+1
@@ -83,23 +86,19 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
             cat("   Windowing signal... ",nw," windows \n",sep="")
           }
 
+          #frequency axis
+          freqs = seq(from=0,to=HRVData$Freq_HR/2,length.out = (sizesamples+lenZeroPadding)/2)
           
-
           for (i in 1:nw) {
             beg=1+(shiftsamples*(i-1))
             window = signal[beg:(beg + sizesamples - 1)]
-            window=window*hamming
             window = window - mean(window)
-
-            if (length(window)%%2) {
-              # cat ("Odd number of samples: zero added\n")
-              window = c(window,0)
-            }
-
+            window = window * hamming
+            window = c(window,rep(0,len = lenZeroPadding))
+              
             spec_tmp=Mod(fft(window))**2
             spec = spec_tmp[1:(length(spec_tmp)/2)]
-            freqs = seq(from=0,to=HRVData$Freq_HR/2,length.out=length(spec))
-            
+                        
             # cat("Window no.:",i,"\n")
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i]=power(spec,freqs,0.0,0.5*HRVData$Freq_HR)
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[i]=power(spec,freqs,ULFmin,ULFmax)
@@ -116,7 +115,7 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
             # cat("  Power: ",HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV[i],"\n")
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF[i]=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[i]/HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[i]
             # cat("  Now: ",HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF[i],"\n")
-          }
+          }   
 
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$size=size
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift=shift
@@ -129,8 +128,8 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           }
           
           
-          
-          powers=modwptAnalysis(HRVData$HR,wavelet, ULFmin, ULFmax , VLFmin, VLFmax, LFmin, LFmax, HFmin , HFmax, HRVData$Freq_HR,bandtolerance,relative)
+          signal=1000.0/(HRVData$HR/60.0)  # msec.
+          powers=modwptAnalysis(signal,wavelet, ULFmin, ULFmax , VLFmin, VLFmax, LFmin, LFmax, HFmin , HFmax, HRVData$Freq_HR,bandtolerance,relative)
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF=powers$ULF
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF=powers$VLF
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF=powers$LF

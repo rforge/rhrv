@@ -1,15 +1,14 @@
 CreateTimeAnalysis <-
-function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
+function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
 # ----------------------------------------------------
 # Creates a Time analysis associated to the data model
 # ----------------------------------------------------
 #  	size: size of window (sec.)
 #  	interval: width of bins in histogram for TINN and HRV index (msec.)
-
-	if (!is.null(verbose)) {
-		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-		SetVerbose(HRVData,verbose)
-	}
+  	if (!is.null(verbose)) {
+	  	cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
+		  SetVerbose(HRVData,verbose)
+	  } 
 	
    	if (HRVData$Verbose) {
       	cat("** Creating time analysis\n")
@@ -21,6 +20,18 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
 
    	HRVData$TimeAnalysis[[num+1]]$size=size # length size for analysis
 
+    # vecthist contains the bins for the histogram
+    minRR=min(HRVData$Beat$RR)
+    maxRR=max(HRVData$Beat$RR)
+    if (!is.null(numofbins)){
+      interval = (maxRR-minRR)/(numofbins-2)
+      vecthist = seq(minRR-interval/2,maxRR+interval/2,len=numofbins)
+    }else{
+      medRR=(min(HRVData$Beat$RR)+max(HRVData$Beat$RR))/2.0
+      lowhist=medRR-interval*ceiling((medRR-minRR)/interval)
+      longhist=ceiling((maxRR-lowhist)/interval)+1
+      vecthist=seq(from=lowhist,by=interval,length.out=longhist)
+    }
    	if (HRVData$Verbose) {
       	cat("   Size of window:",size,"seconds \n")
       	cat("   Width of bins in histogram:",interval,"milliseconds \n")
@@ -89,15 +100,7 @@ function(HRVData, size=300, numofbins=20, interval=7.8125, verbose=NULL ) {
    	HRVData$TimeAnalysis[[num+1]]$MADRR=median(abs(RRDiffs))
 
    	# TINN and HRV index
-   	# vecthist contains the bins for the histogram
-   	minRR=min(HRVData$Beat$RR)
-   	maxRR=max(HRVData$Beat$RR)
-   	medRR=(min(HRVData$Beat$RR)+max(HRVData$Beat$RR))/2.0
-   	lowhist=medRR-interval*ceiling((medRR-minRR)/interval)
-   	longhist=ceiling((maxRR-lowhist)/interval)+1
-   	vecthist=seq(from=lowhist,by=interval,length.out=longhist)
-
-   	h = hist(HRVData$Beat$RR, breaks=vecthist, plot=FALSE)
+   	h = hist(HRVData$Beat$RR, breaks=vecthist, plot=TRUE)
    	area=length(HRVData$Beat$RR)*interval
    	maxhist=max(h$counts)
    	HRVData$TimeAnalysis[[num+1]]$TINN=area/maxhist

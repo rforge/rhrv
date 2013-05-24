@@ -10,8 +10,8 @@ CreateTimeAnalysis(HRVData, size = 300, numofbins = 20,
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
   \item{size}{ Size of window (seconds) }
-  \item{numofbins}{ Number of bins in histogram }
-  \item{interval}{ Width of bins in histogram (milliseconds) }
+  \item{numofbins}{ Number of bins in histogram. If it is not specified, the interval parameter is used (default)}
+  \item{interval}{ Width of bins in histogram (milliseconds)}
   \item{verbose}{ Deprecated argument maintained for compatibility, use SetVerbose() instead }
 }
 \value{

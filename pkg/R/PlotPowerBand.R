@@ -93,7 +93,7 @@ function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, yma
       EpisodesRight=HRVData$Episodes$InitTime+HRVData$Episodes$Duration # Beg of episodes (seconds)
       EpisodesRightFrame=EpisodesRight*lframes/(tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)) # Beg of episodes (frames)
    }
-
+  previousPar = par()
 	par(mfrow=c(numfilas,1),omi=c(0,0,0,0),mai=c(0,0,0,0),mar=c(2,4,1,1),oma=c(1,0,2,0),mgp=c(1.5,.5,0))
 
 # ---------- LF/HF ----------
@@ -250,6 +250,9 @@ function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, yma
 		cat("   Power per band plotted\n")
 	}	 
 
+  #restore previous graphical parameters
+  par(mfrow=previousPar$mfrow, omi=previousPar$omi, mai=previousPar$mai,
+      mar=previousPar$mar,oma=previousPar$oma,mgp=previousPar$mgp)
 
 }
 

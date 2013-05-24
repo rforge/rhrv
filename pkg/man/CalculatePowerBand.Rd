@@ -16,6 +16,7 @@ CalculatePowerBand(HRVData, indexFreqAnalysis = -1, size, shift,
   \item{indexFreqAnalysis}{ Reference to the data structure that will contain the variability analysis }
   \item{size}{ Size of window for calculations (seconds) }
   \item{shift}{ Displacement of window for calculations (seconds) }
+  \item{sizesp}{ Points for calculation (zero padding) }
   \item{ULFmin}{ Lower limit ULF band }
   \item{ULFmax}{ Upper limit ULF band }
   \item{VLFmin}{ Lower limit VLF band }
