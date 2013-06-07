@@ -41,7 +41,7 @@ function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, yma
 	
 	 
 	# normalization
-	 if (normalized == TRUE) {
+	 if (normalized) {
 		HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF))
 		HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF))
 		HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF))
