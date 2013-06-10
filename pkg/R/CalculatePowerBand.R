@@ -119,7 +119,7 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
 
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$size=size
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift=shift
-
+          HRVData$FreqAnalysis[[indexFreqAnalysis]]$sizesp=sizesp
             
   }
    if (type=="wavelet"){

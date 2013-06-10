@@ -100,7 +100,7 @@ function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
    	HRVData$TimeAnalysis[[num+1]]$MADRR=median(abs(RRDiffs))
 
    	# TINN and HRV index
-   	h = hist(HRVData$Beat$RR, breaks=vecthist, plot=TRUE)
+   	h = hist(HRVData$Beat$RR, breaks=vecthist, plot=FALSE)
    	area=length(HRVData$Beat$RR)*interval
    	maxhist=max(h$counts)
    	HRVData$TimeAnalysis[[num+1]]$TINN=area/maxhist

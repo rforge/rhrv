@@ -5,7 +5,7 @@
   Reads the data structure containing beat positions and all derived calculations from file
 }
 \usage{
-ReadFromFile(name, verbose=NULL)
+ReadFromFile(name, verbose=FALSE)
 }
 \arguments{
   \item{name}{ The name of the file to be used (without the .hrv extension)}
