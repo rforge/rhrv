@@ -187,7 +187,7 @@ h1#logo a span {
 	display:block;
 	width:180px;
 	height:87px;
-	
+	background:url(images/but.gif) no-repeat 0 0;
 	margin:35px 0 0 112px;
 }
 #slider-content .get-started:hover {
@@ -205,9 +205,20 @@ h1#logo a span {
 	width:295px;
 	margin-right:25px;
 }
+
 .col-last {
 	margin-right:0;
 }
+.col2 {
+	float:left;
+	display:inline;
+	width:590px;
+	margin-right:25px;
+}
+.col2-last {
+	margin-right:0;
+}
+
 .post {
 }
 .post h3 {
