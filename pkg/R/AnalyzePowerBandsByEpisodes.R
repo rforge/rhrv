@@ -13,6 +13,7 @@
 #'  inside ("resultIn") and outside ("resultOut") episodes in the given indexFreqAnalysis. Each of these 
 #'  list has another set of lists: the  "ULF", "VLF", "LF" and "HF" lists.
 #' @examples 
+#' \dontrun{
 #' hrv.data = CreateHRVData()
 #' hrv.data = SetVerbose(hrv.data, TRUE)
 #' hrv.data = LoadBeat(hrv.data, fileType = "WFDB", "a03", RecordPath ="beatsFolder/", 
@@ -24,7 +25,7 @@
 #' hrv.data = CreateFreqAnalysis(hrv.data)
 #' hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
 #'                                type = "wavelet", wavelet = "la8", bandtolerance = 0.01, relative = FALSE)
-#'results = AnalyzePowerBandsByEpisodes(hrv.data,indexFreqAnalysis=1,Tag="Apnea",func=mean)
+#' results = AnalyzePowerBandsByEpisodes(hrv.data,indexFreqAnalysis=1,Tag="Apnea",func=mean)}
 AnalyzePowerBandsByEpisodes = function(HRVData, indexFreqAnalysis = 1, Tag="", verbose=NULL,func, ...) {
     # ----------------------------------------------
     # Analyzes PowerBands using Episodes information
