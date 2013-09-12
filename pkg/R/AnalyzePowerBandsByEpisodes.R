@@ -5,7 +5,7 @@
 #'  to evaluate the application of a desired function inside and outside each episode.
 #' @param HRVData Data structure that stores the beats register and information related to it. 
 #' @param indexFreqAnalysis Integer value denoting which frequency analysis is going to be analyzed using func. Default: 1
-#' @param Tag="" Type of episode
+#' @param Tag Type of episode
 #' @param verbose Deprecated argument maintained for compatibility, use SetVerbose() instead
 #' @param func Function to be applied to each power band inside and outside episodes
 #' @param ... Optional arguments for func.
@@ -26,7 +26,7 @@
 #' hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
 #'                                type = "wavelet", wavelet = "la8", bandtolerance = 0.01, relative = FALSE)
 #' results = AnalyzePowerBandsByEpisodes(hrv.data,indexFreqAnalysis=1,Tag="Apnea",func=mean)}
-AnalyzePowerBandsByEpisodes = function(HRVData, indexFreqAnalysis = 1, Tag="", verbose=NULL,func, ...) {
+AnalyzePowerBandsByEpisodes = function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), Tag="", verbose=NULL,func, ...) {
     # ----------------------------------------------
     # Analyzes PowerBands using Episodes information
     # ----------------------------------------------

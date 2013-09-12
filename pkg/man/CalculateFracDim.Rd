@@ -5,7 +5,7 @@
    Calculates Fractal Dimension as indicated by Pincus
 }
 \usage{
-CalculateFracDim(HRVData, indexNonLinearAnalysis = -1, m = 10, 
+CalculateFracDim(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), m = 10, 
 		tau = 3, Cra = 0.005, Crb = 0.75, N = 1000, verbose=NULL)
 }
 \arguments{

@@ -1,5 +1,5 @@
 PlotPowerBand <-
-function(HRVData, indexFreqAnalysis,  normalized=FALSE, hr=FALSE, ymax=NULL, ymaxratio=NULL, ymaxnorm=1, Tag=NULL, verbose=NULL) {
+function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),  normalized=FALSE, hr=FALSE, ymax=NULL, ymaxratio=NULL, ymaxnorm=1, Tag=NULL, verbose=NULL) {
 # --------------------
 # Plots power per band
 # --------------------

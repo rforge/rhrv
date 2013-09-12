@@ -5,7 +5,7 @@
   Plots the power of the heart rate signal at different bands of interest.
 }
 \usage{
-PlotPowerBand(HRVData, indexFreqAnalysis, normalized = FALSE, 
+PlotPowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), normalized = FALSE, 
 		hr = FALSE, ymax = NULL, ymaxratio = NULL, ymaxnorm = 1, 
 		Tag = NULL, verbose=NULL)
 }

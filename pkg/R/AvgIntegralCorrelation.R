@@ -10,10 +10,10 @@ function(HRVData, Data, m, tau, r) {
 		cat("** Averaging Integral Correlation **\n")
 	}
 
-	Phi=sum(log(Cmr))/length(Cmr)
+	Phi=log(sum(Cmr)/length(Cmr))
 
 	if (HRVData$Verbose) {
-		cat("  Average Integral Correlation: ", Phi, "\n", sep="")
+		cat("  Average Integral Correlation: ", sum(Cmr)/length(Cmr), "\n", sep="")
 	}
 	
 	return(Phi)

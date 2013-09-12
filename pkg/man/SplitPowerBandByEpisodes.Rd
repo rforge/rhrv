@@ -5,7 +5,7 @@
   Splits Power per Band in two lists using an specific episode type: data inside episodes and data outside episodes
 }
 \usage{
-SplitPowerBandByEpisodes(HRVData, indexFreqAnalysis, Tag = "", 
+SplitPowerBandByEpisodes(HRVData, indexFreqAnalysis  = length(HRVData$FreqAnalysis), Tag = "", 
 		verbose=NULL)
 }
 \arguments{

@@ -5,7 +5,7 @@
    Calculates Approximate Entropy as indicated by Pincus
 }
 \usage{
-CalculateApEn(HRVData, indexNonLinearAnalysis = -1, m = 2, tau = 1, 
+CalculateApEn(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), m = 2, tau = 1, 
 		r = 0.2, N = 1000, verbose=NULL)
 }
 \arguments{

@@ -3,8 +3,8 @@
 \title{Analyze power band by episodes}
 \usage{
   AnalyzePowerBandsByEpisodes(HRVData,
-    indexFreqAnalysis = 1, Tag = "", verbose = NULL, func,
-    ...)
+    indexFreqAnalysis = length(HRVData$FreqAnalysis),
+    Tag = "", verbose = NULL, func, ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -14,7 +14,7 @@
   frequency analysis is going to be analyzed using func.
   Default: 1}
 
-  \item{Tag=""}{Type of episode}
+  \item{Tag}{Type of episode}
 
   \item{verbose}{Deprecated argument maintained for
   compatibility, use SetVerbose() instead}

@@ -31,7 +31,7 @@ function(HRVData, size, shift, sizesp=NULL, freqRange =NULL, scale="linear", ver
 		frequency[indx],
 		specgr[,indx],
 		xlab="Time (sec.)", ylab="Frequency (Hz.)", main="Spectrogram of the HR  series",
-    color=topo.colors
+    color.palette=topo.colors
 		#col=gray((256:0)/256)
 	)
 	if (HRVData$Verbose) {

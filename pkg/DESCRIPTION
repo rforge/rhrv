@@ -8,4 +8,4 @@ Maintainer: L. Rodriguez-Linares <leandro@uvigo.es>
 URL: http://rhrv.r-forge.r-project.org/
 Description: This is a package for developing heart rate variability studies of ECG records
 License: GPL-2
-Depends: tcltk(>= 2.4.1), tkrplot(>= 0.0-18), waveslim(>= 1.6.4)
+Depends: tcltk(>= 2.4.1), tkrplot(>= 0.0-18), waveslim(>= 1.6.4), nonlinearTseries

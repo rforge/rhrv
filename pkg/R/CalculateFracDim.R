@@ -1,5 +1,5 @@
 CalculateFracDim <-
-function(HRVData, indexNonLinearAnalysis = -1, m=10, tau=3, Cra=0.005, Crb=0.75, N=1000, verbose=NULL) {
+function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), m=10, tau=3, Cra=0.005, Crb=0.75, N=1000, verbose=NULL) {
 # -------------------------------------
 # Calculates Fractal Dimension
 # -------------------------------------
