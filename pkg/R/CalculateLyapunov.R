@@ -71,7 +71,7 @@ CalculateMaxLyapunov <-
       stop("RR time series not present\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,embeddingDim,theilerWindow)
+    estimations = automaticEstimation(HRVData,timeLag,embeddingDim)
     timeLag = estimations[[1]]
     embeddingDim = estimations[[2]]
     

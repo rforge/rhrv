@@ -32,7 +32,7 @@ NonLinearNoiseReduction <- function(HRVData, embeddingDim = NULL, radius = NULL 
     stop("RR time series not present!! Quitting now!\n")
   }
   
-  estimations = automaticEstimation(HRVData,timeLag=1,embeddingDim,theilerWindow=0)
+  estimations = automaticEstimation(HRVData,timeLag=1,embeddingDim)
   embeddingDim = estimations[[2]]
   
   

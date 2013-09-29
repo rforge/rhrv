@@ -93,7 +93,7 @@ automaticTimeLag <-function(HRVData){
 }
 
 #private function
-automaticEstimation <- function(HRVData,timeLag,embeddingDim,theilerWindow){
+automaticEstimation <- function(HRVData,timeLag,embeddingDim){
   if (is.null(timeLag)){
     if (HRVData$Verbose){
       cat("  --- Estimating the Time Lag ---\n")  
@@ -109,8 +109,7 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim,theilerWindow){
       cat("  --- Estimating the Embedding Dimension ---\n")  
     }
     embeddingDim = CalculateEmbeddingDim(HRVData, timeLag = timeLag,
-                                         maxEmbeddingDim=20, doPlot=FALSE,
-                                         theilerWindow=theilerWindow)
+                                         maxEmbeddingDim=20, doPlot=FALSE)
     if (HRVData$Verbose){
       cat("  --- Embedding Dimension = ",embeddingDim," ---\n")  
     }
@@ -151,9 +150,6 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim,theilerWindow){
 #' embedding dimension, staying close to 1. This value establishes a threshold for 
 #' considering that E1(d) has stopped to change. Default: 0.95
 #' @param doPlot Logical value. If TRUE (default value), a plot of E1(d) and E2(d) is shown.
-#' @param theilerWindow Integer denoting the Theiler window:  Two Takens' vectors must be separated by more than
-#'  theiler.window time steps in order to be considered neighbours. By using a Theiler window, we exclude temporally correlated 
-#'  vectors from our estimations. Default: 1.
 #' @references 
 #' Cao, L. Practical method for determining the minimum embedding dimension of a scalar time series. Physica D: Nonlinear Phenomena,
 #' 110,1, pp. 43-50 (1997).
@@ -161,7 +157,7 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim,theilerWindow){
 #' @seealso \code{\link[nonlinearTseries]{estimateEmbeddingDim}}.
 CalculateEmbeddingDim <-
   function(HRVData, numberPoints = 5000, timeLag = 1, maxEmbeddingDim = 15,
-           threshold = 0.95, doPlot = TRUE, theilerWindow = 10){
+           threshold = 0.95, doPlot = TRUE){
     # -------------------------------------
     # Calculates optimum embedding dimension
     # -------------------------------------
@@ -180,7 +176,7 @@ CalculateEmbeddingDim <-
     }
     embeddingDim = estimateEmbeddingDim(time.series=HRVData$Beat$RR,number.points = numberPoints, 
                     time.lag=timeLag,max.embedding.dim=maxEmbeddingDim,
-                    threshold=threshold,do.plot=doPlot,theiler.window=theilerWindow)
+                    threshold=threshold,do.plot=doPlot)
                     
     
     return(embeddingDim)

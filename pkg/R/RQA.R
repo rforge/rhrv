@@ -59,7 +59,7 @@ RQA <-
       stop("RR time series not present\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,embeddingDim,theilerWindow=0)
+    estimations = automaticEstimation(HRVData,timeLag,embeddingDim)
     timeLag = estimations[[1]]
     embeddingDim = estimations[[2]]
     
@@ -112,7 +112,7 @@ RecurrencePlot <-
       cat("  --- Plotting recurrence plot ---\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,embeddingDim,theilerWindow=0)
+    estimations = automaticEstimation(HRVData,timeLag,embeddingDim)
     timeLag = estimations[[1]]
     embeddingDim = estimations[[2]]
     

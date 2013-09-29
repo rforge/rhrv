@@ -87,7 +87,7 @@ CalculateCorrDim <-
       stop("RR time series not present\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,minEmbeddingDim,theilerWindow)
+    estimations = automaticEstimation(HRVData,timeLag,minEmbeddingDim)
     timeLag = estimations[[1]]
     minEmbeddingDim = estimations[[2]]
     
