@@ -14,8 +14,11 @@
 
   \item{radius}{The radius used to looking for neighbours
   in the phase space (see details). If the radius is not
-  specified, a radius depending on the standard deviation
-  of the RR time series is used.}
+  specified, a radius depending on the resolution of the RR
+  time series is used. The resolution depends on the
+  \emph{ECGsamplingFreq} parameter. If the
+  \emph{ECGsamplingFreq} is not supplied, a resolution of 1
+  ms is assumed.}
 
   \item{ECGsamplingFreq}{The sampling frequency of the ECG
   from which the RR time series was derived. Although it is

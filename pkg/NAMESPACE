@@ -19,8 +19,9 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "CalculateSampleEntropy","EstimateSampleEntropy","PlotSampleEntropy",
        "CalculateMaxLyapunov","EstimateMaxLyapunov","PlotMaxLyapunov",
        "CalculateDFA","EstimateDFA","PlotDFA",
+       "CalculateInfDim","EstimateInfDim","PlotInfDim",
        "RQA","RecurrencePlot","NonLinearNoiseReduction",
-       "NonlinearityTests","SurrogateTest"
+       "NonlinearityTests","SurrogateTest","automaticEstimation","automaticTimeLag"
 )
 
 # Import all packages listed as Imports or Depends

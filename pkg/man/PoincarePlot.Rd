@@ -2,9 +2,12 @@
 \alias{PoincarePlot}
 \title{Poincare Plot}
 \usage{
-  PoincarePlot(HRVData, timeLag = 1,
+  PoincarePlot(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-    doPlot = FALSE)
+    timeLag = 1, confidenceEstimation = FALSE,
+    confidence = 0.95, doPlot = FALSE,
+    main = "Poincare plot", xlab = "RR[n]",
+    ylab = paste(sep = "", "RR[n+", timeLag, "]"), ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -18,8 +21,26 @@
   \eqn{RR_{j+timeLag}}{RR_(j+timeLag)} as a function of
   \eqn{RR_j}.}
 
+  \item{confidenceEstimation}{Logical value. If TRUE, the
+  ellipse-like confidence region for the two dimensional
+  plot is used for fitting the ellipse and computing the
+  \eqn{SD_1} and \eqn{SD_2} parameters (see details).
+  Default: FALSE.}
+
+  \item{confidence}{The confidence for computing the
+  confidence region if \emph{confidenceEstimation = TRUE}.}
+
   \item{doPlot}{Logical value. If TRUE (default), the
   PoincarePlot is shown.}
+
+  \item{xlab}{A title for the x axis.}
+
+  \item{ylab}{A title for the y axis.}
+
+  \item{main}{An overall title for the Poincare plot.}
+
+  \item{...}{Additional parameters for the Poincare plot
+  figure.}
 }
 \value{
   A \emph{HRVData} structure containing a
@@ -36,11 +57,10 @@
   plotting the \eqn{RR_{j+\tau}}{RR_(j+tau)} as a function
   of \eqn{RR_j}. This dependance is often quantified by
   fitting an ellipse to the plot. In this way, two
-  parameters are obtained: \eqn{SD_1} (The standard
-  deviation of the points perpendicular to the line of
-  identity) and \eqn{SD_2} (The standard deviation along
-  the line of identity). \eqn{SD_1} characterizes
-  short-term variability whereas that \eqn{SD_2}
-  characterizes long-term variability.
+  parameters are obtained: \eqn{SD_1} (The deviation of the
+  points perpendicular to the line of identity) and
+  \eqn{SD_2} (The standard along the line of identity).
+  \eqn{SD_1} characterizes short-term variability whereas
+  that \eqn{SD_2} characterizes long-term variability.
 }
 

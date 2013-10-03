@@ -6,7 +6,7 @@
 #' phase space. This function computes the RQA of the RR time series.
 #' @param HRVData Data structure that stores the beats register and information related to it
 #' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
-#' @param numberPoints Number of points to be used in the RQA computation. If the number of
+#' @param numberPoints Number of points from the RR time series to be used in the RQA computation. If the number of
 #' points is not specified, the whole RR time series is used.
 #' @param embeddingDim Integer denoting the dimension in which we shall embed the RR time series.
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
@@ -86,7 +86,7 @@ RQA <-
 #' @details
 #' WARNING: This function is computationally very expensive. Use with caution.
 #' @param HRVData Data structure that stores the beats register and information related to it
-#' @param numberPoints Number of points to be used in the RQA computation. Default: 1000 heartbeats.
+#' @param numberPoints Number of points from the RR time series to be used in the RQA computation. Default: 1000 heartbeats.
 #' @param embeddingDim Integer denoting the dimension in which we shall embed the RR time series.
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' Takens' vectors.

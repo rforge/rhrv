@@ -4,7 +4,7 @@
 \usage{
   CalculateEmbeddingDim(HRVData, numberPoints = 5000,
     timeLag = 1, maxEmbeddingDim = 15, threshold = 0.95,
-    doPlot = TRUE, theilerWindow = 10)
+    doPlot = TRUE)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -30,13 +30,6 @@
 
   \item{doPlot}{Logical value. If TRUE (default value), a
   plot of E1(d) and E2(d) is shown.}
-
-  \item{theilerWindow}{Integer denoting the Theiler window:
-  Two Takens' vectors must be separated by more than
-  theiler.window time steps in order to be considered
-  neighbours. By using a Theiler window, we exclude
-  temporally correlated vectors from our estimations.
-  Default: 1.}
 }
 \description{
   This function determines the minimum embedding dimension

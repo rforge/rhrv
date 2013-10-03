@@ -9,8 +9,9 @@
   \item{HRVData}{Data structure that stores the beats
   register and information related to it}
 
-  \item{numberPoints}{Number of points to be used in the
-  RQA computation. Default: 1000 heartbeats.}
+  \item{numberPoints}{Number of points from the RR time
+  series to be used in the RQA computation. Default: 1000
+  heartbeats.}
 
   \item{embeddingDim}{Integer denoting the dimension in
   which we shall embed the RR time series.}

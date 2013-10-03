@@ -15,9 +15,10 @@
   \item{indexNonLinearAnalysis}{Reference to the data
   structure that will contain the nonlinear analysis}
 
-  \item{numberPoints}{Number of points to be used in the
-  RQA computation. If the number of points is not
-  specified, the whole RR time series is used.}
+  \item{numberPoints}{Number of points from the RR time
+  series to be used in the RQA computation. If the number
+  of points is not specified, the whole RR time series is
+  used.}
 
   \item{embeddingDim}{Integer denoting the dimension in
   which we shall embed the RR time series.}
