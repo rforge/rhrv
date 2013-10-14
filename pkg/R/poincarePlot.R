@@ -93,7 +93,6 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
 }
 
 computeSD <- function(timeSeries, timeLag, confidenceEstimation, confidence){
-  len = length(timeSeries)
   # compute parameters
   if (confidenceEstimation){
     takens = buildTakens(time.series=timeSeries,embedding.dim=2,time.lag=timeLag)
@@ -148,7 +147,6 @@ confidenceEllipse <-function(x,y, confidence=0.95){
 
   # Get covariance matrix and mean point
   covMatrix = cov(cbind(x,y))
-  mu = c(mean(x),mean(y))  
   # Compute eigenvalues and eigenvectors
   eigenComputations = eigen(covMatrix)
   eigenvalues = eigenComputations$values

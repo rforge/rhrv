@@ -48,7 +48,7 @@ function(HRVData, FileName, RecordPath=".", Tag="", InitTime="0:0:0", verbose=NU
 	}
 
 	# obtaining time
-   op <- options(digits.secs=3)
+  options(digits.secs=3)
 	timeaux = strptime(InitTime,"%H:%M:%OS")
 	if (is.na(timeaux)) {
 		cat("   --- ERROR: Time format is HH:MM:SS ---\n")
