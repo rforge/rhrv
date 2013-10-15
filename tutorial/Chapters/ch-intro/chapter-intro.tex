@@ -1,0 +1,51 @@
+
+\chapter{Overview\label{ch:overview}}
+It has been recognized in the past two decades that there is a significant relationship between the \gls{ANS}
+and cardiovascular mortality, including sudden cardiac death. Experimental 
+evidence for a connection between a propensity for cardiac failure and either increased sympathetic or
+reduced parasympathetic activity has encouraged the search of quantitative markers of autonomic activity.\\
+
+One of the most promising non-invasive markers is \gls{HRV}. \gls{HRV} refers to the variation over time
+of both the intervals between consecutive heart beats and the instantaneous \gls{HR}. As the heart rhythm
+is modulated by the \gls{ANS}, \gls{HRV} is thought
+to reflect the activity of the sympathetic and parasympathetic branches of
+the \gls{ANS}. The continuous modulation of the ANS results in continuous variations in heart rate. \gls{HRV} has been recognized
+to be a useful non-invasive tool as a predictor of several pathologies such as myocardial infarction, diabetic neuropathy, sudden cardiac death
+and ischemia, among others \cite{kautznerClinical}. \\
+
+The existence of several software tools (Kubios HRV \cite%
+{kubios}, the \gls{HRV} toolkit for MatLab \cite{matlab} or aHRV
+\cite{ahrv}, just to mention a few) have helped to popularize its use. Some of these software packages are commercial and require the purchase of expensive licenses (e.g., aHRV). Others while they are free, they require the purchase of expensive commercial software on which they depend (e.g., the HRV toolkit for MatLab).  Kubios is free (though not open source), but it is based on a graphical user interface, which makes it extremely tedious to perform systematic analyses of a large database of recordings, as the user must manually load and analyze through the user interface each recording.  In this context, we have developed RHRV, an open-source package for the statistical environment R \cite{waveletBiosignals}, \cite{waveletArticle}, \cite{vilaRHRV}, \cite{vila2009r}. To the best of our knowledge, RHRV is the only completely free and open source software package for performing HRV analysis and that is based on scripting commands; thus it enables the easy automation of analyses of a large number of 
+recordings. \\
+
+RHRV provides a complete set of
+tools for \gls{HRV} analysis which can be used for developing new \gls{HRV} analysis algorithms or for performing clinical experiments. Although this software is 
+mainly designed for the analysis of the \gls{HRV} in humans, it may also be used by animal researchers. Among the main characteristics of RHRV, we may highlight:
+\begin{itemize}
+\item RHRV can read heart rate data in multiple formats such as ASCII, Polar, Suunto and WFDB.
+\item RHRV can compute the \gls{HRV} time series from the beats positions as well as preprocessing  and filtering the \gls{HRV} time series to eliminate outliers or spurious points.
+\item RHRV includes functionality for the visualization and manipulation of the \gls{HRV} time series.
+\item RHRV includes the most commonly \gls{HRV} analysis techniques, with facilities for tuning the most important analysis parameters. It is possible to:
+	 \begin{itemize}
+	 	\item Perform time-domain analysis.
+		\item Perform frequency-domain analysis; they provide information on the renin	-angiotensin system (Very Low Frequency component), both sympathetic and
+		parasympathetic systems (Low Frequency component) and the parasympathetic system (High Frequency component). The components can be calculated using both Fourier analysis
+		and wavelet analysis.
+		\item Perform nonlinear analysis techniques; they can extract some valuable information from the \gls{HRV} since it responds to a complex control
+		system.
+	 \end{itemize}
+\item RHRV can	 split \gls{HRV} series into different segments that may correspond with different pathological states (i.e.: \gls{HRV} inside and outside apnea episodes). This simplifies
+the statistical comparison of the heart rate inside and outside episode events.
+\item RHRV provides flexibility for accessing directly the internal data structures that it uses in its calculations.
+\end{itemize}
+
+The RHRV package can be freely downloaded from the R-CRAN repository \cite{cran}. \\
+\section{Aim} The aim of this tutorial is to help the user to get started with the RHRV package for the R environment. This document supposes that the user has some basic knowledge about the R environment as well about \gls{HRV}. However, a short introduction to \gls{HRV} will be given, and further references are provided.
+
+\section{Structure of the document} The remainder of this document is structured as follows. First, a brief review of several \gls{HRV} topics is given in Chapter \ref{ch:HRV}. This chapter contains a short discussion on the physiological origins of heart rate variability, as well as a review of the frequency
+components of \gls{HRV}. Section \ref{sec:obtainingHRV} continues discussing the extraction of heart beat periods. The derivation and the preprocessing of \gls{HRV} time series are also described.  In Section \ref{sec:analysisTechn}, the most common \gls{HRV} analysis methods are summarized (although they will be be covered in more depth when they are introduced in the document). The descriptions
+of the methods are divided into time-domain, frequency-domain, and nonlinear. A discussion on the important issue of stationarity is included. The rest of the chapter (Section \ref{sec:pathologies}) is focused on the use of \gls{HRV} as a predictor of different pathologies and its clinical applications.\\
+
+Chapter \ref{ch:installation} explains how get RHRV installed in your computer. This guide assumes that you have already installed R on your computer.\\
+
+Chapter \ref{ch:Quick} presents a ``15-minutes guide to RHRV''. This chapter presents the essential functions needed to perform some basic analysis with RHRV. Chapter \ref{ch:RHRV} completes the functionality introduced in chapter \ref{ch:Quick} and presents more advanced features available in RHRV. Although there exist some functionality in the RHRV package for performing nonlinear analysis of a \gls{HR} signal, this current version of the tutorial will not treat these functions. Future versions of this tutorial will deal with this functionality.

@@ -1,0 +1,17 @@
+% !Rnw root = ../../15guide.Rnw
+\section{Analysing the Heart Rate series\label{sec:quickAna}}
+\subsection{Accessing ``raw data"}
+% !Rnw root = analyzing.Rnw
+In the previous sections, we have used the 
+\textit{HRVData}  structure  to store all \gls{HRV} information related to the 
+signal being analyzed with no knowledge about its internal structure. However, 
+sometimes, in order to make some particular analysis of the data, it may be 
+interesting to access them directly. Figure \ref{fig:dataScheme} summarizes the 
+most important fields in the
+\textit{HRVData} structure. Since all the data in this structure is stored as 
+an R list, each of its fields can be accessed using the \$ operator of the R 
+language. For example, if we want to access the RR time series of the 
+\textit{hrv.data}, we would use:
+\begin{Schunk}
+\begin{Sinput}
+> RR = hrv.data$Beat$RR

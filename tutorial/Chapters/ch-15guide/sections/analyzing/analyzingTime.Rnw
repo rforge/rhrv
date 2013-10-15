@@ -1,0 +1,49 @@
+% !Rnw root = analyzing.Rnw
+The simplest way of performing a \gls{HRV} analysis in RHRV is using the time 
+analysis techniques 
+provided by the \textit{CreateTimeAnalysis} function. This function computes 
+the time-domain
+parameters presented in section \ref{sec:timedomain} and stores them in the 
+\textit{HRVData} structure. The most interesting parameter that the user may 
+specify is the width of the window that
+will be used to analyze short segments from the RR time series (\textit{size} 
+parameter, in seconds). Concretely, several statistics will be computed for 
+each window. By studying how these statistics
+evolve through the recording, a set of time parameters will be computed (For 
+example, the \textit{SDANN}
+and \textit{SDNNIDX} parameters). Other important argument that can be tuned is 
+the interval width of the bins that will be used to compute the histogram 
+(\textit{interval} parameter). As an alternative to the \textit{interval} 
+parameter, the user may use the 
+\textit{numofbins} parameter to specify the number of bins in the histogram. A 
+typical value for the \textit{size} parameter is 300 seconds (which is also the 
+default value), whereas that a typical value for the \textit{interval} is about 
+7.8 milliseconds (also default value).
+
+<<timeAnalysis,results=verbatim,echo=TRUE>>=
+hrv.data = CreateTimeAnalysis(hrv.data, size = 300,
+    		interval = 7.8125)
+@
+If the verbose mode is on, the program will display the results of the 
+calculations in the screen. Otherwise, the user must access the ``raw" data as 
+explained before to obtain the results.\\
+
+Finally, we show a complete example for performing a basic time-domain 
+analysis. The console output is also shown. It should be noted that it is not 
+necessary to perform the interpolation process before applying 
+the time-domain techniques since these parameters are calculated directly from 
+the RR-time series. \\
+<<completeTimeAnalysis,results=verbatim,echo=TRUE,fig=FALSE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+hrv.data = CreateHRVData()
+hrv.data = SetVerbose(hrv.data,FALSE)
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = BuildNIHR(hrv.data)
+hrv.data = FilterNIHR(hrv.data)
+PlotNIHR(hrv.data)
+hrv.data = SetVerbose(hrv.data,TRUE)
+hrv.data = CreateTimeAnalysis(hrv.data,size=300,interval = 7.8125)
+# We can access "raw" data... let's print separately, the SDNN 
+# parameter
+cat("The SDNN has a value of ",hrv.data$TimeAnalysis[[1]]$SDNN," msec.\n")
+@
+

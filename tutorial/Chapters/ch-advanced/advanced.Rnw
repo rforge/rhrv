@@ -1,0 +1,3 @@
+% !Rnw root = ../../tutorial.Rnw
+\SweaveInput{sections/completing/completing.Rnw}
+\SweaveInput{sections/advanced/advanced.Rnw}

@@ -1,0 +1,8 @@
+% !Rnw root = ../../tutorial.Rnw
+\chapter{A 15-minutes guide to RHRV\label{ch:Quick}}
+\SweaveInput{sections/intro.Rnw}
+\section{Preprocessing the Heart Rate series\label{sec:quickPrep}}
+\SweaveInput{sections/preprocessing.Rnw}
+\section{Analysing the Heart Rate series\label{sec:quickAna}}
+\SweaveInput{sections/analyzing/analyzing.Rnw}
+

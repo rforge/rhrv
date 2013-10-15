@@ -1,0 +1,232 @@
+\documentclass[12pt,lot, lof]{puthesis}
+\newcommand{\proquestmode}{}
+
+%%%% Author & title page info %%%%
+\def\rhrvTitle{Getting started with RHRV}
+\title{\rhrvTitle}
+\submitted{\today}  
+\copyrightyear{2013}  
+\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero and Xos\'{e} Vila} 
+    %   General parameters, for ALL pages:
+    \renewcommand{\topfraction}{0.85}	% max fraction of floats at top
+    \renewcommand{\bottomfraction}{0.6}	% max fraction of floats at bottom
+    %   Parameters for TEXT pages (not float pages):
+    \setcounter{topnumber}{2}
+    \setcounter{bottomnumber}{2}
+    \setcounter{totalnumber}{4}     % 2 may work better
+    \setcounter{dbltopnumber}{2}    % for 2-column pages
+    \renewcommand{\dbltopfraction}{0.66}	% fit big float above 2-col. text
+    \renewcommand{\textfraction}{0.15}	% allow minimal text w. figs
+    %   Parameters for FLOAT pages (not text pages):
+    \renewcommand{\floatpagefraction}{0.66}	% require fuller float pages
+  	% N.B.: floatpagefraction MUST be less than topfraction !!
+    \renewcommand{\dblfloatpagefraction}{0.66}	% require fuller float pages
+% The documentclass already sets parameters to make a high penalty for widows and orphans. 
+
+%%%% Use packages %%%%
+\usepackage{hyperref}
+\hypersetup{bookmarksnumbered}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{placeins}
+\usepackage{inputenx}
+\usepackage{color}
+\usepackage{textcomp}	
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{1,1,1}
+\lstset{
+     backgroundcolor=\color{lbcolor},
+     tabsize=4,
+     rulecolor=,
+	   basicstyle=\scriptsize,
+     numbers=left,
+     upquote=true,
+     aboveskip={1.5\baselineskip},
+     columns=fixed,
+     showstringspaces=false,
+     extendedchars=true,
+     breaklines=true,
+     prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+     frame=single,
+     showtabs=false,
+     showspaces=false,
+     showstringspaces=false,
+     identifierstyle=\ttfamily,
+     keywordstyle=\color[rgb]{0,0,1},
+     commentstyle=\color[rgb]{0.133,0.545,0.133},
+     stringstyle=\color[rgb]{0.627,0.126,0.941},
+}
+\usepackage[acronym,nonumberlist]{glossaries}
+\usepackage[font=small,format=plain,labelfont=bf,up,textfont=it,up]{caption}
+\usepackage{pdfpages}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\pagestyle{fancy}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{booktabs}
+% options of the bookstab package
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+%set parameters for longtable:
+% default caption width is 4in for longtable, but wider for normal tables
+\setlength{\LTcapwidth}{\textwidth}
+\ifdefined\printmode
+  % Printed copy
+  % url package understands urls (with proper line-breaks) without hyperlinking them
+  \usepackage{url}
+\else
+\ifdefined\proquestmode
+
+% ProQuest requires a double spaced version (set previously). They will take an 
+% electronic copy, so we want links in the pdf, but also copies may be printed 
+% or made into microfilm in black and white, so we want outlined links instead 
+% of colored links.
+
+% copy the already-set title and author to use in the pdf properties
+\makeatletter
+\hypersetup{pdftitle=\@title,pdfauthor=\@author}
+\makeatother
+
+\else
+% Online copy
+% adds internal linked references, pdf bookmarks, etc
+% turn all references and citations into hyperlinks:
+% -- not for printed copies
+% -- automatically includes url package
+% options:
+% colorlinks makes links by coloring the text instead of putting a rectangle around the text.
+\usepackage{hyperref}
+\hypersetup{colorlinks,bookmarksnumbered}
+
+% copy the already-set title and author to use in the pdf properties
+\makeatletter
+\hypersetup{pdftitle=\@title,pdfauthor=\@author}
+\makeatother
+
+% make the page number rather than the text be the link for ToC entries
+%\hypersetup{linktocpage}
+\fi % proquest or online formatting
+\fi % printed or online formatting
+
+%%%% end of the usepackage zone %%%%
+
+
+%%%% Define commands %%%%
+
+% Define any custom commands that you want to use.
+% For example, highlight notes for future edits to the thesis
+%\newcommand{\todo}[1]{\textbf{\emph{TODO:}#1}}
+
+% create an environment that will indent text
+% see: http://latex.computersci.org/Reference/ListEnvironments
+% 	\raggedright makes them left aligned instead of justified
+\newenvironment{indenttext}{
+    \begin{list}{}{ \itemsep 0in \itemindent 0in
+    \labelsep 0in \labelwidth 0in
+    \listparindent 0in
+    \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
+    \leftmargin 1em \rightmargin 0in
+    \raggedright
+    }
+    \item
+  }
+  {\end{list}}
+
+% another environment that's an indented list, with no spaces between items 
+% -- if we want multiple items/lines. Useful in tables. Use \item inside the
+% environment.
+% \raggedright makes them left aligned instead of justified
+\newenvironment{indentlist}{
+    \begin{list}{}{ \itemsep 0in \itemindent 0in
+    \labelsep 0in \labelwidth 0in
+    \listparindent 0in
+    \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
+    \leftmargin 1em \rightmargin 0in
+    \raggedright
+    }
+
+  }
+  {\end{list}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%% Front-matter
+
+% For early drafts, you may want to disable some of the frontmatter.
+% Simply change this to "\ifodd 1" to do so.
+\ifodd 0
+% front-matter disabled while writing chapters
+\renewcommand{\maketitlepage}{}
+\clearpage
+\newpage{\pagestyle{empty}\cleardoublepage}
+\else
+%\abstract{ % at the moment, we don't use abstract}
+
+%\acknowledgements{
+%I would like to thank...
+%\input{acknowledgements}
+%}
+
+%\dedication{blabla. }
+
+\fi  % disable frontmatter
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+\rhead{} % we don't use head for the pages
+\begin{document}
+% Sweave Figures will be stored on the figures folder, with the prefix "tutorial"
+\SweaveOpts{concordance=TRUE, prefix.string = figures/tutorial} 
+\setlength{\parindent}{0pt}
+\makefrontmatter
+
+% Create table of glossaries and acronyms
+\makeglossaries
+\printglossary[type=\acronymtype] 
+
+% Load RHRV for all the examples
+<<echo=FALSE>>=
+library(RHRV)
+@
+
+%%%%%%%%%%%%%%%%%%%% Table of glossaries and acronyms %%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{glossary/glossaries.tex}
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Use SweaveInput for clearness
+%%%%% New chapter %%%%%%
+\SweaveInput{./Chapters/ch-intro/chapter-intro.Rnw}
+%%%%% New chapter %%%%%%
+\SweaveInput{./Chapters/ch-HRV/chapter-HRV.Rnw}
+%%%%% New chapter %%%%%%
+\SweaveInput{./Chapters/ch-installation/chapter-installation.Rnw}
+%%%%% New chapter %%%%%%
+\SweaveInput{./Chapters/ch-15guide/15guide.Rnw}
+%%%%% New chapter %%%%%%
+\SweaveInput{./Chapters/ch-advanced/advanced.Rnw}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Make the bibliography single spaced
+\singlespacing
+\bibliographystyle{plain}
+
+% add the Bibliography to the Table of Contents
+\cleardoublepage
+\ifdefined\phantomsection
+  \phantomsection  % makes hyperref 8nize this section properly for pdf link
+\else
+\fi
+\addcontentsline{toc}{chapter}{Bibliography}
+
+% include your .bib file
+\bibliography{biblio/tutorial}
+\appendix % all chapters following will be labeled as appendices
+
+
+\end{document}
+

@@ -1,0 +1,52 @@
+% !Rnw root = ../15guide.Rnw
+In this chapter, a brief description of the RHRV package is presented 
+\cite{vilaRHRV}. Due to the large collection of features that RHRV offers, in 
+this chapter we shall refer only to the most important functionality for 
+performing  a basic \gls{HRV} analysis. In the next chapter we will present 
+more advanced functionality of the package, or functionality geared to certain 
+particular types of analysis. RHRV can be freely downloaded from the R-CRAN 
+repository \cite{cran}.\\
+
+We propose the following basic program flow to perform \gls{HRV} spectral 
+analysis using the RHRV package:
+
+\begin{enumerate}
+\item Load heart beat positions. For the sake of simplicity, in this section we 
+will focus in
+ASCII files. 
+\item Build the instantaneous \gls{HR} series and filter it to eliminate 
+spurious points.
+\item Plot the instantaneous \gls{HR} series.
+\item Interpolate the instantaneous \gls{HR} series to obtain a \gls{HR} series 
+with equally spaced values.
+\item Plot the interpolated \gls{HR} series.
+\item Perform the desired analysis. The user can perform time-domain analysis, 
+frequency-domain analysis or nonlinear analysis.
+\item Plot the results of the analysis that has been performed and access the 
+``raw" data.
+\end{enumerate}
+In section \ref{sec:quickPrep} we will address points 1-5, whereas that in 
+section \ref{sec:quickAna} we will deal with points 6 and 7. All the examples 
+of this chapter will use the 
+example beats file ``example.beats" that may be downloaded from 
+\href{http://rhrv.r-forge.r-project.org/}{http://rhrv.r-forge.r-project.org/}. 
+Optionally, the data from this file has been included in RHRV. The user can 
+access this data executing:
+
+<<accesingData,results=verbatim,echo=TRUE,run=FALSE,fig=FALSE,eps=FALSE>>=
+# HRVData structure containing the heart beats 
+data("HRVData")
+# HRVData structure storing the results of processing the 
+# heart beats: the beats have been filtered, interpolated, ... 
+data("HRVProcessedData")
+@
+The example file is an ASCII file that contains the beats positions obtained 
+from a 2 hours \gls{ECG} (one beat position per row). The subject of the 
+\gls{ECG} is a patient suffering from paraplegia and hypertension (systolic 
+blood pressure above 200 mmHg).  During the recording, he is supplied with 
+prostaglandin E1 (a vasodilator that is rarely employed) and systolic blood 
+pressure fell to 100 mmHg for over an hour. Then, the blood pressure increased 
+slowly up to approximately
+ 150 mmHg. 
+
+The console output shall be shown for every example.

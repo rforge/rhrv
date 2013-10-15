@@ -1,0 +1,25 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Modulation of the heart rate by the ANS}}{8}{figure.caption.8}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Heart rate variation}}{9}{figure.caption.9}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Influence of the ANS system over the different HRV frequency bands.\relax }}{11}{figure.caption.10}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Normal electrocardiogram.\relax }}{12}{figure.caption.11}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces High and low frequencies illustrated with sines.\relax }}{20}{figure.caption.12}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Two Wavelets}}{21}{figure.caption.13}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Non interpolated Heart Rate time plot example.\relax }}{37}{figure.caption.14}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Interpolated Heart Rate time plot example.\relax }}{38}{figure.caption.15}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces The most important fields stored in the \textit {HRVData} structure.\relax }}{39}{figure.caption.16}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces Plot obtained with the \textit {PlotPowerBand} for the Fourier-based analysis.\relax }}{51}{figure.caption.17}
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Plot obtained with the \textit {PlotPowerBand} for the Wavelet-based analysis.\relax }}{52}{figure.caption.18}
+\contentsline {figure}{\numberline {4.6}{\ignorespaces All the fields stored in the \textit {HRVData} structure.\relax }}{54}{figure.caption.19}
+\contentsline {figure}{\numberline {4.7}{\ignorespaces Modifying default values in the \textit {FilterNIHR} function}}{58}{figure.caption.20}
+\contentsline {figure}{\numberline {4.8}{\ignorespaces Manually removal of artifacts with \textit {EditNIHR}.\relax }}{59}{figure.caption.21}
+\contentsline {figure}{\numberline {4.9}{\ignorespaces Plot obtained with the \textit {PlotSpectrogram} function.\relax }}{64}{figure.caption.22}
+\contentsline {figure}{\numberline {4.10}{\ignorespaces Plotting with the \textit {PlotSpectrogram} function using the \textit {freqRange} parameter}}{65}{figure.caption.23}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Episodic information in the Non interpolated Heart Rate time series.\relax }}{73}{figure.caption.25}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Episodic information in the interpolated Heart Rate time series.\relax }}{74}{figure.caption.26}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Episodic information in all the power bands.\relax }}{75}{figure.caption.27}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Loading Apnea episodes using the \textit {LoadApneaWFDB} function.\relax }}{80}{figure.caption.28}

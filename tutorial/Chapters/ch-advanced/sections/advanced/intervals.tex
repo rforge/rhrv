@@ -1,0 +1,38 @@
+% Rnw root = advanced.Rnw
+Intervals of the \gls{HR} time series with pathophysiological interest may be 
+annotated in the so-called episode files. For example, it may be interesting to 
+compare the heart rate series before, during and after an apnea episode (apneas 
+are cessations of a patient's respiratory airflow during the nocturnal rest) 
+\cite{lado2012nocturnal}. Such a study could be useful for searching for 
+significant differences
+in the HRV caused by the apneas. The RHRV package provides functions for 
+loading episode information. The supported formats for this information are 
+either ASCII (\textit{LoadEpisodesAscii}) or
+WFDB (\textit{LoadApneaWFDB}). Episodes may also be added programmatically to 
+the time series using the \textit{AddEpisodes} function. All episodes are 
+stored under the \textit{Episodes} field of the \textit{HRVData} structure (see 
+Figure \ref{fig:completeData}). The plotting functions allow the user to 
+include episodic information in the graphics. We will discuss all this points 
+in more detail below.\\
+\subsection{AddEpisodes\label{par:AddEpisodes}} The simplest way of adding 
+episodic information is using the \textit{AddEpisodes} function. 
+\textit{AddEpisodes} adds information of episodes by specifying the initial 
+times of each episode (\textit{InitTimes} argument, in seconds), the names of 
+the episodes (\textit{Tags}), the duration of each episode (\textit{Durations}, 
+in seconds) and a numerical identifier for each episode(\textit{Values}). The 
+\textit{Values} field is useful for those episodes
+that store some numerical values. For example, an apnea episode could store 
+information
+about the Oxygen saturation level in the \textit{Values} field. Note that all 
+the parameters specified by the user will be stored in the \textit{HRVData} 
+structure in its corresponding fields as shown in Figure 
+\ref{fig:completeData}.\\
+
+Let us read our example file ``example.beats" and add three episodes to it: a 
+first type ``A" episode in the $[700,1600]\;s$ interval; a second episode of 
+the same type as the first one (``A") in the $[5000,5600]\;s$ interval; and a 
+third episode in the $[2000,4500]\;s$ interval of type ``B":
+
+\begin{Schunk}
+\begin{Sinput}
+> hrv.data = CreateHRVData( )

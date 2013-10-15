@@ -1,0 +1,50 @@
+% !Rnw root = ../../advanced.Rnw
+\chapter{Advanced use of  RHRV\label{ch:RHRV}}
+
+\section{Reading several file formats\label{sec:fileFormats}}
+% !Rnw root = advanced.Rnw
+ RHRV provides a lot of functionality for importing data files containing heart 
+beats positions. Supported formats include ASCII (\textit{LoadBeatAscii} 
+function), EDF (\textit{LoadBeatEDFPlus}), Polar (\textit{LoadBeatPolar}), 
+Suunto (\textit{LoadBeatSuunto}) and WFDB data files (\textit{LoadBeatWFDB}) 
+\cite{mitbih}. We have already dealt with the \textit{LoadBeatASCII} function. 
+In this section, we will discuss the remaining functions for reading heart beat 
+data.
+
+\subsection{Reading \textit{RR} files} There exist another \textit{RHRV} 
+function that reads ASCII files:  the \textit{LoadBeatRR} function. This 
+function reads ASCII files storing the \textit{RR} intervals (and not the heart 
+beat times). The parameters of the \textit{LoadBeatRR} function are exactly the 
+same as those of the \textit{LoadBeatAscii} function, that is:
+\begin{Schunk}
+\begin{Sinput}
+> LoadBeatRR(HRVData, RecordName, RecordPath=".", scale = 1, 
++       datetime = "1/1/1900 0:0:0")
+\end{Sinput}
+\end{Schunk}
+\subsection{Reading files in WFDB format} PhysioNet \cite{physioNet} is a free 
+web resource that provides large collections of recorded physiologic signals 
+(PhysioBank) and related open-source software (PhysioToolkit). In most cases, a 
+record from PhysioBank consists of at least three files, which are named using 
+the record name followed by different extensions that indicate their content. 
+Almost all records include a binary .dat  file, containing digitized samples of 
+one or more signals. The .hea (header) file is a short text file that describes 
+the signals. Most records include one or more binary annotation files. For 
+example, .qrs files contain an annotation for each QRS complex (heart beat) in 
+the recording; .apn files contain apnea annotations; etc. For the sake of 
+simplicity, we call ``WFDB file" (WaveForm DataBase) to such a collection of 
+files containing data on the same recording \cite{mitbih}. Further details 
+about PhysioBank can be found in the Physionet website. \\
+
+The RHRV package provides the \textit{LoadBeatWFDB} function for reading WFDB 
+files. This function takes as input parameters the name of the WFDB file to be 
+used without any extension (\textit{RecordName} argument), the  relative path 
+of the file (\textit{RecordPath} argument) and the extension of the file with 
+the heart beats annotations (\textit{annotator}, its default value is ``qrs", 
+so in most cases the user won't have to specify it). As an example, we are 
+going to
+ create a data structure that will read the ``a03" register from the 
+PhysioBank's Apnea-ECG database \cite{penzel2000apnea}.
+\begin{Schunk}
+\begin{Sinput}
+> hrv.wfdb = CreateHRVData()

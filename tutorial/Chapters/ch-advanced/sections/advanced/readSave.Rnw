@@ -1,0 +1,36 @@
+% !Rnw root = advanced.Rnw
+In order to save interesting results RHRV provides functionality
+for storing and reading \textit{HRVData} structures. For example, if the user 
+wants to store the \textit{hrv.wfdb}
+structure from the previous section, he just has to write:
+<<Write>>=
+WriteToFile(hrv.wfdb, name="HRVstructure")
+@
+The \textit{WriteToFile} function will store the \textit{HRVData} structure in 
+a file called
+``HRVstructure.hrv". Note that the ``.hrv" suffix has been added. Additionally, 
+the user may specify
+the behaviour of the function if the file already exists with the 
+\textit{overwrite} parameter. The default
+value overwrites existing files. If the user wants to prevent losing previous 
+data stored in the
+``HRVstructure.hrv" file, he can write:
+<<WriteOverwrite,eval=FALSE>>=
+WriteToFile(hrv.wfdb, name="HRVstructure", overwrite = FALSE)
+@
+\begin{verbatim}
+Error in WriteToFile(hrv.data, name = "HRVstructure", overwrite = FALSE) : 
+    --- File exists... No overwriting it!! ---
+    --- Quitting now!! ---
+\end{verbatim}
+Note that the function inform about the existence of a previous file named 
+``HRVstructure.hrv".\\
+
+In order to read \textit{HRVData} structures that had been previously stored, 
+the \textit{ReadFromFile} function is provided:
+<<WriteOverwrite>>=
+data = ReadFromFile(name = "HRVstructure", verbose = TRUE)
+@
+Note that the ``.hrv" prefix is not included in the file's name, although the 
+\textit{HRVData} structure was  stored as ``HRVstructure.hrv". The user can 
+control the verbosity level using the \textit{verbose} argument.

@@ -1,0 +1,122 @@
+% !Rnw root = ../15guide.Rnw
+\subsubsection{Load heart beat positions} RHRV uses a custom data structure 
+called \textit{HRVData} to store all HRV information related to the signal 
+being analyzed. \textit{HRVData} is implemented as a list object in R language. 
+This list contains all the information corresponding
+to the imported signal to be analyzed, some parameters generated
+by the pre-processing functions and the HRV analysis results.  A new 
+\textit{HRVData} structure is created using the \textit{CreateHRVData} 
+function. In order to obtain detailed information about
+the operations performed by the program, we can activate a verbose mode using 
+the \textit{SetVerbose} function.
+<<creation,results=verbatim,echo=TRUE,eval=TRUE,fig=FALSE,eps=FALSE>>=
+hrv.data  = CreateHRVData()
+hrv.data = SetVerbose(hrv.data, TRUE )
+@
+
+After creating the empty \textit{HRVData} structure  the next step should be 
+loading the signal that we want to analyze into this structure. RHRV imports 
+data files containing heart beats positions. Supported formats include ASCII 
+(\textit{LoadBeatAscii} function), EDF (\textit{LoadBeatEDFPlus}), Polar 
+(\textit{LoadBeatPolar}), Suunto (\textit{LoadBeatSuunto}) and WFDB data files 
+(\textit{LoadBeatWFDB}) \cite{mitbih}. For the sake of simplicity, we will 
+focus in
+ASCII files containing one heart beat occurrence time per line. We also assume 
+that the beat occurrence time is specified in seconds (further details will be 
+given in chapter \ref{ch:RHRV}). For example, let's try to load the 
+``example.beats" file, whose first lines are shown below. Each line denotes
+the occurrence time of each heartbeat.
+\begin{verbatim}
+0
+0.3280001
+0.7159996
+1.124
+1.5
+1.88
+\end{verbatim}
+In order to load this file, we may write:
+<<echo=FALSE>>=
+options(width=80)
+@
+<<loading,results=verbatim, keep.source=TRUE,run=FALSE,echo=TRUE>>=
+hrv.data = LoadBeatAscii(hrv.data, "example.beats",
+       RecordPath = "beatsFolder")
+@
+The console information is only displayed if the verbose mode is on. The
+\textit{Scale} parameter is related to the time units of the file. $1$
+denotes seconds, $0.1$ deciseconds and so on. The \textit{Date} and 
+\textit{Time}
+parameters specify when the file was recorded. More details about these
+parameters will be given in section \ref{sec:moreReading}. The 
+\textit{RecordPath} can be omitted if the \textit{RecordName} is in the 
+working directory.
+\subsubsection{Calculating HR and filtering} To compute the HRV time series the 
+\textit{BuildNIHR} function can be used (\textit{Build Non Interpolated Heart 
+Rate}). This function constructs both the RR (Equation \ref{Eq:RR}) and 
+instantaneous heart rate (\gls{HR}) series (Equation \ref{Eq:RRinst}) described 
+in Section \ref{sec:obtainingHRV}. We will refer to the instantaneous heart 
+rate (\gls{HR}) as the 
+\gls{niHR} series. Both series are stored in the \textit{HRVData} structure.\\
+
+<<derivating,results=verbatim,run=FALSE,echo=TRUE>>=
+hrv.data = BuildNIHR(hrv.data)
+@
+
+A Filtering operation must be carried out in order to eliminate outliers or 
+spurious points present in the \gls{niHR} time series with
+unacceptable physiological values. Outliers present in the series originate 
+from the detection of an artefact as a heartbeat (RR interval too short) and 
+loss of a heartbeat in the detection procedure (RR interval too large). The 
+outliers removal may be both manual or automatic. In this quick introduction, 
+we will use the automatic removal.  The automatic removal of spurious points 
+can be performed by the \textit{FilterNIHR} function. The \textit{FilterNIHR} 
+function also eliminates points with unacceptable physiological values.\\
+<<filtering,results=verbatim,run=FALSE,echo=TRUE>>=
+hrv.data = FilterNIHR(hrv.data)
+@
+\subsubsection{Interpolating} In order to be able to perform spectral analysis 
+in the frequency domain, a uniformly sampled \gls{HR} series is required. It 
+may be constructed from the \gls{niHR} series by using the 
+\textit{InterpolateNIHR} function, which uses linear (default) or spline 
+interpolation  (further details
+on chapter \ref{ch:RHRV}). The frequency of interpolation may be specified. 
+$4\;Hz $ (the default value) is  enough for most applications.
+
+<<interpolating,results=verbatim,run=FALSE,echo=TRUE>>=
+# Note that it is not necessary to specify freqhr since it matches with
+# the default value: 4 Hz
+hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
+@
+
+\subsubsection{Plotting} Before applying the different analysis techniques that 
+RHRV provides, it 
+is usually interesting to plot the time series with which we are working. The 
+\textit{PlotNIHR} function permits the graphical representation of the 
+\gls{niHR} series whereas that the \textit{PlotHR} function permits to 
+graphically represent the interpolated \gls{HR} time series.\\
+<<plottingNIHR,results=hide,run=FALSE,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+PlotNIHR(hrv.data)
+@
+<<plottingHR,results=hide,echo=TRUE,fig=TRUE,include=FALSE, pdf=TRUE, eps = FALSE>>=
+PlotHR(hrv.data)
+@
+The plots obtained with \textit{PlotNIHR} and \textit{PlotHR} are shown in 
+Figures \ref{fig:exampleNIHR} and \ref{fig:exampleHR}, respectively.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingNIHR}
+\caption{Non interpolated Heart Rate time plot example.\label{fig:exampleNIHR}}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingHR}
+\caption{Interpolated Heart Rate time plot example.\label{fig:exampleHR}}
+\end{figure}
+
+As seen in the Figures \ref{fig:exampleNIHR} and \ref{fig:exampleHR}, the 
+patient initially had a heart rate of approximately 160 beats per minute. 
+Approximately half an hour into record the prostaglandina E1 was provided, 
+resulting in a drop in heart rate to about 130 beats per minute during about 40 
+minutes, followed by a slightt increae in heart rate.

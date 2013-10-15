@@ -1,0 +1,33 @@
+% !Rnw root = analyzing.Rnw
+In the previous sections, we have used the 
+\textit{HRVData}  structure  to store all \gls{HRV} information related to the 
+signal being analyzed with no knowledge about its internal structure. However, 
+sometimes, in order to make some particular analysis of the data, it may be 
+interesting to access them directly. Figure \ref{fig:dataScheme} summarizes the 
+most important fields in the
+\textit{HRVData} structure. Since all the data in this structure is stored as 
+an R list, each of its fields can be accessed using the \$ operator of the R 
+language. For example, if we want to access the RR time series of the 
+\textit{hrv.data}, we would use:
+<<accesing,results=verbatim,echo=TRUE>>=
+RR = hrv.data$Beat$RR
+@
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/basicHRVData.pdf}
+\caption{The most important fields stored in the \textit{HRVData} 
+structure.\label{fig:dataScheme}}
+\end{figure}
+Although it is an advantage to be familiarized with the \textit{HRVData} 
+structure, there is no need to memorize it since we can use the useful 
+\textit{name} R function. Thus, if we want to know which fields are stored into 
+the \textit{hrv.data\$Beat} subfield, we could use:
+
+<<accesing2,results=verbatim,echo=TRUE>>=
+names(hrv.data$Beat)
+@
+
+As we can see,  \textit{hrv.data\$Beat} stores the occurrence time of each beat 
+(\textit{``Time"}), the \gls{niHR} time series (\textit{``niHR"}) and the RR 
+time series (\textit{``RR"}).

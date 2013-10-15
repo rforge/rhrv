@@ -1,0 +1,252 @@
+% Rnw root = advanced.Rnw
+Intervals of the \gls{HR} time series with pathophysiological interest may be 
+annotated in the so-called episode files. For example, it may be interesting to 
+compare the heart rate series before, during and after an apnea episode (apneas 
+are cessations of a patient's respiratory airflow during the nocturnal rest) 
+\cite{lado2012nocturnal}. Such a study could be useful for searching for 
+significant differences
+in the HRV caused by the apneas. The RHRV package provides functions for 
+loading episode information. The supported formats for this information are 
+either ASCII (\textit{LoadEpisodesAscii}) or
+WFDB (\textit{LoadApneaWFDB}). Episodes may also be added programmatically to 
+the time series using the \textit{AddEpisodes} function. All episodes are 
+stored under the \textit{Episodes} field of the \textit{HRVData} structure (see 
+Figure \ref{fig:completeData}). The plotting functions allow the user to 
+include episodic information in the graphics. We will discuss all this points 
+in more detail below.\\
+\subsection{AddEpisodes\label{par:AddEpisodes}} The simplest way of adding 
+episodic information is using the \textit{AddEpisodes} function. 
+\textit{AddEpisodes} adds information of episodes by specifying the initial 
+times of each episode (\textit{InitTimes} argument, in seconds), the names of 
+the episodes (\textit{Tags}), the duration of each episode (\textit{Durations}, 
+in seconds) and a numerical identifier for each episode(\textit{Values}). The 
+\textit{Values} field is useful for those episodes
+that store some numerical values. For example, an apnea episode could store 
+information
+about the Oxygen saturation level in the \textit{Values} field. Note that all 
+the parameters specified by the user will be stored in the \textit{HRVData} 
+structure in its corresponding fields as shown in Figure 
+\ref{fig:completeData}.\\
+
+Let us read our example file ``example.beats" and add three episodes to it: a 
+first type ``A" episode in the $[700,1600]\;s$ interval; a second episode of 
+the same type as the first one (``A") in the $[5000,5600]\;s$ interval; and a 
+third episode in the $[2000,4500]\;s$ interval of type ``B":
+
+<<AddEpisodes>>=
+hrv.data = CreateHRVData( )
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = SetVerbose(hrv.data,TRUE)
+hrv.data = AddEpisodes(hrv.data, InitTimes = c(700,5000,2000),
+Tags = c("A","A","B"), Durations = c(900,600,2500), Values = c(0,0,0))
+@
+
+<<echo=FALSE>>=
+hrv.data = SetVerbose(hrv.data,FALSE)
+@
+
+\subsection{Plotting episodic information} The \textit{plotHR} and  
+\textit{PlotNIHR} functions allow the user to include episodic information in 
+the plot. The user can specify a list of tags to specify which episodes are 
+included in the plot (\textit{Tag} parameter). \textit{Tag=``all"} plots all 
+episodes present in the data. Thus we could execute, after the code of the 
+previous paragraph:
+<<plottingEpisodicNIHR,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+hrv.data = BuildNIHR(hrv.data)
+# plot all tags
+PlotNIHR(hrv.data, Tag="all")
+@
+<<plottingEpisodicHR,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE,eps = FALSE>>=
+hrv.data  = InterpolateNIHR(hrv.data, freqhr = 4)
+# Plot only the "A" episodic information 
+PlotHR(hrv.data , Tag=c("A"))
+@
+
+The plots obtained with \textit{PlotNIHR} and \textit{PlotHR} are shown in 
+Figures \ref{fig:plottingEpisodicNIHR} and \ref{fig:plottingEpisodicHR}, 
+respectively.
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingEpisodicNIHR}
+\caption{Episodic information in the Non interpolated Heart Rate time 
+series.\label{fig:plottingEpisodicNIHR}}
+\end{figure}
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingEpisodicHR}
+\caption{Episodic information in the interpolated Heart Rate time 
+series.\label{fig:plottingEpisodicHR}}
+\end{figure}
+
+
+RHRV is also capable of  including episodic information when representing the 
+spectrograms obtained with the
+\textit{CalculatePowerBand}. For this purpose, the {PlotPowerBand} includes the 
+\textit{Tag} input parameter. Thus, if we want to perform a frequency analysis 
+and plot the power bands with the episodic information that we have added in 
+the previous paragraphs, we could execute:
+<<episodicFrequency,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+hrv.data = CreateFreqAnalysis(hrv.data)
+# perform frequency analysis
+hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
+ type = "wavelet", wavelet = "la8", bandtolerance = 0.01, relative = FALSE)
+# plot episodic information
+PlotPowerBand(hrv.data, indexFreqAnalysis = 1, ymax = 5000, ymaxratio = 50, 
+  			Tag = "all")
+@
+The resulting plot is shown in Figure \ref{fig:episodicFrequency}.
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-episodicFrequency}
+\caption{Episodic information in all the power 
+bands.\label{fig:episodicFrequency}}
+\end{figure}
+
+\subsection{LoadEpisodesAscii} The \textit{LoadEpisodesAscii} allows the user 
+to read episodic information stored in an ASCII file saving it into the 
+\textit{HRVData} data structure. The expected format of each line is:\\
+\begin{center}
+\begin{tabular}{ c c c c }
+InitTime &Tag & Duration&  Value\\
+\hline
+HH:MM:SS  &``Tag name"& double &integer
+\end{tabular}
+\end{center} 
+The first column is the start time of the episode with the ``HH:MM:SS" format. 
+The second column serves the same purpose as the \textit{Tag} parameter in 
+\textit{AddEpisodes}. The third column specifies the duration of the episode in 
+seconds. Finally, the forth column assigns a  numerical value for each episode 
+( the same function performed by the \textit{Value} parameter in the 
+\textit{AddEpisodes} function). \\
+
+It must be taken into account that the \textit{LoadEpisodesAscii} skips the 
+first line of the ASCII file because it assumes that the first line will 
+contain a header ( the format of this header does not really matter). If there 
+is no header line in the file, the user
+can specify it to the function using the \textit{header} parameter (by default, 
+it is
+setted to TRUE).\\
+
+As an example, we are going to create an ASCII file containing the same 
+information as the episodes ``A" and ``B" that we programmatically introduced 
+in the \textit{AddEpisodes}(\ref{par:AddEpisodes}) paragraph. We will also add 
+information about a "C" episode that the \textit{LoadEpisodesAscii} will skip. 
+We shall call this file ``annotationsFile.txt". This file will have the 
+following content:
+\begin{center}
+\begin{tabular}{ c c c c }
+InitTime&  Type & Duration&  Value\\
+00:11:40 & "A"& 900 &1\\
+01:23:20 & ``A" &600 &2\\
+00:33:20 & "B" &2500 &3\\
+01:00:00 & "C"& 100 &4\\
+\end{tabular}
+\end{center} 
+
+The \textit{LoadEpisodesAscii} function takes as input parameters: the absolute 
+path to the episodes file to be readed (\textit{FileName}), the types of 
+episodes that should be readed (\textit{Tag}) and the time (``HH:MM:SS") at 
+which the recording began (\textit{InitTime}). This last parameter enables 
+reading those files in which the initial time of episodes was specified in 
+absolute time, and not relative to the start of the recording. Since we wrote 
+relative times in the ASCII file, we should use \textit{InitTime=``0:0:0"}. 
+Thus, in order to read just the episodes tagged as ``A" from our file, we could 
+write:
+
+%\textbf{TODO: falla al leer dos tags!!}
+
+<<LoadEpisodesAscii,results=verbatim,echo=TRUE,fig=FALSE,include=FALSE>>=
+hrv.data = CreateHRVData( )
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = SetVerbose(hrv.data,TRUE)
+hrv.data = LoadEpisodesAscii(hrv.data,Tag=c("A"),InitTime="0:0:0",
+FileName="beatsFolder/annotationsFile.txt")
+@
+\subsection{LoadApneaWFDB} The \textit{LoadApneaWFDB} function allows the user 
+to load apnea annotations from a WFDB file (the user must ensure that there is 
+a file with the .apn extension between the WFDB recording's files). The 
+function takes as input parameters the name of the WFDB file 
+(\textit{RecordName}), the path to the WFDB file (\textit{RecordPath}) and a 
+name for the apnea episodes (\textit{Tag}, its default value is ``APNEA"). The 
+use of this function requires the installation of the WFDB tools (see chapter 
+\ref{ch:installation}).
+
+As an illustrative example, we are going to read the apnea episodes for the 
+``a03" file of the ApneaECG database from PhysioBank (see the \textit{Reading 
+files in WFDB format} paragraph). The plot of the non interpolated \gls{HR} 
+series is shown in figure \ref{fig:loadingApneaEpisodes}.
+<<loadingApneaEpisodes,results=verbatim,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+hrv.wfdb = CreateHRVData()
+hrv.wfdb = SetVerbose(hrv.wfdb, TRUE)
+hrv.wfdb = LoadBeat(hrv.wfdb, fileType = "WFDB", "a03", RecordPath =".", 
+                    annotator = "qrs")
+hrv.wfdb = LoadApneaWFDB(hrv.wfdb, RecordName="a03",Tag="Apnea",
+RecordPath=".")
+hrv.wfdb = BuildNIHR(hrv.wfdb)
+PlotNIHR(hrv.wfdb,Tag="all")
+@
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-loadingApneaEpisodes}
+\caption{Loading Apnea episodes using the \textit{LoadApneaWFDB} 
+function.\label{fig:loadingApneaEpisodes}}
+\end{figure}
+
+\subsection{Analyzing HRV inside and outside the episodes}
+ RHRV provides basic functionality for comparing data inside and outside each
+episode. The simplest function that the user can use for this purpose is the 
+\textit{SplitHRbyEpisodes} function, that splits the  interpolated heart rate 
+series into two vectors containing samples inside (the ``InEpisodes" vector) 
+and outside the episode (the ``OutEpisodes" vector) specified in
+the \textit{Tag} argument. For example, if we want to compare the \gls{HR} 
+series inside and outside the apnea episodes from the ``a03" file, we could use:
+<<splitting>>=
+# remember to interpolate the Heart Rate series!!
+hrv.wfdb = InterpolateNIHR (hrv.wfdb, freqhr = 4)
+splitting.data = SplitHRbyEpisodes(hrv.wfdb, Tag = c("Apnea"))
+@
+It's straightforward to use a statistical function for comparing both vectors. 
+For example:
+<<splitting2>>=
+cat("comparing the mean inside and outside Apnea episodes...\n")
+cat("Apnea mean: ",mean(splitting.data$InEpisodes),"\n")
+cat("Normal mean: ",mean(splitting.data$OutEpisodes),"\n")
+@
+
+Although the previous example illustrates how to access the data inside and 
+outside a  certain type of episode, we could have use the 
+\textit{AnalyzeHRbyEpisodes} for comparing its means. This function analyzes 
+the heart rate series evaluating the desired function (\textit{func} parameter) 
+inside and outside the episodes of interest (\textit{Tag} parameter). Thus, we 
+could have executed:
+<<splitting3>>=
+cat("comparing the mean inside and outside the Apnea episodes...\n")
+result = AnalyzeHRbyEpisodes(hrv.wfdb, Tag ="Apnea", "mean")
+cat("Apnea mean:: ",result$resultIn,"\n")
+cat("Normal mean: ",result$resultOut,"\n")
+@
+
+There also exist an splitting function that separates the spectral power per 
+band in two lists using an specific episode type: the 
+\textit{SplitPowerBandByEpisodes} (however there is no analogue function to the 
+\textit{AnalyzeHRbyEpisodes} function). In addition to the \textit{Tag} 
+parameter, the \textit{SplitPowerBandByEpisodes} receives as input parameters, 
+the \textit{HRVData} structure (\textit{HRVData}) and the frequency analysis 
+index to which apply the splitting function (\textit{indexFreqAnalysis}). The 
+function returns a list with two lists: ``InEpisodes" and ``OutEpisodes", both 
+lists include the \gls{ULF}, \gls{VLF}, \gls{LF} and \gls{HF} bands:
+<<splitting4>>=
+# ...
+hrv.wfdb = CreateFreqAnalysis(hrv.wfdb)
+hrv.wfdb = CalculatePowerBand( hrv.wfdb , indexFreqAnalysis= 1,
+ type = "wavelet", wavelet = "la8", bandtolerance = 0.01, relative = FALSE)
+splitting.data = SplitPowerBandByEpisodes(hrv.wfdb, 
+indexFreqAnalysis = 1, Tag = c("Apnea"))
+cat("comparing the mean power in the LF band
+ inside and outside A episodes...\n")
+cat("LF power in Apnea episodes: ",
+mean(splitting.data$InEpisodes$LF),"\n")
+cat("LF power in Normal episodes: ",
+mean(splitting.data$OutEpisodes$LF),"\n")
+@

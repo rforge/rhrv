@@ -1,0 +1,59 @@
+
+\chapter{Installation\label{ch:installation}}
+\section{Installation} This guide assumes that the user has some basic knowledge of the R environment. If this is not your case, you can find a nice introduction to R in the R project homepage \cite{Rproject}. The R project homepage also provides an ``R Installation and Administration" guide. Once you have download and installed R, you can install RHRV by typing:
+\begin{Schunk}
+\begin{Sinput}
+> install.packages("RHRV")
+\end{Sinput}
+\end{Schunk}
+You can also install it by downloading it from the CRAN \cite{cran}. Once the download has finished, open R , move to the directory where you have download it (by using the R command \textit{setwd}) and type:
+
+\begin{Schunk}
+\begin{Sinput}
+> install.packages("RHRV_XXX",repos=NULL)
+\end{Sinput}
+\end{Schunk}
+Here, XXX is the version number of the library. To start using the library, you should load it by using the \textit{library} command:
+\begin{Schunk}
+\begin{Sinput}
+> library(RHRV)
+\end{Sinput}
+\end{Schunk}
+
+\section{WFDB applications} Some functions of the RHRV package (such as the \textit{LoadApneaWFDB}) require the installation of the WFDB functions \cite{moody2003wfdb}. If the user is not going to work with WFDB formated files, the installation of these libraries is not required for the proper functioning of RHRV. The WFDB functions is a large collection of specialized software for processing and manipulating the Physionet's databases \cite{physioNet}. On Windows and Mac OSX operating systems is necessary to define
+a .Renviron file in the user workspace indicating the directory
+of the WFDB commands. Examples for both OS are given below: 
+\begin{Schunk}
+\begin{Sinput}
+## .Renviron on Windows
+PATH = "c:\\cygwin\\bin"
+DYLD_LIBRARY_PATH = "c:\\cygwin\\lib"
+\end{Sinput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+## .Renviron on Macosx
+PATH = "/opt/local/bin"
+DYLD_LIBRARY_PATH = "/opt/local/bin"
+\end{Sinput}
+\end{Schunk}
+
+
+\section{Troubleshooting} 
+\subsection[tkrplot dependency]{When installing the RHRV package in linux, sometimes the installation fails when installing the tkrplot dependency.}
+\begin{Schunk}
+\begin{Sinput}
+...
+tcltkimg.c:2:16: fatal error: tk.h: No such file or directory
+compilation terminated.
+
+ERROR: compilation failed for package 'tkrplot'
+...
+ERROR: dependency 'tkrplot' is not available for package 'RHRV'
+\end{Sinput}
+\end{Schunk}
+
+This is usually because there are some missing libraries in your system. Generally, the problem will be fixed by installing the \textit{tclX.X}, \textit{tkX.X}, \textit{tclX.X-dev} and  \textit{tkX.X-dev} libraries (X.X stands for the version of the libraries). 
+
+

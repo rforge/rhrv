@@ -1,0 +1,294 @@
+% !Rnw root = ../../advanced.Rnw
+\section{Completing our first tour}
+In chapter \ref{ch:Quick} we have presented a brief description of the RHRV 
+package. In this
+section, we introduce some more advanced functionality of RHRV, or 
+functionality that has narrower applications  than the one presented in the 
+previous chapter. Thus, we will introduce some new functions 
+(\textit{EditNIHR}, \textit{CalculateSpectrogram} and \textit{PlotSpectrogram}) 
+and we will finish
+the description of all the the function parameters introduced in the previous 
+chapter. Also, further information about the 
+\textit{HRVData} structure will be given.  Figure \ref{fig:completeData} shows
+a detailed view of the internal organization of the HRVData structure. This 
+figure
+should be used as a roadmap through the explanations concerning the HRVData 
+structure.
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/completeHRVData.pdf}
+\caption{All the fields stored in the \textit{HRVData} 
+structure.\label{fig:completeData}}
+\end{figure}
+\subsubsection{Creating the structure}
+When a new \textit{HRVData} is created using the \textit{CreateHRVData} 
+function, it contains the  following fields (among others that are not useful 
+for the final user):
+\begin{itemize}
+\item \textit{Ext}: A string that will be used as file extension by the 
+loading/writing functions included in the package. The default value is ``hrv".
+\item \textit{TimeAnalysis}: This field stores the information generated using 
+time-domain analysis techniques. It is is implemented as a list in the R 
+language.
+\item \textit{FreqAnalysis}: This field stores the  results of one or more 
+frequency analysis. Frequency analysis can be based on Fourier or on wavelets. 
+It is is implemented as a list in the R language.
+\item \textit{NonLinearAnalysis}: This field stores the  results of one or more 
+nonlinear analysis. It is is implemented as a list in the R language.
+%\item \textit{Verbose}: Boolean flag that specifies if all the functions 
+should return additional information (mode verbose on). The \textit{SetVerbose} 
+function sets verbose mode on or off.
+\end{itemize}
+\subsubsection{Reading heart beats\label{sec:moreReading}} After creating the 
+empty \textit{HRVData} structure  we will usually read the corresponding data 
+file containing the heart beats positions. For the sake of simplicity, we keep 
+on focussing on the ASCII files. The reader may have been wondering: ``what 
+happens if my ASCII file is specified in milliseconds?". We shall use the  
+\textit{scale} parameter to overcome this issue. By setting this parameter to 
+$1$ (default value) we are indicating that the beat positions are specified in 
+seconds; by setting it to $0.1$, we are indicating that the beats are in 
+deciseconds and so on. The function transforms the heart beats positions to 
+seconds so all the other functions can be used as before. Other interesting 
+parameter that can be specified by the user is the date-time when the file was 
+recorded (\textit{datetime} parameter). This is particularly useful for 
+following a patient's evolution over a set of recordings. The string format for 
+the \textit{datetime} parameter is ``DD/MM/YYYY HH:MM:SS". Thus, let's read the 
+``example.beats" file (as in chapter \ref{ch:Quick}) specifying that  it was 
+recorded on ``30/04/2012 12:00:00" in seconds:
+<<echo=FALSE>>=
+hrv.data = CreateHRVData()
+hrv.data = SetVerbose(hrv.data,TRUE)
+@
+
+<<rhrv_loadingASCII,results=verbatim>>=
+hrv.data = LoadBeatAscii(hrv.data, "example.beats",
+       RecordPath = "beatsFolder", scale = 1, 
+		   datetime = "30/04/2012 12:00:00")
+@
+
+When importing the data into the \textit{HRVData} structure, two new fields are 
+created (see Figure \ref{fig:completeData}):
+\begin{itemize}
+\item \textit{Datetime}: Date and time associate with the record.
+\item \textit{Beat}: A \textit{dataframe} object which stores the positions of 
+the beats in the sub-field \textit{Time} .
+\end{itemize}
+
+\subsubsection{Constructing the time series} To compute the HRV time series the 
+\textit{BuildNIHR} function is used.
+ Since we have already used all the parameters of this function, we will focus 
+on the \textit{HRVData structure}. As we know, this function constructs both 
+the RR (Equation \ref{Eq:RR}) and instantaneous heart rate series (Equation 
+\ref{Eq:RRinst}). Both series are stored in the \textit{Beat} dataframe of the 
+\textit{HRVData} structure: the RR series is stored in the sub-field called 
+\textit{RR} whereas the instantaneous \gls{HR} is stored in the \textit{niHR} 
+sub-field (see Figure \ref{fig:completeData}).\\
+
+\subsubsection{Filtering the time series}
+The automatic removal of outliers was performed with the \textit{FilterNIHR} 
+function. This function implements
+an algorithm that uses adaptive thresholds for rejecting or accepting beats 
+\cite{vila1997time}. The rule for beat acceptation or rejection is to compare 
+the present beat with  the previous one, the following one and with an updated 
+mean of the RR interval. The different adaptative thresholds establish an upper 
+limit for the relative errors of each of these comparisons. The \textit{long} 
+parameter allows the user to specify the number of beats that shall be used to 
+calculate the updated mean (default value are 50 heartbeats). Also, the 
+\textit{last} parameter permits the user to specify the initial threshold value 
+in \% (default value is $13\%$). Finally, the algorithm also applies a 
+comparison with acceptable physiological values. The user can specify the range 
+of acceptable physiological values by using the \textit{minbpm} and 
+\textit{maxbpm} (minimum beats per minute and maximum beats per minute, 
+respectively). Default values are designed for human beings(\textit{minbpm}=25, 
+\textit{maxbpm}=200),  but they can be specified in such a way that it may also 
+be used by animal researchers. As an illustrative example we could modify the 
+\textit{last} parameter in such a way that it doesn't allow quick fluctuations 
+( by decreasing \textit{last} to 1\%) in our example file. Also, we could 
+decrease the \textit{maxbpm} parameter to $180$ bpm. The results are shown in 
+Figure \ref{fig:completeFilterNIHR} (compare it with Figure 
+\ref{fig:exampleNIHR}). 
+
+<<echo=FALSE>>=
+hrv.data = CreateHRVData( )
+hrv.data = SetVerbose(hrv.data,FALSE)
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = BuildNIHR(hrv.data)
+@
+<<completeFilterNIHR,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+hrv.data = FilterNIHR(hrv.data, long=50, last=1, minbpm=25, maxbpm=180)
+PlotNIHR(hrv.data)
+@
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-completeFilterNIHR}
+\caption[Modifying default values in the \textit{FilterNIHR} function]{Effects 
+of the modification of the default values in the \textit{FilterNIHR} 
+function.\label{fig:completeFilterNIHR}}
+\end{figure}
+
+
+RHRV also provides functionality for manually removing the spurious heartbeats. 
+In order to delete outliers manually, a graphical editor can be used. The 
+graphical editor is launched by executing the  \textit{EditNIHR} function.
+<<echo=FALSE>>=
+hrv.data = CreateHRVData( )
+hrv.data = SetVerbose(hrv.data,FALSE)
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = BuildNIHR(hrv.data)
+@
+<<plottingNIHR,eval=FALSE>>=
+hrv.data = EditNIHR(hrv.data)
+@
+
+This interactive editor allows the user to select a rectangular area defined by 
+two points that are the top left corner and bottom right corner, respectively, 
+of a rectangle. (see Figure 
+\ref{fig:plottingNIHR}). The points included in this rectangle can then be 
+removed by pressing the ``remove outliers"  button. If we make a mistake in the 
+outliers selection, we can reset the window by pressing ``clear". The 
+outliers removal ends when the user presses ``End".
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/removing}
+\caption{Manually removal of artifacts with 
+\textit{EditNIHR}.\label{fig:plottingNIHR}}
+\end{figure}
+
+\subsubsection{Interpolation} The uniformly sampled \gls{HR} series is obtained 
+using the \textit{InterpolateNIHR} function, which by default uses linear 
+interpolation. However, it is possible to select a cubic spline interpolation 
+by setting 
+\textit{method = "spline"} (default value is \textit{method = "linear"}). Thus, 
+as an illustrative example, let's interpolate the RR data using splines and a 
+sampling frequency of $8$ Hz (This is just an illustrative example, for most of 
+the situations $4$ Hz will be enough. By setting an unnecessarily high sampling 
+frequency, we are overloading the computer):
+@
+<<rhrv_interpolating,results=verbatim>>=
+hrv.data = InterpolateNIHR (hrv.data, freqhr = 8, method = "spline")
+@
+
+This functions creates two new fields in the \textit{HRVData} structure:
+\begin{itemize}
+\item \textit{Freq\_HR}: Sampling frequency used in the interpolation. The 
+default sampling frequency value is $4\;Hz$.
+\item \textit{HR}: 	Heart Rate signal with equally spaced values at a 
+certain sampling frequency obtained from the \gls{niHR} series (Figure 
+\ref{fig:completeData}). 
+\end{itemize}
+
+\subsubsection{Time analysis} The \textit{CreateTimeAnalysis} function has been 
+kept simple, in such a manner that the user only has to specify the window that
+will be used to compute successive differences of intervals (\textit{size} 
+parameter, in seconds) and the interval width of the bins that will be used to 
+compute the histogram (\textit{interval} parameter, in milliseconds), as shown 
+in chapter \ref{ch:Quick}. \\
+
+This functions fills (one position of) the \textit{TimeAnalysis} in the 
+\textit{HRVData} structure by computing the following parameters: SDNN, SDANN, 
+SDNNIDX, pNN50, rMSSD, IRRR, MADRR, TINN and HRVi (see Figure 
+\ref{fig:completeData} and section \ref{sec:timedomain}). The size of the 
+window involved in the computations is also stored in the \textit{size} field.
+
+
+\subsubsection{Frequency analysis} All the main \textit{parameters} of the 
+\textit{CalculatePowerBand} function have already been used in chapter 
+\ref{ch:RHRV}. As shown in Figure \ref{fig:completeData}, the 
+\textit{CalculatePowerBand} function fills the corresponding  
+\textit{FreqAnalysis} data structure with the following fields:
+\begin{itemize}
+\item \textit{Type}: a string identifying the type of analysis that has been 
+used. The possible values are either \textit{``fourier"} or \textit{``wavelet"}.
+\item \textit{ULFmin}, \textit{ULFmax}, \textit{VLFmin}, \textit{VLFmax}, 
+\textit{LFmin}, \textit{LFmax}, \textit{HFmin} and \textit{HFmax}: These fields 
+store the boundaries of each frequency band.
+\item \textit{ULF}, \textit{VLF}, \textit{LF} and \textit{HF}:   These fields 
+store the spectrogram of the HR signal in the  ULF, VLF, LF and HF bands, 
+respectively.
+\item \textit{HRV}: Stores the total energy of the signal as a function of 
+time. This Energy time series is estimated from the spectrogram signal.
+\item \textit{LFHF}: Stores the LF/HF ratio (Section \ref{sec:analysisTechn}) 
+by dividing the LF time series by the HF time series.
+\end{itemize}
+Some additional parameters are incorporated to the \textit{FreqAnalysis} 
+structure depending on the type of analysis used. When using the \gls{STFT}, 
+the \textit{size}, \textit{shift} and \textit{sizesp} fields store information 
+about the window, the window shift, and the number of points per \gls{DFT} that 
+have been used. When using the Wavelet transform, the \textit{wavelet}, 
+\textit{ bandtolerance} and \textit{depth} fields store information about the 
+mother Wavelet and the tolerance used, as well as the number of levels that the 
+algorithm has descended in the \gls{MODWPT} tree \cite{waveletBiosignals}, 
+\cite{waveletArticle}.\\
+
+RHRV provides another function for computing the spectrogram without being 
+restricted to the four bands: \gls{ULF}, \gls{VLF}, \gls{LF} and \gls{HF}. This 
+function, called \textit{CalculateSpectrogram}, uses the \gls{STFT} approach. 
+Thus, the user has to specify the size of window (\textit{size} parameter), the 
+displacement of window  (\textit{shift}) and the zero-padding 
+(\textit{sizesp}), as in the \textit{CalculatePowerBand} function. The 
+spectrogram is returned in a real matrix in a way that, as the number of the 
+row increases, the time increases and, as the column's number increases, the 
+frequency increases. This matrix
+is not stored in the \textit{HRVData} structure since it can be very expensive 
+in terms of 
+memory. As an example, let's compute the spectrogram of the example file with 
+the same parameters used with the \textit{CalculatePowerBand} function:
+<<echo=FALSE>>=
+hrv.data = CreateHRVData( )
+hrv.data = SetVerbose(hrv.data,FALSE)
+hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")
+hrv.data = BuildNIHR(hrv.data)
+hrv.data = FilterNIHR(hrv.data)
+hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
+hrv.data = CreateFreqAnalysis(hrv.data)
+hrv.data = SetVerbose(hrv.data,TRUE)
+@
+<<CalculateSpectrogram,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+# Plotting Fourier analysis
+spectrogram = CalculateSpectrogram( hrv.data ,size = 300,
+ shift = 30, sizesp = 2048)
+@
+The user can obtain a graphical representation of the spectrogram by using the 
+\textit{image} R function. Alternatively, the user can use the 
+\textit{PlotSpectrogram} function, that also returns the spectrogram matrix 
+(see Figure \ref{fig:plottingSpectrogram}). By using the \textit{scale} 
+function, the
+user may choose a linear axis (``linear") or a logarithmic axis 
+(``logarithmic"). The user must also specify the 
+\textit{size}, \textit{shift} and \textit{sizesp} parameter. 
+<<plottingSpectrogram,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+# Plotting wavelet analysis
+spectrogram = PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
+ sizesp=2048)
+@
+Note that most part of the energy of the figure \ref {fig:plottingSpectrogram} 
+is concentrated in the low frequencies. To obtain a more
+detailed graphic in this zone of the spectrum, we can use the 
+\textit{freqRange} parameter. For example, if we wish to plot the spectrum in 
+the $[0,0.2]\;Hz$ band, we write:
+<<plottingSpectrogram2,results=hide,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+# Plotting wavelet analysis
+PlotSpectrogram(HRVData=hrv.data, size=300, shift=60, 
+	sizesp=2048,freqRange = c(0,0.2))
+@
+The result of this script is shown in figure \ref{fig:plottingSpectrogram2}.
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingSpectrogram}
+\caption{Plot obtained with the \textit{PlotSpectrogram} 
+function.\label{fig:plottingSpectrogram}}
+\end{figure}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics{figures/tutorial-plottingSpectrogram2}
+\caption[Plotting with the \textit{PlotSpectrogram} function using the 
+\textit{freqRange} parameter]{Plot obtained with the \textit{PlotSpectrogram} 
+function and the \textit{freqRange} parameter.\label{fig:plottingSpectrogram2}}
+\end{figure}
+
+%\subsubsection{Nonlinear analysis} 
+
