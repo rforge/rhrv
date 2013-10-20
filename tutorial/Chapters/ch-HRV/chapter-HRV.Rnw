@@ -213,21 +213,6 @@ on the commonly accepted Integral Pulse Frequency Modulator (IPFM) model
 \cite{berger1986},\cite{hyndman}, that simulates the modulation of the 
 sinoatrial node.\\
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{figure}[ht]
-%\begin{center}
-%\includegraphics[scale=0.65]{figures/derivationHRV.pdf}
-%\caption[Derivation of two HRV signals from an ECG record]{Derivation of two 
-HRV signals from an ECG record: the left side of the figure shows
-%a tachogram. The right side of the figure shows an interpolated \gls{HRV} 
-signal and the Dirac deltas associated with each QRS complex. 
-%This figure has been taken from \cite{kubios}.\label{fig:derivation}}
-%\end{center}
-%\end{figure} 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \subsection{Preprocessing HRV time series}
 
 Before performing the analysis of any RR time series, a filtering operation 
@@ -251,182 +236,15 @@ these are usually classified into three categories: time domain methods,
 frequency domain methods and non-linear methods. A brief review of the main 
 techniques of time domain, frequency domain and nonlinear methods is presented. 
 Further information may be found at \cite{forceHRV}.
+
 \subsection{Time domain methods\label{sec:timedomain}}
-The simplest \gls{HRV} analysis techniques are the time domain measures. Since 
-there exist a wide variety of time domain techniques, we will focus on those 
-included in the RHRV software. \\
-The best known time analysis statistic may be the standard deviation of the RR 
-interval: \gls{SDNN}.
-$$SDNN=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(RR_j-\overline{RR})^2}$$
-Since the variance is mathematically equal to the total power of spectral 
-analysis, \gls{SDNN} reflects the 
-power of the components responsible for variability. The  \gls{SDNN} reflects 
-both short-term and long-term variations within the RR  series. However, it 
-should be noted that total variance of \gls{HRV}
-increases with the length of the analysed recording \cite{saul1988analysis}. 
-Thus, on arbitrarily ECGs,  \gls{SDNN}
-may not be an appropriate \gls{HRV} analysis variable because of its dependence 
-with the recording's length. To avoid this issue, statistical variables 
-calculated from segments of the total monitoring period may be used. Among this 
-kind of variables are the \glslink{SDANN}{SDANN}, the standard deviation of  
-the average NN (RR) intervals calculated over short periods (usually 5 
-minutes); and the \glslink{SDNNIDX}{SDNN index}, the mean
-of the standard deviation calculated over the windowed RR intervals, usually 5 
-minutes.\\
-
-Other measures use the time series constructed as successive RR interval 
-differences, defined as  $$\Delta RR_j=RR_{j+1}-RR_j.$$  The Root Mean square 
-of Successive Differences (\glslink{RMSSD}{RMSSD}) is given by
-$$RMSSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j)^2}.$$
-
-Other measures using the successive RR interval differences include the length 
-of the interval determined by the first and the third quantile of the $\Delta 
-RR$ time series; and the median of the absolute values of the  $\Delta RR$ time 
-series (\glslink{MADRR}{MADRR}, Median of the Absolute Differences of the RR 
-intervals).\\
-
-Another commonly used measures derived from interval differences include NN50, 
-the number of interval differences of successive RR intervals greater than 50 
-ms, and \glslink{pNN50}{pNN50}, the proportion derived
-by dividing NN50 by the total number of RR intervals.\\
-
-All these measures derived from interval differences estimate the \gls{HF} 
-variation in heart rhythm and thus, they are highly correlated.\\
-
-Finally, in addition to these statistical parameters, there are some geometric 
-measures that can be calculated from the RR interval histogram. The \gls{HRV} 
-triangular index measurement is the integral of the density distribution (that 
-is, the number of all RR intervals) divided by the maximum of the density 
-distribution. The density distribution may be estimated by using an histogram, 
-thus  the size of the bins should be specified. Another geometrical measure is 
-the triangular interpolation of NN (RR) interval histogram 
-(\glslink{TINN}{TINN}), which is calculated as the baseline width of the 
-distribution measured as the base of a triangle (a triangular interpolation of 
-the histogram may be used). The \glslink{TINN}{TINN} measure is usually 
-expressed in milliseconds.\\
-
-The major advantage of geometric methods lies in their relative insensitivity 
-to the analytical quality of the RR series. Their major disadvantage is that 
-they need a large number of RR intervals for performing
-correctly.
-
+\SweaveInput{timeTheory.Rnw}
 \subsection{Frequency domain methods}
-The basic frequency domain analysis technique  is the \gls{PSD}. It provides 
-basic information on how power distributes as a function of frequency in the RR 
-time series. Since the sympathetic an parasympathetic branches of the \gls{ANS} 
-are associated with different frequency bands, the \gls{PSD} may be a useful 
-tool to discriminate its different contributions to the \gls{HR}. The
-most common approach to spectral analysis of \gls{HRV} is based on the Fourier 
-transform. The Fourier transform is a tool that is able to extract the 
-frequencies of a signal. For those unfamiliar with the ``frequency" language, 
-we will say that a signal with fast and sharp changes has ``high frequencies", 
-whereas a signal with slow transitions is referred to as a signal with ``low 
-frequencies" (see Figure \ref{fig:sines}). Of course, a signal can contain both 
-low and high frequencies. In this sense, the Fourier transform acts as a prism, 
-separating the high frequency contributions from the low frequency 
-contributions. The discrete implementation is referred to as the \gls{DFT} and 
-its efficient implementation is called the \gls{FFT}.\\
-
-The Fourier transform is one of the most powerful tools for signal processing. 
-However, it may not be the most suitable tool for studying 
-transient phenomena: the Fourier transform might be able to
-determine all the frequencies present in a signal, but not when they are 
-present. To address this issue, several techniques able to represent a signal 
-in both time and frequency domain have been developed.\\
-
-Following Gabor \cite{gabor1946}, the idea behind these time-frequency joint 
-representations is to define elementary time-frequency atoms as
-waveforms with minimum spread in the time-frequency plane. To measure 
-time-frequency information content, Gabor proposed decomposing signals over 
-these
-elementary atoms. Selecting the time-frequency atoms is not a trivial problem 
-because of the existence of a time-frequency uncertainty principle. This 
-uncertainty principle states that the energy spread of a function and its 
-Fourier transform  cannot  simultaneously be arbitrarily small.\\
-
-The simplest transform that uses this idea is the windowed Fourier transform, 
-that is  constructed by using a symmetric window that selects the portion of 
-the signal that is going to be analyzed. The remaining portions of signal can 
-be selected by translating the window in time. When this transform is applied 
-to discrete signals, it is referred to as the \gls{STFT}.\\
-
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.6\textwidth]{figures/tutorial-highVslow}
-\caption{High and low frequencies illustrated with sines.\label{fig:sines}}
-\end{figure}
-
-Another widely used transform that uses time-frequency atoms is the wavelet 
-transform. A Wavelet is a ``small wave'' with zero mean that grows and decays 
-in a limited time period. Since any of these small waves results in different 
-wavelets, there are several wavelet families. Figure \ref{fig:wavelets} shows 
-two such wavelets. The reference wavelet fulfilling the above conditions is 
-called ``mother wavelet". The mother wavelet can be translated and dilated in 
-time, yielding a set of wavelet functions with different sizes and centered in 
-different time positions.  This set of functions is used to extract 
-time-frequency information by correlating them with the signal being analyzed.\\
-
-Although the idea of the wavelet transform is similar to that used in the 
-\gls{STFT},  the wavelet transform often provides a better compromise between 
-time and frequency resolution. This is due to the fact that the \gls{STFT} uses 
-just one window for ``exploring" all the frequency bands. However, the ideal 
-approximation would be using short windows at high frequencies and long windows 
-at low frequencies. Thus, the ``global" performance of the \gls{STFT} will 
-depend on the choice of the length of the window and the displacement time used 
-for moving it. The wavelet transform, in contrast to the \gls{STFT}, follows 
-the ideal approximation, leading to a multiresolution analysis. RHRV has 
-support for both approaches, and they both have a similar computational 
-efficiency.\\
+\SweaveInput{frequencyTheory.Rnw}
+\subsection{nonlinear methods\label{sec:NonlinearTheory}}
+\SweaveInput{nonlinearTheory.Rnw}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[ht]
-\begin{center}
-\includegraphics[scale=0.6]{figures/basicWavelets2.png}
-\caption[Two Wavelets]{\label{fig:wavelets} Two Wavelets. The top of the figure 
-shows the Morlet Wavelet. The bottom of the figure shows a Gaussian Wavelet.}
-\end{center}
-\end{figure} 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%
-
-
-When working with frequency methods, researchers are especially interested in 
-the \gls{VLF}, \gls{LF} and \gls{HF} frequency bands. Some authors also include 
-the \gls{ULF} band.
-When selecting the frequency bands, the researchers should take into account 
-whether they are working with short (2-5 min) or long term recordings (up to 
-24-hours). Three main spectral components
-are distinguished in a spectrum calculated from short-term recordings: 
-\gls{VLF}, \gls{LF} and \gls{HF} components. However,  \gls{VLF} assessed from 
-short-term recordings is 
-a dubious  parameter and, therefore, it should be avoided when interpreting the 
-\gls{PSD} in this kind of recordings \cite{forceHRV}. Spectral analysis 
-resulting from long-term recordings include \gls{VLF}, \gls{LF} and \gls{HF} 
-bands. In the long recordings, the \gls{VLF} band may be split into the 
-\gls{ULF} and the \gls{VLF} components.\\
-
-\subsection{nonlinear methods}
-There is a profound connection between nonlinear phenomena and \gls{HRV}. 
-\gls{HRV} is determined by complex interactions of electrophysiological and 
-humoral variables, as well as by autonomic and central nervous regulations. 
-Considering these complex control systems modulating the heart rhythm, it has 
-been speculated that methods
-of the nonlinear dynamics might extract some valuable information
-from the \gls{HRV} series.\\
-
-The measures that have been used to analyze nonlinear properties of \gls{HRV} 
-include 1/f scaling of Fourier spectra, Poincar\'{e} plots, approximate and 
-sample entropy, detrended fluctuation analysis, correlation dimension and 
-recurrence plots. All these techniques have been shown to be powerful tools for 
-extracting information from several complex systems, however, no really 
-breakthrough results have yet been achieved when analyzing \gls{HRV} series.\\
-
-Although there exist some functionality in the RHRV package for performing 
-nonlinear analysis of a \gls{HR} signal it still is in ``beta". The current 
-version of the tutorial will not treat these functions. Future versions of this 
-tutorial will handle this issue.
 
 \section{HRV alterations related to specific pathologies\label{sec:pathologies}}
 In the course of the last two decades numerous studies have shown \gls{HRV} to 
@@ -441,70 +259,6 @@ of risk after myocardial infarction and as an early warning of diabetic
 neuropathy. \cite{forceHRV}, \cite{kautzner1997}.\\
 
 Table \ref{t:diseases} resumes some \gls{HRV} applications to other diseases.\\
-
-%\subsection{Myocardial infarction}
-%
-%Low \gls{HRV} after myocardial infarction (MI) reflects a decrease of the 
-parasympathetic activity which leads
-%to a prevalence of sympathetic mechanism on the heart rate. In the severe 
-phase of MI,
-% a reduction in 24-hours standard deviation of the \gls{HRV} signal has been 
-registered. However, the mechanism by which \gls{HRV} is reduced
-%after MI is not yet clear.\\
-%
-%Spectral analysis of \gls{HRV} in patients that suffered acute MI also reveals 
-a reduction in total power and in each of the 
-%power bands. When working with normalized units, an increase of the \gls{LF} 
-and a diminished \gls{HF} activity is also observed.\\
-%
-%These characteristics of the spectral power distributions are also present in 
-patients suffering from cardiac failure (in advanced
-%state) and after cardiac transplant.\\
-%
-%The \gls{HRV} changes related to MI have led to the conclusion that a 
-depressed \gls{HRV} is a powerful predictor of mortality and of arrhythmic
-%complications in patients following acute MI. The value of both time-domain 
-and frequency-domain parameters have been fully assessed in 
-%several studies. It has also been proven that \gls{HRV} analysis is useful for 
-risk stratification of patients following MI.\\
-%
-%\subsection{Diabetic neuropathy}
-%
-%As a complication of diabetes mellitus, autonomic neuropathy is characterized 
-by early autonomic neuron degeneration,
-% either parasympathetic or sympathetic, or both. Once clinical manifestation 
-of diabetic autonomic neuropathy appear,
-% the estimated 5-year mortality is approximately of 50\%. Thus, early 
-predictive markers of autonomic dysfunction are important
-% for risk stratification.\\
-% 
-%In neuropathy associated with diabetes mellitus, a reduction of time-domain 
-parameters of \gls{HRV} 
-%preceded the clinical detection of autonomic neuropathy.  In diabetic patients 
-with no signs of 
-%autonomic neuropathy, reduction of the absolute power in both \gls{LF} and 
-\gls{HF} bands was also reported.
-%However, when considering the LF/HF ratio no significant difference in 
-comparison with normal patients was present.
-%Thus, this means that the initial manifestation of this neuropathy involves 
-both efferent limbs of the \gls{ANS}. All
-%these abnormalities in \gls{HRV} analysis may be used as predictors of 
-diabetic autonomic neuropathy occurrence.\\
-%
-%
-%\subsection{Myocardial dysfunction}
-%
-%A reduced \gls{HRV} has been already observed in patients with cardiac 
-failure. In fact, reduction in time domain measures
-%of \gls{HRV} seemed to be more important with the severity of the disease. 
-However, the relationship between spectral components
-%and ventricular dysfunction  appears to be more complicated. In particular, in 
-most patients suffering an advanced phase of the disease
-%and with drastic reduction in \gls{HRV}, a \gls{LF} component could not be 
-detected despite clinical signs of sympathetic activation (such as 
-%faster heart rates). Thus, SA-node seems to diminish its responsiveness to 
-\gls{ANS} modulation.\\
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

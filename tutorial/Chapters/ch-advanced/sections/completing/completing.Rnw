@@ -21,7 +21,7 @@ structure.
 \caption{All the fields stored in the \textit{HRVData} 
 structure.\label{fig:completeData}}
 \end{figure}
-\subsubsection{Creating the structure}
+\subsection{Creating the structure}
 When a new \textit{HRVData} is created using the \textit{CreateHRVData} 
 function, it contains the  following fields (among others that are not useful 
 for the final user):
@@ -40,7 +40,7 @@ nonlinear analysis. It is is implemented as a list in the R language.
 should return additional information (mode verbose on). The \textit{SetVerbose} 
 function sets verbose mode on or off.
 \end{itemize}
-\subsubsection{Reading heart beats\label{sec:moreReading}} After creating the 
+\subsection{Reading heart beats\label{sec:moreReading}} After creating the 
 empty \textit{HRVData} structure  we will usually read the corresponding data 
 file containing the heart beats positions. For the sake of simplicity, we keep 
 on focussing on the ASCII files. The reader may have been wondering: ``what 
@@ -75,7 +75,7 @@ created (see Figure \ref{fig:completeData}):
 the beats in the sub-field \textit{Time} .
 \end{itemize}
 
-\subsubsection{Constructing the time series} To compute the HRV time series the 
+\subsection{Constructing the time series} To compute the HRV time series the 
 \textit{BuildNIHR} function is used.
  Since we have already used all the parameters of this function, we will focus 
 on the \textit{HRVData structure}. As we know, this function constructs both 
@@ -85,7 +85,7 @@ the RR (Equation \ref{Eq:RR}) and instantaneous heart rate series (Equation
 \textit{RR} whereas the instantaneous \gls{HR} is stored in the \textit{niHR} 
 sub-field (see Figure \ref{fig:completeData}).\\
 
-\subsubsection{Filtering the time series}
+\subsection{Filtering the time series}
 The automatic removal of outliers was performed with the \textit{FilterNIHR} 
 function. This function implements
 an algorithm that uses adaptive thresholds for rejecting or accepting beats 
@@ -156,7 +156,7 @@ outliers removal ends when the user presses ``End".
 \textit{EditNIHR}.\label{fig:plottingNIHR}}
 \end{figure}
 
-\subsubsection{Interpolation} The uniformly sampled \gls{HR} series is obtained 
+\subsection{Interpolation} The uniformly sampled \gls{HR} series is obtained 
 using the \textit{InterpolateNIHR} function, which by default uses linear 
 interpolation. However, it is possible to select a cubic spline interpolation 
 by setting 
@@ -179,7 +179,7 @@ certain sampling frequency obtained from the \gls{niHR} series (Figure
 \ref{fig:completeData}). 
 \end{itemize}
 
-\subsubsection{Time analysis} The \textit{CreateTimeAnalysis} function has been 
+\subsection{Time analysis} The \textit{CreateTimeAnalysis} function has been 
 kept simple, in such a manner that the user only has to specify the window that
 will be used to compute successive differences of intervals (\textit{size} 
 parameter, in seconds) and the interval width of the bins that will be used to 
@@ -193,9 +193,9 @@ SDNNIDX, pNN50, rMSSD, IRRR, MADRR, TINN and HRVi (see Figure
 window involved in the computations is also stored in the \textit{size} field.
 
 
-\subsubsection{Frequency analysis} All the main \textit{parameters} of the 
+\subsection{Frequency analysis} All the main \textit{parameters} of the 
 \textit{CalculatePowerBand} function have already been used in chapter 
-\ref{ch:RHRV}. As shown in Figure \ref{fig:completeData}, the 
+\ref{ch:Quick}. As shown in Figure \ref{fig:completeData}, the 
 \textit{CalculatePowerBand} function fills the corresponding  
 \textit{FreqAnalysis} data structure with the following fields:
 \begin{itemize}
@@ -290,5 +290,5 @@ function.\label{fig:plottingSpectrogram}}
 function and the \textit{freqRange} parameter.\label{fig:plottingSpectrogram2}}
 \end{figure}
 
-%\subsubsection{Nonlinear analysis} 
-
+\subsection{Nonlinear analysis\label{seq:nonlinearAdvanced}} 
+\SweaveInput{nonlinearAdvanced.Rnw}

@@ -1,5 +1,5 @@
 % !Rnw root = ../15guide.Rnw
-\subsubsection{Load heart beat positions} RHRV uses a custom data structure 
+\subsection{Load heart beat positions} RHRV uses a custom data structure 
 called \textit{HRVData} to store all HRV information related to the signal 
 being analyzed. \textit{HRVData} is implemented as a list object in R language. 
 This list contains all the information corresponding
@@ -50,7 +50,7 @@ parameters specify when the file was recorded. More details about these
 parameters will be given in section \ref{sec:moreReading}. The 
 \textit{RecordPath} can be omitted if the \textit{RecordName} is in the 
 working directory.
-\subsubsection{Calculating HR and filtering} To compute the HRV time series the 
+\subsection{Calculating HR and filtering} To compute the HRV time series the 
 \textit{BuildNIHR} function can be used (\textit{Build Non Interpolated Heart 
 Rate}). This function constructs both the RR (Equation \ref{Eq:RR}) and 
 instantaneous heart rate (\gls{HR}) series (Equation \ref{Eq:RRinst}) described 
@@ -74,7 +74,7 @@ function also eliminates points with unacceptable physiological values.\\
 <<filtering,results=verbatim,run=FALSE,echo=TRUE>>=
 hrv.data = FilterNIHR(hrv.data)
 @
-\subsubsection{Interpolating} In order to be able to perform spectral analysis 
+\subsection{Interpolating} In order to be able to perform spectral analysis 
 in the frequency domain, a uniformly sampled \gls{HR} series is required. It 
 may be constructed from the \gls{niHR} series by using the 
 \textit{InterpolateNIHR} function, which uses linear (default) or spline 
@@ -88,7 +88,7 @@ $4\;Hz $ (the default value) is  enough for most applications.
 hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
 @
 
-\subsubsection{Plotting} Before applying the different analysis techniques that 
+\subsection{Plotting} Before applying the different analysis techniques that 
 RHRV provides, it 
 is usually interesting to plot the time series with which we are working. The 
 \textit{PlotNIHR} function permits the graphical representation of the 

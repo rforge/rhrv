@@ -24,6 +24,7 @@
 % The documentclass already sets parameters to make a high penalty for widows and orphans. 
 
 %%%% Use packages %%%%
+\usepackage{tabularx}
 \usepackage{hyperref}
 \hypersetup{bookmarksnumbered}
 \usepackage{float}
@@ -71,7 +72,7 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 % options of the bookstab package
-\setcounter{secnumdepth}{4}
+\setcounter{secnumdepth}{5}
 \setcounter{tocdepth}{4}
 %set parameters for longtable:
 % default caption width is 4in for longtable, but wider for normal tables

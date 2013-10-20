@@ -5,5 +5,5 @@
 \SweaveInput{analyzingTime.Rnw}
 \subsection{Frequency-domain analysis techniques\label{sec:quickFreq}}
 \SweaveInput{analyzingFrequency.Rnw}
-
-%\subsection{Nonlinear analysis techniques\label{sec:quickNL}}
+\subsection{Nonlinear analysis techniques\label{sec:quickNL}}
+\SweaveInput{analyzingNonLinear.Rnw}

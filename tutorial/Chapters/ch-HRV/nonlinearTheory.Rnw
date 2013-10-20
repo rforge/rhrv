@@ -1,0 +1,254 @@
+% !Rnw root = chapter-HRV.Rnw
+There is a profound connection between nonlinear phenomena and \gls{HRV}. 
+\gls{HRV} is determined by complex interactions of electrophysiological and 
+humoral variables, as well as by autonomic and central nervous regulations. 
+Considering these complex control systems modulating the heart rhythm, it has 
+been speculated that methods of the nonlinear dynamics might extract
+some valuable information from the \gls{HRV} series.\\
+
+A wide variety of nonlinear statistics can be calculated using \textit{RHRV}, 
+including largest Lyapunov exponent (\textit{CalculateMaxLyapunov}, 
+\textit{EstimateMaxLyapunov} and \textit{PlotMaxLyapunov}),
+generalized correlation dimension (\textit{CalculateCorrDim}, 
+\textit{EstimateCorrDim} 
+and \textit{PlotCorrDim}), SD1/SD2 of Poincar\'{e} plots 
+(\textit{PoincarePlot}),
+detrended fluctuation analysis (\textit{CalculateDFA}, \textit{EstimateDFA} and 
+\textit{PlotDFA}),
+sample entropy (\textit{CalculateSampleEntropy}, \textit{EstimateSampleEntropy} 
+and \textit{PlotSampleEntropy}) and recurrence quantification analysis 
+(\textit{RQA}). Table \ref{tab:nonlinearStats} summarizes the most important 
+nonlinear statistics that have been included in \textit{RHRV}. In the next
+sections, we shall present a quick theorical review of all these methods,
+leaving some details for later.\\
+
+\begin{center}
+  \begin{table}
+      \begin{tabularx}{\textwidth}{|X|X|}
+      \hline
+            \textbf{Statistic}  &\textbf{Interpretation}\\ \hline   
+              Maximum Lyapunov Exponent& Quantifies the rate of divergence of 
+close trajectories\\
+              Generalized Correlation Dimension& Quantifies the 
+dimensionality of the reconstructed phase space\\ \hline
+              Sample Entropy& Measures the complexity of the time series 
+being studied\\ \hline
+	            Recurrence Quantification Analysis (RQA)& Quantifies the 
+number and duration of recurrences of a     time series in its phase space\\ 
+\hline
+            	Detrended Fluctuation Analysis (DFA)& Quantifies the presence 
+of fractal correlation properties in   non-stationary data\\ \hline
+            	Poincar\'{e} Plot& Characterizes the system dynamics by using a 
+two dimensional embedding\\
+	  \hline
+    \end{tabularx}
+    \caption{Summary of the most broadly used nonlinear 
+statistics.\label{tab:nonlinearStats}}
+  \end{table}
+\end{center}
+
+\subsubsection{Phase space reconstruction\label{sec:phaseSpaceTheory}}
+A large amount of nonlinear algorithms is based on the concept of phase space. 
+For a deterministic system, the phase space is the collection of all possible
+system states. That is, each point of the phase space represents all the 
+information needed to determine the evolution of the system. Of course, the
+problem now is: How we can transform an univariate time series (the RR time 
+series) in a multivariate phase space?
+
+The Takens embedding theorem answers this question. Takens proved that phase 
+space reconstruction from a single time series $x(n)$ could be achieved by using
+the vectors:
+
+\begin{equation}
+  \left\lbrace \boldsymbol{x_i}=\left[x(i), x(i + \tau), ..., 
+x(i+(m-1)\cdot\tau)\right] \right\rbrace,
+  \label{lab:takens}   
+\end{equation}
+
+Sections \ref{seq:tau} and \ref{seq:m} deals with the problem of selecting both 
+$m$ (the so-called embedding dimension) and $\tau$ (the time lag parameter) 
+using \textit{RHRV}.
+
+\subsubsection{Correlation dimension}
+The correlation dimension is the most common measure of the fractal 
+dimensionality of a geometrical object embedded in a phase space. 
+The estimation of the correlation
+dimension requires the computation of the so-called correlation sum $C(r)$. The 
+correlation sum is defined over the $N$ points from the phase space as follows:
+
+$$C(r) = \frac{ \# \lbrace (x_i,x_j): distance(x_i,x_j) < r\rbrace}{N^2},$$
+
+where $\#$ represents the cardinality of the set.However, this estimator is
+biased when the pairs in the sum are not 
+statistically independent.
+For example, Taken's vectors that are close in time, are usually close in the 
+phase space due to the 
+non-zero autocorrelation of the original time series. This is solved by using 
+the so-called Theiler window: two Takens' vectors must be separated by, at 
+least, the time steps specified by this window in order to be considered 
+neighbours. By using a Theiler window, we exclude temporally correlated vectors 
+from our estimations. \\
+
+Chaotic attractors are expected to fulfill 
+$$C(r)\propto r^D,$$
+being $D$ the correlation dimension that we want to estimate. Thus, the 
+correlation dimension may be estimated using the slope obtained by performing a 
+linear 
+regression of $log_{10}(C(r))$ Vs. $log_{10}(r)$. Since this dimension is 
+supposed to
+be an invariant of the system, it should not depend on the dimension of the 
+Taken's vectors 
+used to estimate it (given that we are using an embedding dimension that is 
+large enough). Thus, the user should plot $log_{10}(C(r))$ Vs. 
+$log_{10}(r)$ for several
+embedding dimensions when looking for the correlation dimension and, if for 
+some range $log_{10}(C(r))$ shows a similar linear behaviour in different 
+embedding dimensions (i.e. parallel slopes), these slopes are an estimate of 
+the correlation dimension. This is very important! If the slope depends
+on the embedding dimension (provided that we are embedding the time series in a 
+phase space with
+sufficient dimensions) we cannot talk about a correlation dimension. 
+Furthermore, the time
+series may not be chaotic. More details about this requirement shall be given
+when presenting the \textit{RHRV} functionality for computing the correlation
+dimension.\\
+\subsubsection{Generalized correlation dimension}
+Note that the correlation sum $C(r)$ may be interpreted as: $C(r) = <p(r)>$, 
+that is:
+the mean probability of finding a neighbour in a ball of radius r surrounding a 
+point in the phase space. Thus, it is possible to define a generalization
+of the correlation dimension by writing:
+
+$$C_q(r) = <p(r)^{(q-1)}>.$$
+
+With this notation, the ``classic" correlation sum is $C(r) = C_2(r)$. It is 
+possible  to determine generalized dimensions $D_q$ using the slope obtained by 
+performing a linear regression of $log10(Cq(r))\;Vs.\;(q-1)log10(r)$.
+The case $q=1$ leads to the information dimension, that is treated separately
+in this package. see sections  \ref{seq:infDimTheory} and \ref{seq:infDim}). 
+The considerations discussed for the correlation dimension estimate are also 
+valid for these generalized dimensions.
+\subsubsection{Information dimension\ref{seq:infDimTheory}}%TODO
+Cooming soon!!
+
+\subsubsection{Sample entropy\label{seq:sampEnTheory}}
+The sample entropy measures the complexity of a time series. Large values of the
+Sample Entropy indicate high complexity whereas that smaller values 
+characterize more regular signals. The sample entropy  of order $q$ is computed
+in the RHRV package by using the correlation sums calculated with the
+\textit{CalculateCorrDim}. We first define the function:
+
+$$h_q(m,r) = log\left( \frac{C_q(m,r)}{C_q(m+1,r)} \right),$$
+
+where $m$ is the embedding dimension and $q$ the order of the correlation sum. 
+The Sample entropy (or Renyi entropy) of order $q$ $H_q$ fulfills
+
+\begin{equation}
+H_q = lim_{\substack{r\rightarrow 0\\ m \rightarrow \infty}} h_q(m,r).
+\label{eq:entropy}
+\end{equation}
+
+\subsubsection{Maximum Lyapunov exponent\label{seq:maxLyapTheory}}
+Close trajectories diverge exponentially fast in a chaotic system. The averaged 
+exponent that determines the divergence rate is called the Lyapunov exponent 
+(usually denoted with $\lambda$). If $\delta(0)$ is the distance between two 
+Takens' vectors in a m-dimensional space, we expect that the distance after a 
+time t between the two trajectories arising from this two vectors fulfills:
+
+$$\delta(t) \propto \delta(0)\cdot exp(\lambda t).$$
+
+Thus, the lyapunov exponent is estimated using the slope obtained by performing
+a linear regression of $S(t)=\lambda \cdot t \approx log(\delta(t)/\delta (0))$ 
+on t. In practical applications, we should check the 
+existence of a linear region when plotting $S(t)$ Vs. $t$: if for
+some temporal range S(t) shows a linear 
+behaviour, its slope is an estimate of the maximal Lyapunov exponent per
+unit of time.  If such a region does not exist, the estimation should be
+discarded.
+
+Also, just as for the correlation dimension computations, the  maximal Lyapunov
+exponent should be computed for several embedding dimensions in order to 
+check that it doesn't depend on the embedding dimension. 
+
+\subsubsection{Detrended Fluctuation Analysis (DFA)\label{seq:dfaTheo}}
+The Detrended Fluctuation Analysis (DFA) is a widely used technique for 
+detecting correlations in time series. These functions are able to estimate 
+several scaling exponents from the RR time series being analyzed. These scaling 
+exponents characterize short or long-term fluctuations. The DFA procedure may 
+be summarized as follows:
+
+\begin{itemize}
+  \item Integrate the time series to be analyzed. The time series resulting 
+from the integration will be referred to as the profile.
+  \item Divide the profile into $N$ non-overlapping segments.
+  \item Calculate the local trend for each of the segments using least-square 
+regression. Compute the total error for each of the segments.
+  \item Compute the average of the total error over all segments and take its 
+root square. By repeating the previous steps for several segment sizes (let's 
+denote it by $t$: number of beats), we obtain the so-called Fluctuation 
+function $F(t)$.
+  \item If the data presents long-range power law correlations: $F(t) \propto 
+t^\alpha$ and we may estimate the exponent using regression.
+  \item Usually, when plotting $log(F(t))$ Vs $log(t)$ we may distinguish two 
+linear regions. By regression them separately, we obtain two scaling exponents, 
+$\alpha_1$ (the exponent for small values of $t$, characterizing short-term 
+fluctuations) and $\alpha_2$ (
+  the exponent for great values of $t$, characterizing long-term fluctuations). 
+\end{itemize}
+
+\subsubsection{Recurrence Quantification Analysis (RQA)}
+The Recurrence Quantification Analysis (RQA) is an advanced technique for the 
+nonlinear analysis that allows to quantify the number and duration of the 
+recurrences in the phase space. The recurrence plot
+is the graphical representation of the recurrence matrix of the RR time series. 
+The \textit{RQA} function 
+allows to compute several statistics derived from the RQA analysis of the RR 
+time series. Table \ref{tab:rqaStats}
+summarize the most important RQA statistics and its meaning. 
+
+
+\begin{center}
+ \begin{table}
+  \begin{tabularx}{\textwidth}{|X|X|X|}
+  \hline
+  \textbf{Statistic}&\textbf{RHRV name}&\textbf{Interpretation}\\  \hline 
+\hline   
+  Recurrence&\textit{REC}&Percentage of recurrence points in a Recurrence 
+Plot\\ \hline
+  Determinism&\textit{DET}&Percentage of recurrence points that form diagonal 
+lines\\ \hline
+  Laminarity&\textit{LAM}&Percentage of recurrent points that form vertical 
+lines\\ \hline
+  Ratio&\textit{RATIO}&Ratio between DET and RR\\ \hline
+  Longest diagonal line&\textit{Lmax}&Length of the longest diagonal line\\ 
+\hline
+  Averaged diagonal line length&\textit{Lmean}&Mean length of the diagonal 
+lines.  The main diagonal is not taken into account\\ \hline
+  Divergence&\textit{DIV}&Inverse of Lmax\\ \hline
+  Longest vertical line&\textit{Vmax}&Longest vertical line\\ \hline
+  Trapping time&\textit{Vmean}&Average length of the vertical lines. This 
+parameter is also referred to as the Trapping time\\ \hline
+  Entropy&\textit{ENTR}&Shannon entropy of the diagonal line lengths 
+distribution\\ \hline
+  Trend&\textit{TREND}&Trend of the number of recurrent points depending on the 
+distance to the main diagonal\\ \hline
+    Recurrence Rate&\textit{recurrenceRate}&Number of recurrent points 
+depending on the distance to the main diagonal\\ \hline
+  \end{tabularx}
+  \caption{Most important RQA statistics. \label{tab:rqaStats}}
+  \end{table}
+\end{center}
+
+\subsubsection{Poincar\'{e} plot}
+The Poincar\'{e} plot is a graphical representation of the dependance between 
+successive RR intervals obtained by plotting the $RR_{j+\tau}$ as a function of 
+$RR_{j}$. This dependance is often quantified by fitting an ellipse to the 
+plot. In this way, two parameters are obtained characterizing the ellipse:
+$SD_1$ and $SD_2$.  When $\tau=1$, $SD_1$ is usually calculated as the standard 
+deviation of the points perpendicular to the line of identity and $SD_2$ is 
+calculated as the standard deviation along the line of identity. In this way
+$SD_1$ characterizes short-term variability whereas that $SD_2$ characterizes 
+long-term variability. However, sometimes the ellipse that is fitted using this 
+approach is too small. \textit{RHRV} also allows the user to fit a ellipse by 
+estimating a confidence region. If $\tau > 1$, the confidence region
+approach is always used. More details shall be given in \ref{seq:poincarePlot}.

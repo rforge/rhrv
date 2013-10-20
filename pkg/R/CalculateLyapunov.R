@@ -54,7 +54,8 @@
 #' @rdname CalculateMaxLyapunov
 #' @seealso \code{\link[nonlinearTseries]{maxLyapunov}}
 CalculateMaxLyapunov <-
-  function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), embeddingDim = NULL, timeLag = NULL,
+  function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
+            embeddingDim = NULL, timeLag = NULL,
             radius = 2, theilerWindow = 100, minNeighs = 5, minRefPoints = 500,
             numberTimeSteps = 20, doPlot = TRUE) {
     # -------------------------------------
@@ -80,7 +81,7 @@ CalculateMaxLyapunov <-
                                 embedding.dim= embeddingDim, time.lag= timeLag,
                                 radius = radius, theiler.window= theilerWindow,
                                 min.neighs = minNeighs, min.ref.points = minRefPoints,
-                                min.time.steps = 1, max.time.steps = numberTimeSteps,
+                                max.time.steps = numberTimeSteps,
                                 sampling.period = 1, do.plot = doPlot)
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$divergence = maxLyapObject

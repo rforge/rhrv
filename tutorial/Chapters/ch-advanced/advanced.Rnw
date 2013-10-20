@@ -1,3 +1,4 @@
 % !Rnw root = ../../tutorial.Rnw
+\chapter{Advanced use of  RHRV\label{ch:advanced}}
 \SweaveInput{sections/completing/completing.Rnw}
 \SweaveInput{sections/advanced/advanced.Rnw}

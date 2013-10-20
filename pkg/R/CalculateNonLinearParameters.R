@@ -145,10 +145,14 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim){
 #' @param timeLag Time lag used to build the Takens' vectors needed to estimate the
 #' embedding dimension (see \link{buildTakens}). Default: 1.
 #' @param maxEmbeddingDim Maximum possible embedding dimension for the time series. Default: 15.
-#' @param threshold Numerical value between 0 and 1. The embedding dimension is estimated
-#' using the E1(d) function. E1(d) stops changing when d is greater than or equal to
-#' embedding dimension, staying close to 1. This value establishes a threshold for 
-#' considering that E1(d) has stopped to change. Default: 0.95
+#' @param threshold Numerical value between 0 and 1. The embedding dimension is
+#' estimated using the E1(d) function. E1(d) stops changing when d is greater 
+#' than or equal to embedding dimension, staying close to 1. This value 
+#' establishes a threshold for considering that E1(d) is close to 1.
+#' Default: 0.95
+#' @param maxRelativeChange Maximum relative change in E1(d) with respect to
+#' E1(d-1) in order to consider that the E1 function has been stabilized and it
+#' will stop changing. Default: 0.01.  
 #' @param doPlot Logical value. If TRUE (default value), a plot of E1(d) and E2(d) is shown.
 #' @references 
 #' Cao, L. Practical method for determining the minimum embedding dimension of a scalar time series. Physica D: Nonlinear Phenomena,
@@ -157,7 +161,7 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim){
 #' @seealso \code{\link[nonlinearTseries]{estimateEmbeddingDim}}.
 CalculateEmbeddingDim <-
   function(HRVData, numberPoints = 5000, timeLag = 1, maxEmbeddingDim = 15,
-           threshold = 0.95, doPlot = TRUE){
+           threshold = 0.95, maxRelativeChange = 0.01, doPlot = TRUE){
     # -------------------------------------
     # Calculates optimum embedding dimension
     # -------------------------------------
@@ -174,9 +178,12 @@ CalculateEmbeddingDim <-
     if (is.null(numberPoints) || (numberPoints > len.RR) ){
       numberPoints = len.RR
     }
-    embeddingDim = estimateEmbeddingDim(time.series=HRVData$Beat$RR,number.points = numberPoints, 
-                    time.lag=timeLag,max.embedding.dim=maxEmbeddingDim,
-                    threshold=threshold,do.plot=doPlot)
+    embeddingDim = estimateEmbeddingDim(time.series=HRVData$Beat$RR,
+                      number.points = numberPoints, 
+                      time.lag=timeLag,max.embedding.dim=maxEmbeddingDim,
+                      threshold=threshold,
+                      max.relative.change = maxRelativeChange,
+                      do.plot=doPlot)
                     
     
     return(embeddingDim)

@@ -1,0 +1,219 @@
+% !Rnw root = completing.Rnw
+All the nonlinear functions presented in \ref{sec:quickNL} used as example
+file an RR time series generated synthetically from a nonlinear process. In
+this section we will deal with a real RR time series and we will present all the
+remaining nonlinear functions.
+
+TODO!!!! Describe the file!!!!!!!!!!!!!!!!!!!!!!!
+<<RRnormal>>=
+hrv.data = CreateHRVData( )
+hrv.data = SetVerbose(hrv.data,FALSE)
+hrv.data = LoadBeatRR(hrv.data, 
+                         RecordName="chfRR.beats",
+                         RecordPath="beatsFolder")
+hrv.data = BuildNIHR(hrv.data)
+hrv.data = FilterNIHR(hrv.data)
+hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
+hrv.data = CreateNonLinearAnalysis(hrv.data)
+@
+
+First of all, we shall estimate both time lag and embedding dimension parameters
+in order to explore how a real time series may behave. First at all we estimate
+the time lag. The autocorrelation function used for the computations is shown
+in Figure \ref{fig:autocorrReal}.
+
+<<timeLagReal,fig=TRUE,pdf=TRUE, include=FALSE>>=
+CalculateTimeLag(hrv.data, method = "first.e.decay", lagMax = 200)
+CalculateTimeLag(hrv.data, method = "first.minimum", lagMax = 200, doPlot=FALSE)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/tutorial-timeLagReal}
+  \caption{Autocorrelation function for the RR time series.
+  \label{fig:autocorrReal}}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+We can appreciate that the time lag values are quite large because of the 
+slow-decaying autocorrelation function. Although the time lags provided by
+the \textit{CalculateTimeLag} function are reasonable (based on the 
+autocorrelation function), in most \gls{HRV} applications, the time
+lag value is not usually above 10 or 15. For this reason, we will manually 
+select the time lag for the remainder of the section:
+<<setTimeLag>>=
+kTimeLag = 10
+@
+Now, we may try to obtain an estimation of the embeddding dimension:
+<<embeddingDimReal,fig=TRUE, pdf = TRUE, include=FALSE>>=
+kEmbeddingDim = CalculateEmbeddingDim(hrv.data,
+                                      numberPoints = 10000, 
+                                      timeLag = kTimeLag, 
+                                      maxEmbeddingDim = 18)
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/tutorial-embeddingDimReal}
+  \caption{Automatic estimation of the embedding dimension.
+  \label{fig:autocorrReal}}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsubsection{Generalized correlation dimensions\label{seq:genCD}}
+% Section \ref{seq:corrDimTheo} presented the \textitCalculateCorrDim}, 
+% \textit{EstimateCorrDim} and \textit{PlotCorrDim} for computing the embedding
+% dimension of an RR time series. These functions can also be used for computing
+% the generalized correlation dimension. The user only has to specify the order 
+% of the correlation dimension
+% with the \textit{corrOrder} parameter in the \textit{CalculateCorrDim} (the 
+% default is $2$, the correlation dimension). The order must fulfill 
+% \textit{corrOrder > 1}. The generalized correlation dimension of order $q$ is
+% known as the information dimension, that is computed with the
+% \textit{CalculateInfDim} function (see section \ref{seq:infDimAdv}. 
+% 
+% As a quick example, we shall calculate the correlation dimension of order 4 for 
+% our new \textit{hrv.data}. 
+% 
+% 
+% <<genCorrDim,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
+% hrv.data = CreateNonLinearAnalysis(hrv.data)
+% my.index = 1
+% hrv.data = CalculateCorrDim(hrv.data, 
+%                             indexNonLinearAnalysis = my.index, 
+%                             minEmbeddingDim = kEmbeddingDim - 1,
+%                             maxEmbeddingDim = kEmbeddingDim + 2,
+%                             timeLag = kTimeLag, minRadius = 1,
+%                             maxRadius = 100, pointsRadius = 100, 
+%                             theilerWindow = 20, doPlot = FALSE,
+%                             corrOrder = 4)
+% hrv.data = EstimateCorrDim(hrv.data,
+%                            indexNonLinearAnalysis=my.index,
+%                            regressionRange=c(4,5), 
+%                            useEmbeddings=(kEmbeddingDim-1):(kEmbeddingDim+2),
+%                            doPlot=TRUE)
+% legend("bottomright", lty = rep(1,3), col = 1:3, title="Embedding dimension",   
+%     legend = (kEmbeddingDim-1):(kEmbeddingDim + 2))
+% 
+% cat("The correlation dimension is ",
+%     hrv.data$NonLinearAnalysis[[my.index]]$correlation$corrDim,"\n")
+% @
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.6\textwidth]{figures/tutorial-genCorrDim}
+%   \caption{Generalized correlation dimension regression.\label{fig:corrDim3}}
+% \end{figure}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% Note that the result is very similar to the correlation dimension obtained in 
+% the previous section. Figure \ref{fig:corrDim3} shows the correlation sums 
+% obtained in this example.
+% % \subsection{Information dimension\label{seq:infDimAdv}}
+% % The information dimension is a particular case of the generalized correlation 
+% %dimension
+% % when setting the order q = 1. In the \textit{RHRV} package, the information 
+% %dimension is computed
+% % using the \textit{CalculateInfDim}, \textit{EstimateInfDim} and 
+% %\textit{PlotInfDim}.
+% % Since the \textit{EstimateInfDim} and \textit{PlotInfDim} are analogous to the
+% % \textit{EstimateCorrDim} and \textit{PlotCorrDim} functions, we shall only 
+% %review
+% % the \textit{CalculateInfDim} function.
+% % 
+% % It is possible to demonstrate that the information dimension
+% % $SD_1$ may be defined as:
+% % $$D_1=lim_{r \rightarrow 0} <\log p(r)>/\log(r)$$
+% % Here, $p(r)$ is the probability of finding a neighbour in a neighbourhood of 
+% %size $r$ and 
+% % $<>$ is the mean value. Thus, the information dimension specifies how the 
+% %average
+% % Shannon information scales with the radius $r$.
+% % 
+% % In order to estimate $D_1$, the algorithm looks for the scaling behaviour of 
+% %the the average
+% % radius that contains a given portion (a "fixed-mass") of the total points in 
+% %the phase space. By performing
+% % a linear regression of $\log(p)\;Vs.\;\log(<r>)$ (being $p$ the fixed-mass of 
+% %the total points), an estimate
+% % of $D_1$ is obtained. 
+% % 
+% % 
+% % It must be noted that the the calculations for the information dimension are 
+% %heavier than
+% % those needed for the correlation dimension. Thus, \textit{EstimateCorrDim} 
+% %only explores 
+% % one embedding dimension. However, the user should run
+% % the method for different embedding dimensions for checking if $D_1$ 
+% %saturates. For the 
+% % sake of simplicity, we just run the example for one embedding dimension:
+% % <<infDim,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
+% % my.index = 1
+% % hrv.data = CalculateInfDim(hrv.data,
+% %                            indexNonLinearAnalysis=my.index,
+% %                            embeddingDim=kEmbeddingDim,
+% %                            timeLag=kTimeLag,
+% %                            minFixedMass=0.0001,maxFixedMass=0.1,
+% %                            numberFixedMassPoints=20,
+% %                            radius=1,increasingRadiusFactor=1.05,
+% %                            numberPoints=500, theilerWindow=20,
+% %                            doPlot=TRUE)
+% % 
+% % hrv.data = EstimateInfDim(hrv.data,
+% %                            indexNonLinearAnalysis=my.index,
+% %                            regressionRange=c(0,0.001), 
+% %                            doPlot=TRUE)
+% % 
+% % 
+% % cat("The information dimension is ",
+% %     hrv.data$NonLinearAnalysis[[my.index]]$infDim$infDim,"\n")
+% % @
+% % Figure \ref{fig:infDim} shows the regression performed for obtaining the 
+% %estimate
+% % of the information dimension.
+% % 
+% % \begin{figure}[h]
+% %   \centering
+% %   \includegraphics[width=0.6\textwidth]{figures/tutorial-infDim}
+% %   \caption{Information dimension estimation.\label{fig:infDim}}
+% % \end{figure}
+% 
+% 
+% 
+% 
+% \subsection{Poincar\'{e} Plot\label{seq:poincarePlot}}
+% The most important parameters in the \textit{PoincarePlot} are the 
+% \textit{timeLag} ($\tau$ in
+% the previous paragraph) and \textit{doPlot} (if TRUE, the Poincar\'{e} plot is 
+% shown). The following
+% lines illustrate the use of this function. The resulting Poincar\'{e} plot is 
+% shown in
+% Figure \ref{fig:poincare}. 
+% 
+% Since the beats from the file used in the previous examples was generated 
+% synthetically 
+% from a nonlinear system, we shall load other RR series for the next sections
+% in order to show the usual behaviour of the RR time series.
+% 
+% 
+% 
+% <<Poincare,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
+% #...
+% hrv.data = PoincarePlot(hrv.data,
+%                         indexNonLinearAnalysis=1,
+%                         timeLag=1,doPlot=TRUE)
+% @
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \begin{figure}[h]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figures/tutorial-Poincare}
+%   \caption{Poincar\'{e} Plot.\label{fig:poincare}}
+% \end{figure}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+% The $SD_1$ and $SD_2$ parameters are stored under the
+% \textit{hrv.data\$NonLinearAnalysis[[index]]\$PoincarePlot} list.
+% 
+% <<AccessingData>>=
+% print(hrv.data$NonLinearAnalysis[[1]]$PoincarePlot)
+% @

@@ -1,5 +1,4 @@
 % !Rnw root = ../../advanced.Rnw
-\chapter{Advanced use of  RHRV\label{ch:RHRV}}
 
 \section{Reading several file formats\label{sec:fileFormats}}
 \SweaveInput{reading.Rnw}
