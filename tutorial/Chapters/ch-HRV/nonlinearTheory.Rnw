@@ -19,7 +19,7 @@ sample entropy (\textit{CalculateSampleEntropy}, \textit{EstimateSampleEntropy}
 and \textit{PlotSampleEntropy}) and recurrence quantification analysis 
 (\textit{RQA}). Table \ref{tab:nonlinearStats} summarizes the most important 
 nonlinear statistics that have been included in \textit{RHRV}. In the next
-sections, we shall present a quick theorical review of all these methods,
+sections, we shall present a quick theoretical review of all these methods,
 leaving some details for later.\\
 
 \begin{center}
@@ -125,11 +125,28 @@ With this notation, the ``classic" correlation sum is $C(r) = C_2(r)$. It is
 possible  to determine generalized dimensions $D_q$ using the slope obtained by 
 performing a linear regression of $log10(Cq(r))\;Vs.\;(q-1)log10(r)$.
 The case $q=1$ leads to the information dimension, that is treated separately
-in this package. see sections  \ref{seq:infDimTheory} and \ref{seq:infDim}). 
+in this package. see sections  \ref{seq:infDimTheory} and \ref{seq:infDimAdv}). 
 The considerations discussed for the correlation dimension estimate are also 
 valid for these generalized dimensions.
-\subsubsection{Information dimension\ref{seq:infDimTheory}}%TODO
-Cooming soon!!
+\subsubsection{Information dimension\label{seq:infDimTheory}}
+The information dimension is a particular case of the generalized correlation 
+dimension when setting the order $q = 1$. In order to compute the information
+dimension in practical applications, it is possible to demonstrate that the 
+it may be defined as:
+
+$$D_1=lim_{r \rightarrow 0} <\log p(r)>/\log(r),$$
+being $D_1$ the information dimension, $p(r)$ is the probability of finding
+a neighbour in a neighbourhood of 
+size $r$ and $<>$ is the mean value. Thus, the information dimension specifies 
+how the average Shannon information scales with the radius $r$.
+
+In order to estimate $D_1$, the algorithm looks for the scaling behaviour of 
+the the average radius that contains a given portion (a "fixed-mass") of the 
+total points in the phase space. By performing
+a linear regression of $\log(p)\;Vs.\;\log(<r>)$ (being $p$ the fixed-mass of 
+the total points), an estimate of $D_1$ is obtained. 
+
+
 
 \subsubsection{Sample entropy\label{seq:sampEnTheory}}
 The sample entropy measures the complexity of a time series. Large values of the
@@ -239,7 +256,7 @@ depending on the distance to the main diagonal\\ \hline
   \end{table}
 \end{center}
 
-\subsubsection{Poincar\'{e} plot}
+\subsubsection{Poincar\'{e} plot\label{seq:poincareTheory}}
 The Poincar\'{e} plot is a graphical representation of the dependance between 
 successive RR intervals obtained by plotting the $RR_{j+\tau}$ as a function of 
 $RR_{j}$. This dependance is often quantified by fitting an ellipse to the 

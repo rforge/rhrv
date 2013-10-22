@@ -40,7 +40,7 @@ to discrete signals, it is referred to as the \gls{STFT}.\\
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/tutorial-highVslow}
+\includegraphics[width=0.6\textwidth]{figures/highVslow}
 \caption{High and low frequencies illustrated with sines.\label{fig:sines}}
 \end{figure}
 

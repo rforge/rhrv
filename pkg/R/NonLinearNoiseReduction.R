@@ -39,10 +39,12 @@ NonLinearNoiseReduction <- function(HRVData, embeddingDim = NULL, radius = NULL 
   
   
   if (!is.null(ECGsamplingFreq)){
-    Ts = 1/ECGsamplingFreq  
+    # express the result in milliseconds
+    Ts = 1000/ECGsamplingFreq  
   }else{
     # Assume 1 millisecond of precision in the ECG...
-    Ts = 0.001
+    # Express the result in milliseconds!
+    Ts = 1
   }
   # Add random noise in order to avoid equal points in phase space
   noise = runif(n=length(HRVData$Beat$RR),min=-(Ts/2),max=(Ts/2))

@@ -1,10 +1,11 @@
 ############################# Poincare plot ####################################
 #' Poincare Plot
-#' @details  The Poincare plot is a graphical representation of the dependance between successive RR
-#' intervals obtained by plotting the \eqn{RR_{j+\tau}}{RR_(j+tau)} as a function of \eqn{RR_j}. This dependance
-#' is often quantified by fitting an ellipse to the plot. In this way, two parameters are obtained:  
-#' \eqn{SD_1} (The deviation of the points perpendicular to the line of identity) and \eqn{SD_2}
-#' (The standard along the line of identity). \eqn{SD_1} characterizes short-term variability
+#' @description  The Poincare plot is a graphical representation of the dependance
+#'  between successive RR intervals obtained by plotting the \eqn{RR_{j+\tau}}{RR_(j+tau)}
+#'  as a function of \eqn{RR_j}. This dependance #' is often quantified by fitting an
+#'  ellipse to the plot. In this way, two parameters are obtained:  
+#' \eqn{SD_1}  and \eqn{SD_2}.
+#' \eqn{SD_1} characterizes short-term variability
 #' whereas that \eqn{SD_2} characterizes long-term variability.
 #' @param HRVData Data structure that stores the beats register and information related to it
 #' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
@@ -19,7 +20,7 @@
 #' @param ylab A title for the y axis.
 #' @param main An overall title for the Poincare plot.
 #' @param ... Additional parameters for the Poincare plot figure.
-#' @details In the HRV literature, when \emph{timeLag = 1}, the \eqn{SD_1} and \eqm{SD_2}
+#' @details In the HRV literature, when \emph{timeLag = 1}, the \eqn{SD_1} and \eqn{SD_2}
 #' parameters are computed using time domain measures. This is the default approach in this
 #' function if \emph{timeLag=1}. However, sometimes the ellipse that is fitted using this 
 #' approach is too small. This function also allows the user to fit a ellipse by estimating a

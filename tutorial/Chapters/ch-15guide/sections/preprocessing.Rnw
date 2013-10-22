@@ -23,7 +23,7 @@ data files containing heart beats positions. Supported formats include ASCII
 focus in
 ASCII files containing one heart beat occurrence time per line. We also assume 
 that the beat occurrence time is specified in seconds (further details will be 
-given in chapter \ref{ch:RHRV}). For example, let's try to load the 
+given in chapter \ref{ch:advanced}). For example, let's try to load the 
 ``example.beats" file, whose first lines are shown below. Each line denotes
 the occurrence time of each heartbeat.
 \begin{verbatim}
@@ -79,7 +79,7 @@ in the frequency domain, a uniformly sampled \gls{HR} series is required. It
 may be constructed from the \gls{niHR} series by using the 
 \textit{InterpolateNIHR} function, which uses linear (default) or spline 
 interpolation  (further details
-on chapter \ref{ch:RHRV}). The frequency of interpolation may be specified. 
+on chapter \ref{ch:advanced}). The frequency of interpolation may be specified. 
 $4\;Hz $ (the default value) is  enough for most applications.
 
 <<interpolating,results=verbatim,run=FALSE,echo=TRUE>>=
@@ -119,4 +119,4 @@ As seen in the Figures \ref{fig:exampleNIHR} and \ref{fig:exampleHR}, the
 patient initially had a heart rate of approximately 160 beats per minute. 
 Approximately half an hour into record the prostaglandina E1 was provided, 
 resulting in a drop in heart rate to about 130 beats per minute during about 40 
-minutes, followed by a slightt increae in heart rate.
+minutes, followed by a slight increase in heart rate.

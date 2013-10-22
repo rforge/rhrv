@@ -1,4 +1,9 @@
 % !Rnw root = ../../tutorial.Rnw
+<<echo=FALSE,include=FALSE>>=
+library("knitr")
+opts_knit$set(self.contained=FALSE)
+@
+
 \chapter{Installation\label{ch:installation}}
 \section{Installation} This guide assumes that the user has some basic 
 knowledge of the R environment. If this is not your case, you can find a nice 
@@ -23,7 +28,7 @@ library(RHRV)
 
 \section{WFDB applications} Some functions of the RHRV package (such as the 
 \textit{LoadApneaWFDB}) require the installation of the WFDB functions 
-\cite{moody2003wfdb}. If the user is not going to work with WFDB formated 
+\cite{moody2003wfdb}. If the user is not going to work with WFDB formatted 
 files, the installation of these libraries is not required for the proper 
 functioning of RHRV. The WFDB functions is a large collection of specialized 
 software for processing and manipulating the Physionet's databases 

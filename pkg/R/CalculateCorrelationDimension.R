@@ -159,7 +159,7 @@ EstimateCorrDim <-
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$corrDim = 
       estimate(corrDimObject,regression.range=regressionRange,
                use.embeddings=useEmbeddings, do.plot=doPlot,
-               xlab="log(r)", ylab="log(C(r))",main="Radius (r) Vs Correlation Sum (r)")
+               xlab="radius r", ylab="log(C(r))",main="Radius (r) Vs Correlation Sum (r)")
     
     if (HRVData$Verbose){
       if (getOrder(corrDimObject)==2){

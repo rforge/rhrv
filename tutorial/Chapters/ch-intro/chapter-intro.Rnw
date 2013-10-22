@@ -104,7 +104,7 @@ This guide assumes that you have already installed R on your computer.\\
 
 Chapter \ref{ch:Quick} presents a ``15-minutes guide to RHRV''. This chapter 
 presents the essential functions needed to perform some basic analysis with 
-RHRV. Chapter \ref{ch:RHRV} completes the functionality introduced in chapter 
+RHRV. Chapter \ref{ch:advanced} completes the functionality introduced in chapter 
 \ref{ch:Quick} and presents more advanced features available in RHRV. Although 
 there exist some functionality in the RHRV package for performing nonlinear 
 analysis of a \gls{HR} signal, this current version of the tutorial will not 

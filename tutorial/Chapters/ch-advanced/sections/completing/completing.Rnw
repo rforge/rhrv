@@ -91,7 +91,7 @@ function. This function implements
 an algorithm that uses adaptive thresholds for rejecting or accepting beats 
 \cite{vila1997time}. The rule for beat acceptation or rejection is to compare 
 the present beat with  the previous one, the following one and with an updated 
-mean of the RR interval. The different adaptative thresholds establish an upper 
+mean of the RR interval. The different adaptive thresholds establish an upper 
 limit for the relative errors of each of these comparisons. The \textit{long} 
 parameter allows the user to specify the number of beats that shall be used to 
 calculate the updated mean (default value are 50 heartbeats). Also, the 

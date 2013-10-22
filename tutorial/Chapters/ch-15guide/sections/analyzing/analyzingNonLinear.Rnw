@@ -1,4 +1,3 @@
-% !Rnw root = analyzing.Rnw
 \textit{RHRV} implements all the nonlinear functionality presented in section 
 \ref{sec:NonlinearTheory}. As we shall see in the next sections, most 
 of the nonlinear statistics share a common name 
@@ -26,8 +25,8 @@ hrv.data = BuildNIHR(hrv.data)
 hrv.data = SetVerbose(hrv.data,TRUE)
 @
 The beats from this file were generated synthetically from a nonlinear process
-in order to show the expected behaviour of a trully nonlinear RR time series and
-avoid some issues when dealing with a noisy process. An example with a trully
+in order to show the expected behaviour of a truly nonlinear RR time series and
+avoid some issues when dealing with a noisy process. An example with a truly
 RR series is given in Chapter \ref{ch:advanced}.
 
 Before performing the nonlinear analysis 
@@ -42,9 +41,10 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 @
 
 In the next few sections we shall present the basics for performing the most
-widely-used nonlinear analysis algorithms. Some of the algorithms will not
-be presented here, but the will be presented in section 
-\ref{seq:nonlinearAdvanced}.
+widely-used nonlinear analysis algorithms (Although some of the algorithms will
+not be presented here, but in section \ref{seq:nonlinearAdvanced}). Due to the
+heterogeneity of the nonlinear algorithms, we will explain how to access the 
+computations for each algorithm as they are presented.
 
 \subsubsection{Nonlinearity Test}
 Before applying nonlinear analysis to the RR time series we should ensure that
@@ -128,7 +128,7 @@ the diagonal in the phase space. If the time lag is chosen too large, the
 resulting coordinates may be almost uncorrelated and the resulting embedding 
 will be very complicated. Thus, there is a wide variety of methods for 
 estimating
-an appropiate time lag based on the study of the autocorrelation function of a 
+an appropriate time lag based on the study of the autocorrelation function of a 
 given time series:
 \begin{itemize}
   \item Select the time lag where the autocorrelation function decays to 0 
@@ -171,7 +171,7 @@ CalculateTimeLag(hrv.data,method="first.value",value=0.1,
 kTimeLag = CalculateTimeLag(hrv.data,lagMax=100, doPlot=FALSE)
 print(kTimeLag)
 @
-Most of the nonlinear algorihtms in \textit{RHRV} accept as input both time lag 
+Most of the nonlinear algorithms in \textit{RHRV} accept as input both time lag 
 and embedding
 dimension parameters. If they are not specified, \textit{RHRV} estimates them 
 by using the functions 
@@ -214,7 +214,7 @@ structure, the number of points of the time series to be used for estimating
 the embedding dimension (\textit{numberPoints}); the time lag calculated in the
 previous section (\textit{timeLag}); the maximum possible embedding dimension 
 (\textit{maxEmbeddingDim}); the threshold that $E1(d)$ most cross for
-considering that it is close to the limit value 1 (\textit{treshold. Default
+considering that it is close to the limit value 1 (\textit{threshold. Default
 0.95}); the maximum relative change in $E1(d)$ with respect to $E1(d-1)$ in 
 order to consider that the $E1$ function has been stabilized and it will stop
 changing (\textit{maximumRelativeValue}. Default = 0.01)and the \textit{doPlot} 
@@ -248,7 +248,7 @@ structure that shall store the results. The embedding dimensions in which
 the \textit{CalculateCorrDim} will be computed are specified with the 
 \textit{minEmbeddingDim}
 and the \textit{maxEmbeddingDim} parameters (i.e., the correlation sum is 
-computedfor the embeddings ranging from \textit{minEmbeddingDim} to 
+computed for the embeddings ranging from \textit{minEmbeddingDim} to 
 \textit{maxEmbeddingDim}). The time lag needed for reconstruct the phase space
 is provided by the \textit{timeLag}
 parameter. The \textit{minRadius} and \textit{maxRadius} parameters specify the 
@@ -262,7 +262,7 @@ Finally, a log-log plot of the correlation sum Vs. the radius by setting
 For analyzing our \textit{hrv.data} structure we shall use the embedding 
 dimension and time lag obtained in Section \ref{sec:phaseSpace}.
 Thus we shall use  \textit{timeLag = kTimeLag} and we may select a 
-sequence of dimensions sorrounding
+sequence of dimensions surrounding
  \textit{kEmbeddingDim}. For example, we may use \textit{minEmbeddingDim = 
 kEmbeddingDim - 1} and \textit{maxEmbeddingDim = kEmbeddingDim + 2}. 
 In order to select the radius  we have to take into account that we are
@@ -476,7 +476,7 @@ print(estimation)
 
 \paragraph{Maximum Lyapunov exponent}
 As presented in section \ref{seq:maxLyapTheory}, the first step in order to
-calculate the maxymum Lyapunov exponent should be computing the $S(t)$ 
+calculate the maximum Lyapunov exponent should be computing the $S(t)$ 
 function. In \textit{RHRV}, the $S(t)$ shall be estimated with the
 \textit{CalculateMaxLyapunov} function. The \textit{CalculateMaxLyapunov}
 function will average the divergence of several reference points
@@ -525,7 +525,7 @@ PlotMaxLyapunov(hrv.data, indexNonLinearAnalysis = 1)
 
 The resulting plot is shown in Figure \ref{fig:ml1}. After plotting the $S(t)$ 
 function we should check of for some temporal range it shows a linear 
-behaviour. It that's the caser, its slope is an estimate of the maximal
+behaviour. It that's the case, its slope is an estimate of the maximal
 Lyapunov exponent per unit of time. The \textit{EstimateMaxLyapunov} routine
 allows the user to get always an
 estimate of the maximal Lyapunov exponent, but the user must check that there 
@@ -600,7 +600,7 @@ Steps 1-4 are performed in \textit{RHRV} using the \textit{CalculateDFA}
 function. In order to obtain a estimate of some scaling exponent, the user must
 use the \textit{EstimateDFA} function specifying the regression range 
 (window sizes used to detrend the series). $\alpha_1$ is usually
-obtained by performing the regression in the $4\leq t \leq 16$ range wheras 
+obtained by performing the regression in the $4\leq t \leq 16$ range whereas 
 that $\alpha_2$ is obtained in the $16\leq t \leq 64$ range
 (However the F(t) function must be linear in these ranges for obtaining 
 reliable results).
@@ -698,7 +698,7 @@ also be obtained with the \textit{recurrencePlot} function.
    
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.6\textwidth]{figures/tutorial-RQA}
+  \includegraphics[width=0.6\textwidth]{figures/RQAplot}
   \caption{Recurrence plot.\label{fig:recplot}}
 \end{figure}
    
