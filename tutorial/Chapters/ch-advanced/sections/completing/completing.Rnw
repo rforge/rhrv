@@ -7,7 +7,7 @@ functionality that has narrower applications  than the one presented in the
 previous chapter. Thus, we will introduce some new functions 
 (\textit{EditNIHR}, \textit{CalculateSpectrogram} and \textit{PlotSpectrogram}) 
 and we will finish
-the description of all the the function parameters introduced in the previous 
+the description of all the function parameters introduced in the previous 
 chapter. Also, further information about the 
 \textit{HRVData} structure will be given.  Figure \ref{fig:completeData} shows
 a detailed view of the internal organization of the HRVData structure. This 

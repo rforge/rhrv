@@ -6,21 +6,15 @@ Considering these complex control systems modulating the heart rhythm, it has
 been speculated that methods of the nonlinear dynamics might extract
 some valuable information from the \gls{HRV} series.\\
 
-A wide variety of nonlinear statistics can be calculated using \textit{RHRV}, 
-including largest Lyapunov exponent (\textit{CalculateMaxLyapunov}, 
-\textit{EstimateMaxLyapunov} and \textit{PlotMaxLyapunov}),
-generalized correlation dimension (\textit{CalculateCorrDim}, 
-\textit{EstimateCorrDim} 
-and \textit{PlotCorrDim}), SD1/SD2 of Poincar\'{e} plots 
-(\textit{PoincarePlot}),
-detrended fluctuation analysis (\textit{CalculateDFA}, \textit{EstimateDFA} and 
-\textit{PlotDFA}),
-sample entropy (\textit{CalculateSampleEntropy}, \textit{EstimateSampleEntropy} 
-and \textit{PlotSampleEntropy}) and recurrence quantification analysis 
-(\textit{RQA}). Table \ref{tab:nonlinearStats} summarizes the most important 
+A wide variety of nonlinear statistics have already been used in the \gls{HRV}
+literature, including largest Lyapunov exponent, 
+generalized correlation dimension, SD1/SD2 of Poincar\'{e} plots,
+detrended fluctuation analysis, sample entropy and
+recurrence quantification analysis. Table \ref{tab:nonlinearStats} summarizes
+the most important 
 nonlinear statistics that have been included in \textit{RHRV}. In the next
 sections, we shall present a quick theoretical review of all these methods,
-leaving some details for later.\\
+leaving some details for its practical presentation.\\
 
 \begin{center}
   \begin{table}
@@ -53,7 +47,7 @@ For a deterministic system, the phase space is the collection of all possible
 system states. That is, each point of the phase space represents all the 
 information needed to determine the evolution of the system. Of course, the
 problem now is: How we can transform an univariate time series (the RR time 
-series) in a multivariate phase space?
+series) in a multivariate phase space?\\
 
 The Takens embedding theorem answers this question. Takens proved that phase 
 space reconstruction from a single time series $x(n)$ could be achieved by using
@@ -99,10 +93,10 @@ supposed to
 be an invariant of the system, it should not depend on the dimension of the 
 Taken's vectors 
 used to estimate it (given that we are using an embedding dimension that is 
-large enough). Thus, the user should plot $log_{10}(C(r))$ Vs. 
-$log_{10}(r)$ for several
+large enough). Thus, the user should plot $log(C(r))$ Vs. 
+$log(r)$ for several
 embedding dimensions when looking for the correlation dimension and, if for 
-some range $log_{10}(C(r))$ shows a similar linear behaviour in different 
+some range $log(C(r))$ shows a similar linear behaviour in different 
 embedding dimensions (i.e. parallel slopes), these slopes are an estimate of 
 the correlation dimension. This is very important! If the slope depends
 on the embedding dimension (provided that we are embedding the time series in a 
@@ -123,30 +117,32 @@ $$C_q(r) = <p(r)^{(q-1)}>.$$
 
 With this notation, the ``classic" correlation sum is $C(r) = C_2(r)$. It is 
 possible  to determine generalized dimensions $D_q$ using the slope obtained by 
-performing a linear regression of $log10(Cq(r))\;Vs.\;(q-1)log10(r)$.
+performing a linear regression of $log(Cq(r))\;Vs.\;(q-1)log(r)$.
 The case $q=1$ leads to the information dimension, that is treated separately
 in this package. see sections  \ref{seq:infDimTheory} and \ref{seq:infDimAdv}). 
 The considerations discussed for the correlation dimension estimate are also 
 valid for these generalized dimensions.
 \subsubsection{Information dimension\label{seq:infDimTheory}}
 The information dimension is a particular case of the generalized correlation 
-dimension when setting the order $q = 1$. In order to compute the information
-dimension in practical applications, it is possible to demonstrate that the 
+dimension when setting the order $q = 1$. It is possible to demonstrate that the 
 it may be defined as:
 
-$$D_1=lim_{r \rightarrow 0} <\log p(r)>/\log(r),$$
+\begin{equation}
+D_1=lim_{r \rightarrow 0} <\log p(r)>/\log(r),
+\label{eq:infFormula}
+\end{equation}
 being $D_1$ the information dimension, $p(r)$ is the probability of finding
 a neighbour in a neighbourhood of 
 size $r$ and $<>$ is the mean value. Thus, the information dimension specifies 
-how the average Shannon information scales with the radius $r$.
+how the average Shannon information scales with the radius $r$.\\
 
-In order to estimate $D_1$, the algorithm looks for the scaling behaviour of 
-the the average radius that contains a given portion (a "fixed-mass") of the 
+In order to estimate $D_1$ in practical applications, a variation of 
+equation \ref{eq:infFormula} is used. This algorithm looks for the scaling 
+behaviour of the average radius that contains a given portion 
+(a "fixed-mass" $p$) of the 
 total points in the phase space. By performing
-a linear regression of $\log(p)\;Vs.\;\log(<r>)$ (being $p$ the fixed-mass of 
-the total points), an estimate of $D_1$ is obtained. 
-
-
+a linear regression of $\log(p)\;Vs.\;\log(<r>)$,
+an estimate of $D_1$ is obtained. 
 
 \subsubsection{Sample entropy\label{seq:sampEnTheory}}
 The sample entropy measures the complexity of a time series. Large values of the
@@ -181,7 +177,7 @@ existence of a linear region when plotting $S(t)$ Vs. $t$: if for
 some temporal range S(t) shows a linear 
 behaviour, its slope is an estimate of the maximal Lyapunov exponent per
 unit of time.  If such a region does not exist, the estimation should be
-discarded.
+discarded.\\
 
 Also, just as for the correlation dimension computations, the  maximal Lyapunov
 exponent should be computed for several embedding dimensions in order to 
@@ -194,24 +190,24 @@ several scaling exponents from the RR time series being analyzed. These scaling
 exponents characterize short or long-term fluctuations. The DFA procedure may 
 be summarized as follows:
 
-\begin{itemize}
+\begin{enumerate}
   \item Integrate the time series to be analyzed. The time series resulting 
-from the integration will be referred to as the profile.
+from the integration will be referred to as the \textit{profile}.
   \item Divide the profile into $N$ non-overlapping segments.
   \item Calculate the local trend for each of the segments using least-square 
 regression. Compute the total error for each of the segments.
   \item Compute the average of the total error over all segments and take its 
 root square. By repeating the previous steps for several segment sizes (let's 
-denote it by $t$: number of beats), we obtain the so-called Fluctuation 
-function $F(t)$.
+denote it by $t$: number of beats), we obtain the so-called \textit{fluctuation 
+function} $F(t)$.
   \item If the data presents long-range power law correlations: $F(t) \propto 
 t^\alpha$ and we may estimate the exponent using regression.
   \item Usually, when plotting $log(F(t))$ Vs $log(t)$ we may distinguish two 
 linear regions. By regression them separately, we obtain two scaling exponents, 
 $\alpha_1$ (the exponent for small values of $t$, characterizing short-term 
-fluctuations) and $\alpha_2$ (
-  the exponent for great values of $t$, characterizing long-term fluctuations). 
-\end{itemize}
+fluctuations) and $\alpha_2$ (the exponent for great values of $t$,
+characterizing long-term fluctuations). 
+\end{enumerate}
 
 \subsubsection{Recurrence Quantification Analysis (RQA)}
 The Recurrence Quantification Analysis (RQA) is an advanced technique for the 
@@ -263,7 +259,11 @@ $RR_{j}$. This dependance is often quantified by fitting an ellipse to the
 plot. In this way, two parameters are obtained characterizing the ellipse:
 $SD_1$ and $SD_2$.  When $\tau=1$, $SD_1$ is usually calculated as the standard 
 deviation of the points perpendicular to the line of identity and $SD_2$ is 
-calculated as the standard deviation along the line of identity. In this way
+calculated as the standard deviation along the line of identity. In terms
+of time-domain parameters:
+$$SD_1^2=\frac{1}{2}SDSD^2$$
+$$SD_2^2=2\cdot SDNN^2-\frac{1}{2}SDSD^2$$
+In this way
 $SD_1$ characterizes short-term variability whereas that $SD_2$ characterizes 
 long-term variability. However, sometimes the ellipse that is fitted using this 
 approach is too small. \textit{RHRV} also allows the user to fit a ellipse by 

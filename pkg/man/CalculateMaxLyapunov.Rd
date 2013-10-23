@@ -129,7 +129,7 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,embeddingDim=5,
                                 timeLag=1,radius=10,theilerWindow=100,doPlot=FALSE)
 hrv.data = PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
-hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,regressionRange=c(1,10))
+hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1, regressionRange=c(1,10))
 }
 }
 \author{

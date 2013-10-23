@@ -22,7 +22,12 @@ of the standard deviation calculated over the windowed RR intervals, usually 5
 minutes.\\
 
 Other measures use the time series constructed as successive RR interval 
-differences, defined as  $$\Delta RR_j=RR_{j+1}-RR_j.$$  The Root Mean square 
+differences, defined as  $$\Delta RR_j=RR_{j+1}-RR_j.$$  
+The Standard Deviation of Successive Differences (\glslink{SDSD}{SDSD}) is 
+given by
+$$SDSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j-\overline{\Delta RR})^2}.$$
+
+The Root Mean square 
 of Successive Differences (\glslink{RMSSD}{RMSSD}) is given by
 $$RMSSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j)^2}.$$
 

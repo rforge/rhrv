@@ -9,7 +9,7 @@
 #' <> is the mean value. Thus, the information dimension specifies how the average
 #' Shannon information scales with the radius \eqn{r}.
 #' 
-#' In order to estimate \eqn{D_1}{D1}, the algorithm looks for the scaling behaviour of the the average
+#' In order to estimate \eqn{D_1}{D1}, the algorithm looks for the scaling behaviour of the average
 #' radius that contains a given portion (a "fixed-mass") of the total points in the phase space. By performing
 #' a linear regression of \eqn{\log(p)\;Vs.\;\log(<r>)}{ln p Vs ln <r>} (being \eqn{p} the fixed-mass of the total points), an estimate
 #' of \eqn{D_1}{D1} is obtained. 
@@ -80,7 +80,7 @@ CalculateInfDim <-
                            theiler.window=theilerWindow,do.plot=doPlot,
                            number.boxes=NULL)
         
-    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$calculations=infDimObject
+    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations=infDimObject
     
     return(HRVData)
 }
@@ -107,23 +107,23 @@ EstimateInfDim <-
     # -------------------------------------
     checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
     
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$calculations)){
+    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
       stop("  --- Error: Correlation Object not found!! Run the CalculateInfDim routine before estimating
            the Information Dimension!! ---\n")
     }
     
-    infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$calculations
+    infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations
     
     if (HRVData$Verbose){
        cat("  --- Estimating the information dimension ---\n")
     }
     
-    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$infDim = 
+    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic = 
       estimate(infDimObject,regression.range=regressionRange,
                do.plot=doPlot)
     
     if (HRVData$Verbose){
-        cat("  --- Information dimension = ",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$infDim,"---\n")
+        cat("  --- Information dimension = ",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic,"---\n")
     }
     return(HRVData)
 }
@@ -140,10 +140,10 @@ PlotInfDim <-
     # -------------------------------------
     
     checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$calculations)){
+    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
       stop(" Information Dimension Object not found!! Run the CalculateInfDim routine!!\n")
     }    
-    infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$calculations
+    infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations
     
     plot(infDimObject, ...)
   }

@@ -109,7 +109,7 @@
   Shannon information scales with the radius \eqn{r}.
 
   In order to estimate \eqn{D_1}{D1}, the algorithm looks
-  for the scaling behaviour of the the average radius that
+  for the scaling behaviour of the average radius that
   contains a given portion (a "fixed-mass") of the total
   points in the phase space. By performing a linear
   regression of \eqn{\log(p)\;Vs.\;\log(<r>)}{ln p Vs ln

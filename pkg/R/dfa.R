@@ -64,7 +64,7 @@ CalculateDFA <-
     dfaObject = dfa( time.series = HRVData$Beat$niHR, window.size.range= windowSizeRange,
                      npoints=  npoints, do.plot = doPlot)
     
-    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$dfaComputations=dfaObject
+    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations=dfaObject
     
     return(HRVData)
   }
@@ -88,12 +88,12 @@ EstimateDFA <-
     
     # some basic checkings
     checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$dfaComputations)){
+    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations)){
       stop("  --- Error: DFA computations not found!! Run CalculateDFA()
            before using EstimateDFA()!! ---\n")
     }
     
-    dfaObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$dfaComputations
+    dfaObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations
     
     if (HRVData$Verbose){
       cat("  --- Estimating Scaling exponent ---\n")
@@ -102,13 +102,13 @@ EstimateDFA <-
     # estimate scaling Exponent
     scalingExponentEstimate = estimate(dfaObject,regression.range=regressionRange, do.plot=doPlot)
     # and store it in a list !
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$scalingExponents)){
-      HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$scalingExponents=list()
+    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$statistic)){
+      HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$statistic=list()
       idxScaling = 1
     }else{
-      idxScaling = length(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$scalingExponents) +1  
+      idxScaling = length(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$statistic) +1  
     }
-    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$scalingExponents[[idxScaling]] =
+    HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$statistic[[idxScaling]] =
       list(range=regressionRange, estimate = scalingExponentEstimate)
     
     if (HRVData$Verbose){
@@ -131,12 +131,12 @@ PlotDFA <-
     # -------------------------------------
         
     checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$dfaComputations)){
+    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations)){
       stop("  --- Error: DFA computations not found!! Run CalculateDFA()
            before using EstimateDFA()!! ---\n")
     }
     
-    DFAObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$dfaComputations
+    DFAObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations
     
     plot(DFAObject, ...)
     

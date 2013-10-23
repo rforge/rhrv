@@ -11,7 +11,7 @@ statistic is then obtained as the slope of a regression involving these
 computations. The regression is performed with the \textit{EstimateX} function. 
 The \textit{PlotX}
 function  draws the variables involved in the regression, which may be useful 
-to check if the statistics follow the expected behaviour.
+to check if the statistics follow the expected behaviour.\\
 
 In order to load the example file that we shall use for illustrate the nonlinear
 functions included in RHRV, we may execute:
@@ -26,8 +26,9 @@ hrv.data = SetVerbose(hrv.data,TRUE)
 @
 The beats from this file were generated synthetically from a nonlinear process
 in order to show the expected behaviour of a truly nonlinear RR time series and
-avoid some issues when dealing with a noisy process. An example with a truly
-RR series is given in Chapter \ref{ch:advanced}.
+avoid some issues when dealing with a noisy process. Thus, this file has no 
+physiological meaning. An example with a truly
+RR series is given in Chapter \ref{ch:advanced}.\\
 
 Before performing the nonlinear analysis 
 we must create the data analysis structure that will store 
@@ -43,21 +44,21 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 In the next few sections we shall present the basics for performing the most
 widely-used nonlinear analysis algorithms (Although some of the algorithms will
 not be presented here, but in section \ref{seq:nonlinearAdvanced}). Due to the
-heterogeneity of the nonlinear algorithms, we will explain how to access the 
-computations for each algorithm as they are presented.
+heterogeneity of the nonlinear algorithms, we will also explain how to access 
+the computations for each algorithm as they are presented.
 
 \subsubsection{Nonlinearity Test}
 Before applying nonlinear analysis to the RR time series we should ensure that
 the \gls{HR} shows, indeed, some degree of nonlinearity. If we don't , there is 
 a risk of obtaining unreliable results. There exist two functions in 
 \textit{RHRV} that allow running nonlinearity tests: \textit{NonlinearityTests}
-and \textit{SurrogateTest}.
+and \textit{SurrogateTest}.\\
 
 The \textit{NonlinearityTests} permits running a wide variety of nonlinearity 
 tests including:
 two tests for neglected nonlinearity that are based on neural networks, 
 the Keenan test for nonlinearity, the McLeod and Li test for nonlinearity
-and the Tsay's test. 
+and the Tsay's test. \\
 
 Surrogate data testing tests the null hypothesis that the data was generated
 from a stationary linear stochastic process with Gaussian inputs.  Surrogate 
@@ -69,7 +70,7 @@ the RR series and all the surrogate set, the null hypothesis is rejected and
 nonlinearity assumed.
 In practice, the null hypothesis is rejected when the statistic calculated for 
 the RR series is smaller
-or larger than those calculated for the surrogate set.
+or larger than those calculated for the surrogate set.\\
 
 
 Both functions
@@ -84,16 +85,26 @@ the discriminating statistic (\textit{useFunction}) as well
 as its parameters. Finally, it's also possible to obtain a graphical 
 representation of the statistic 
 values of both surrogate data and the RR time series using the \textit{doPlot} 
-parameter.
+parameter.\\
 
 The next lines show how to use both functions for nonlinearity testing:
-<<nonlinearityTest>>=
+<<echo=FALSE>>=
+# Set seed in order to obtain always the same surrogates
+set.seed(1)
+@
+<<nonlinearityTesting,include=FALSE,fig=TRUE,pdf=TRUE>>=
 # Testing 
 hrv.data = NonlinearityTests(hrv.data)
 hrv.data = SurrogateTest(hrv.data, significance = 0.05,
-    useFunction = timeReversibility, tau=4)
+    useFunction = timeReversibility, tau=4, doPlot = TRUE)
 @
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figures/tutorial-nonlinearityTesting}
+  \caption{Surrogate data testing.\label{fig:surrogateData}}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 The \textit{SurrogateTest} uses the \textit{timeReversibility} function from the
 \textit{nonlinearTseries} package. This function implements the third-order 
 statistic 
@@ -105,7 +116,8 @@ from a stationary linear stochastic process (the null hypothesis).  The
 \textit{tau}
 parameter is a parameter of the \textit{timeReversibility} function that sets
 $\tau=tau$. It must be noted that the discrimination power of the time simmetry 
-test is low. We have use it here for illustrative purposes.
+test is low. We have use it here for illustrative purposes. Figure 
+\ref{fig:surrogateData} shows the results of the surrogate data testing.
 
 
 \subsubsection{Phase space reconstruction\label{sec:phaseSpace}}
@@ -116,7 +128,7 @@ information on how to select $\tau$ and $m$ parameters. Fortunately, the
 parameters.
 \paragraph{Time lag estimation\label{seq:tau}}
 In practical applications, the $\tau$ parameter is firstly selected. Then, the 
-embedding dimension is estimated for a fixed value of the $\tau$ parameter.
+embedding dimension is estimated for a fixed value of the $\tau$ parameter.\\
 
 The $\tau$ parameter can be estimated in \textit{RHRV} by using the 
 \textit{CalculateTimeLag}
@@ -138,7 +150,8 @@ given time series:
   \item Select the time lag where the autocorrelation function reaches its 
 first minimum (\textit{first.minimum} method).
   \item Select the time lag where the autocorrelation function decays to the 
-value specified by the user (\textit{first.value} method and value parameter.
+value specified by the user (\textit{first.value} method and \textit{value}
+parameter).
 \end{itemize}
 
 The \textit{CalculateTimeLag} function takes as input parameters the 
@@ -154,7 +167,7 @@ time lag if the \textit{``first.value"} method is used.
 The \textit{lagMax} parameter specifies the maximum lag at which to calculate 
 the autocorrelation function. By default, the length of the timeSeries is used. 
 Finally, the logical \textit{doPlot} parameter indicates if  a plot of the 
-autocorrelation function is shown or not.
+autocorrelation function is shown or not.\\
 
 In the following example we estimate a proper time lag by using the different 
 methods explained above:
@@ -178,11 +191,11 @@ by using the functions
 explained in this section and the next one. However we strongly recommend to 
 estimate them just once because
 of computational efficiency. Thus, we store the \textit{kTimeLag} parameter to 
-use it in all the examples of these section.
+use it in all the examples of these section.\\
 
 
 Figure  \ref{fig:timeLag} shows the autocorrelation function used in the time 
-lag estimation.
+lag estimation.\\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
@@ -199,7 +212,7 @@ Once the time lag has been estimated, it is possible to obtain a proper
 embedding dimension by using the algorithm explained in \cite{cao1997practical}.
 The Cao's algorithm uses 2 functions in order to estimate the embedding 
 dimension from a time series: 
-the $E1(d)$ and the $E2(d)$ functions, where $d$ denotes the dimension.
+the $E1(d)$ and the $E2(d)$ functions, where $d$ denotes the dimension.\\
 
 $E1(d)$ stops changing when $d$ is greater than or equal to the embedding 
 dimension $m$, staying close to 1. On the other hand, $E2(d)$ is used to
@@ -207,7 +220,7 @@ distinguish deterministic signals from stochastic signals.
 For deterministic signals, there exist some $d$ fulfilling
 $E2(d)\neq 1$. For stochastic signals, $E2(d)$ is approximately 1 for all the 
 values. The \textit{CalculateEmbeddingDim} function implements this algorithm
-in the \textit{RHRV} package.
+in the \textit{RHRV} package.\\
 
 The \textit{CalculateEmbeddinDim} takes as input parameters the \textit{HRVData}
 structure, the number of points of the time series to be used for estimating 
@@ -216,9 +229,9 @@ previous section (\textit{timeLag}); the maximum possible embedding dimension
 (\textit{maxEmbeddingDim}); the threshold that $E1(d)$ most cross for
 considering that it is close to the limit value 1 (\textit{threshold. Default
 0.95}); the maximum relative change in $E1(d)$ with respect to $E1(d-1)$ in 
-order to consider that the $E1$ function has been stabilized and it will stop
-changing (\textit{maximumRelativeValue}. Default = 0.01)and the \textit{doPlot} 
-parameter (If TRUE a plot of $E1(d)$ and $E2(d)$ is shown).
+order to consider that the $E1$ function has been stabilized and that it 
+will stop changing (\textit{maximumRelativeValue}. Default = 0.01) and the 
+\textit{doPlot} parameter (If TRUE a plot of $E1(d)$ and $E2(d)$ is shown).\\
 
 
 In the following example we estimate a proper embedding dimension using 
@@ -237,7 +250,7 @@ kEmbeddingDim = 5
 @
 
 We store the result in the \textit{kEmbeddingDim} variable in order to use
-it in the remainder of this section. 
+it in the remainder of this section. \\
 
 \subsubsection{Computing nonlinear statistics}
 \paragraph{The classic correlation dimension\label{seq:corrDimTheo}}
@@ -256,18 +269,18 @@ radius in which the correlation sum is going to be calculated. The number of
 points used to compute this range can be specified with 
 the \textit{pointsRadius} function.
 The Theiler window is specified using the \textit{theilerWindow} parameter. 
-Finally, a log-log plot of the correlation sum Vs. the radius by setting
-\textit{doPlot = TRUE} (default).\\
+Finally, a log-log plot of the correlation sum Vs. the radius can be obtained
+by setting \textit{doPlot = TRUE} (default).\\
 
 For analyzing our \textit{hrv.data} structure we shall use the embedding 
 dimension and time lag obtained in Section \ref{sec:phaseSpace}.
-Thus we shall use  \textit{timeLag = kTimeLag} and we may select a 
+Thus, we set \textit{timeLag = kTimeLag} and we select a 
 sequence of dimensions surrounding
  \textit{kEmbeddingDim}. For example, we may use \textit{minEmbeddingDim = 
 kEmbeddingDim - 1} and \textit{maxEmbeddingDim = kEmbeddingDim + 2}. 
 In order to select the radius  we have to take into account that we are
 analyzing RR intervals in milliseconds. Thus,
- the selection \textit{minRadius=1} and \textit{maxRadius=100} will probably 
+ the selection \textit{minRadius = 1} and \textit{maxRadius = 100} will probably 
 cover the  most important range of the correlation sum $C(r)$. By selecting 
 \textit{pointsRadius = 100}, the correlation sum $C(r)$ will be computed in
 $r=1,2,..,100$. In order to select a proper Theiler window, the autocorrelation 
@@ -288,15 +301,16 @@ hrv.data = CalculateCorrDim(hrv.data,
                             maxRadius=100, pointsRadius = 100,
                             theilerWindow = 20, doPlot = FALSE)
 @
-In order to access the correlation sum calculated with the 
-\textit{CalculateCorrDim} function we may write:
+As usual, we may use the \textit{\$} operator from the R language to access 
+the correlation sum calculated with the 
+\textit{CalculateCorrDim} function and stored under the \textit{correlation\$computations}
+field} of the \textit{NonLinearAnalysis} structure:
 <<accessingCorrDim1>>=
 corr.struct = hrv.data$NonLinearAnalysis[[my.index]]$correlation
-corrSum = corr.struct$corrSum
+corrSum = corr.struct$computations
 @
 
-As usual, we may use the \textit{\$} operator from the R language to access
-for access to the \textit{corrSum} attributes:
+Now, in order to access to the \textit{corrSum} attributes we may write:
 <<accessingCorrDim2>>=
 # Let's print the four first rows and columns of the correlation matrix
 print(corrSum$corr.matrix[1:4,1:4])
@@ -341,7 +355,7 @@ be discarded. In  our case, we  may select all the embedding dimensions and
 set the \textit{regressionRange} to $[1.5,10]$ (see Figure \ref{fig:corrDim1}). 
 If \textit{doPlot=TRUE} a graphic of the regression over the data is shown.
 The results are returned into a new field called
-\textit{corrDim} under the
+\textit{statistic} under the
 \textit{hrv.data\$NonLinearAnalysis[[indexNonLinearAnalysis]]\$correlation} 
 list:
 
@@ -359,15 +373,23 @@ legend(x=1,y=-3, lty = rep(1,3), col = 1:3,
 
 cat("The correlation dimension is ",
     hrv.data$NonLinearAnalysis[[my.index]]$
-      correlation$corrDim,"\n")
+      correlation$statistic,"\n")
 @
 The plot obtained in the estimation process is shown in Figure 
 \ref{fig:corrDim2}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.6\textwidth]{figures/tutorial-corrDim2}
   \caption{\label{fig:corrDim2}}
 \end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+It must be noted that all the nonlinear statistics following the 
+the \textit{CalculateX}-\textit{EstimateX}-\textit{PlotX} procedure store
+their results in the two fields presented in this section: the 
+\textit{computations} field shall store the calculations whereas that the
+\textit{statistic} field shall store the final estimation of the statistic being
+computed.
 
 Since the correlation dimension is the most important of the fractal dimensions,
 the generalized dimensions (including the information dimension) shall be 
@@ -385,7 +407,8 @@ Thus, in \textit{RHRV}, in order to use the \textit{CalculateSampleEntropy}
 function a ``corrDim"
 object with several embedding dimensions must exist under the 
 \textit{NonLinearAnalysis} structure. Also, the embedding dimensions 
-must be high enough (in order to ``simulate" the limit $m \rightarrow \infty$).
+must be high enough (in order to ``simulate" the limit 
+$m \rightarrow \infty$).\\
 
 Let's compute the sample entropy of our example file. First at all, we shall 
 compute correlations sums using a high embedding dimension. In this example, 
@@ -394,7 +417,7 @@ we shall use at least four times the optimum embedding dimension
 the \textit{CalculateSampleEntropy} function to compute the $h_q(m,r)$ function.
 This function is quite simple since only takes as input parameters the 
 \textit{HRVData} being analyzed, the \textit{indexNonLinearAnalysis} and the 
-boolean argument \textit{doPlot} (allowing to obtain a plot of $h_q(m,r)$).
+boolean argument \textit{doPlot} (allowing to obtain a plot of $h_q(m,r)$).\\
 
 <<CalculateSE>>=
 hrv.data = CreateNonLinearAnalysis(hrv.data)
@@ -439,30 +462,31 @@ hrv.data = EstimateSampleEntropy(hrv.data,
                                  doPlot = TRUE)
 @
 Figure \ref{fig:EstimateSE} shows the plot generated by the 
-\textit{EstimateSampleEntropy} function.
+\textit{EstimateSampleEntropy} function.\\
 
-The results of the sample entropy estimations are stored under the sampleEntropy
-as follows: The \textit{sampleEntropyCalculations} field  stores $h_q(m,r)$
-whereas that the \textit{sampleEntropyEstimate} stores the estimates of the
+The results of the sample entropy estimations are stored under the 
+\textit{sampleEntropy} field
+as expected: The \textit{calculations} field  stores $h_q(m,r)$
+whereas that the \textit{statistic} stores the estimate of the
 sample entropy. 
-The attributes of the \textit{sampleEntropyCalculations} field can be accessed 
-as usual using \textit{\$}. \textit{sampleEntropyCalculations\$sample.entropy} 
+The attributes of the \textit{calculations} field can be accessed 
+as usual using \textit{\$}. \textit{calculations\$sample.entropy} 
 returns a matrix containing the $h_q(m,r)$ function (the rows store 
 the computations for an specific embedding whereas that the columns depend 
-on the radius. \textit{sampleEntropyCalculations\$radius} and 
-\textit{sampleEntropyCalculations\$embedding.dims} return the radius and the 
+on the radius. \textit{calculations\$radius} and 
+\textit{calculations\$embedding.dims} return the radius and the 
 embedding dimensions used for calculations:
 
 <<accessingData>>=
 se = hrv.data$NonLinearAnalysis[[my.index]]$
-                        sampleEntropy$sampleEntropyCalculations
+                        sampleEntropy$calculations
 # obtaining the h_q(m,r) function, the radius and the embedding dimensions
 sample.function = se$sample.entropy
 radius = se$radius
 dims = se$embedding.dims
 # obtaining the sample entropy estimation
 estimation = 
-hrv.data$NonLinearAnalysis[[my.index]]$sampleEntropy$sampleEntropyEstimate
+hrv.data$NonLinearAnalysis[[my.index]]$sampleEntropy$statistic
 cat("The sample entropy is ")
 print(estimation)
 @
@@ -493,12 +517,12 @@ point can be specified with the \textit{minNeighs} parameter (default: 5).
 The \textit{radius} specifies the 
 maximum distance in which the routine will look for close neighbours. Since we 
 are working with the RR time series, the radius' range $[1-10]$ ms 
-seems a proper choice for selecting very close phase space points. 
+seems a proper choice for selecting very close phase space points. \\
 
 In the following example we shall compute the divergence for just one embedding
 dimension for the sake of simplicity. However, we strongly recommend computing
 the maximal Lyapunov exponent for several embedding dimensions in order to check
-that it doesn't depend on the embedding dimension.
+that it doesn't depend on the embedding dimension.\\
 
 <<mfrow,echo=FALSE>>=
 par(mfrow=c(1,1))
@@ -517,7 +541,7 @@ hrv.data = CalculateMaxLyapunov(
 As usual, the user should plot $S(t)$ Vs $t$ when looking for the 
 maximal lyapunov exponent. This can be done using the \textit{doPlot} parameter
 of the \textit{CalculagteMaxLyapunov} routine or using the
-\textit{PlotMaxLyapunov} function.
+\textit{PlotMaxLyapunov} function.\\
 
 <<ml1,fig=TRUE,eps=FALSE,pdf=TRUE,include=FALSE>>=
 PlotMaxLyapunov(hrv.data, indexNonLinearAnalysis = 1)
@@ -530,7 +554,7 @@ Lyapunov exponent per unit of time. The \textit{EstimateMaxLyapunov} routine
 allows the user to get always an
 estimate of the maximal Lyapunov exponent, but the user must check that there 
 is a linear region in the $S(t)$ Vs $t$. If such a region does not exist, 
-the estimation should be discarded.
+the estimation should be discarded.\\
 
 In our example we found a strong linear region in the $[1,6]$ interval. The 
 regression performed by the \textit{EstimateMaxLyapunov} is shown in Figure
@@ -558,14 +582,14 @@ exponent.\label{fig:ml1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 As always, we can access the computations under the \textit{NonLinearAnalysis} 
 list.  The divergence computations are stored under the 
-\textit{NonLinearAnalysis[[index]]\$lyapunov\$divergence}
+\textit{NonLinearAnalysis[[index]]\$lyapunov\$computations}
 list. The maximum
 Lyapunov exponent is stored under the 
-\textit{NonLinearAnalysis[[index]]\$lyapunov\$maxLyapunovExponent}.
+\textit{NonLinearAnalysis[[index]]\$lyapunov\$statistic}.
 <<accessingData>>=
 lyapunov.results  = hrv.data$NonLinearAnalysis[[my.index]]$lyapunov
-divergence.structure = lyapunov.results$divergence
-max.exponent = lyapunov.results$maxLyapunovExponent
+divergence.structure = lyapunov.results$computations
+max.exponent = lyapunov.results$statistic
 # get the S(t) function
 div = divergence.structure$s.function
 tim = divergence.structure$time
@@ -576,24 +600,24 @@ cat("The Max Lyapunov exponent is ",max.exponent,"\n")
 Before introducing the \textit{RHRV} functionality for performing DFA, 
 we have to review the DFA procedure presented in section \ref{seq:dfaTheo}.
 
-\begin{itemize}
+\begin{enumerate}
   \item Integrate the time series to be analyzed. The time series resulting 
-from the integration will be referred to as the profile.
+from the integration will be referred to as the \textit{profile}.
   \item Divide the profile into $N$ non-overlapping segments.
   \item Calculate the local trend for each of the segments using least-square 
 regression. Compute the total error for each of the segments.
   \item Compute the average of the total error over all segments and take its 
 root square. By repeating the previous steps for several segment sizes (let's 
-denote it by $t$: number of beats), we obtain the so-called Fluctuation 
-function $F(t)$.
+denote it by $t$: number of beats), we obtain the so-called \textit{fluctuation 
+function} $F(t)$.
   \item If the data presents long-range power law correlations: $F(t) \propto 
 t^\alpha$ and we may estimate the exponent using regression.
   \item Usually, when plotting $log(F(t))$ Vs $log(t)$ we may distinguish two 
 linear regions. By regression them separately, we obtain two scaling exponents, 
 $\alpha_1$ (the exponent for small values of $t$, characterizing short-term 
-fluctuations) and $\alpha_2$ (
-  the exponent for great values of $t$, characterizing long-term fluctuations). 
-\end{itemize}
+fluctuations) and $\alpha_2$ (the exponent for great values of $t$, 
+characterizing long-term fluctuations). 
+\end{enumerate}
 
 
 Steps 1-4 are performed in \textit{RHRV} using the \textit{CalculateDFA}
@@ -603,7 +627,7 @@ use the \textit{EstimateDFA} function specifying the regression range
 obtained by performing the regression in the $4\leq t \leq 16$ range whereas 
 that $\alpha_2$ is obtained in the $16\leq t \leq 64$ range
 (However the F(t) function must be linear in these ranges for obtaining 
-reliable results).
+reliable results).\\
 
 
 Besides the \textit{HRVData}, \textit{indexNonLinearAnalysis} and 
@@ -637,19 +661,23 @@ function. Note that this RR series only has one linear region.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The dfa computations are stored in the 
-\textit{NonLinearAnalysis[[index]]\$dfa\$dfaComputations}.
+\textit{NonLinearAnalysis[[index]]\$dfa\$computations}.
 The fluctuation function and the windows used for the computations can be 
-obtained using\textit{dfa.object\$fluctuation.function} and 
-\textit{dfa.object\$window.sizes}, respectively. All the estimated exponents
-are stored under the \textit{NonLinearAnalysis[[index]]\$dfa\$scalingExponents}
-list.
+obtained using\textit{\$fluctuation.function} and 
+\textit{\$window.sizes} on
+\textit{NonLinearAnalysis[[index]]\$dfa\$computations}, respectively. 
+All the estimated exponents
+are stored under the \textit{NonLinearAnalysis[[index]]\$dfa\$statistic}
+list. It must be noted that, in this case, the \textit{statistic} field 
+may contain more than just one value for the statistic (depending on the
+regression range used).
 <<obtainDFA>>=
 #obtaining the object pf class "dfa"
-dfa.object = hrv.data$NonLinearAnalysis[[1]]$dfa$dfaComputations
+dfa.object = hrv.data$NonLinearAnalysis[[1]]$dfa$computations
 windows = dfa.object$window.sizes
 fluctuation.f = dfa.object$fluctuation.function
 # get the exponent 
-scaling.exp = hrv.data$NonLinearAnalysis[[1]]$dfa$scalingExponents[[1]]
+scaling.exp = hrv.data$NonLinearAnalysis[[1]]$dfa$statistic[[1]]
 print(scaling.exp)
 @
 
@@ -666,7 +694,7 @@ considered
 a recurrence) and \textit{numberPoints} (number of points to be 
 used in the RQA computation). Since this method requires heavy computations, 
 this last
-parameter is specially useful.
+parameter is specially useful.\\
 
 
 \textit{lmin} (minimal length of a diagonal line to be considered 
@@ -694,7 +722,7 @@ hrv.data = dget(file="RQA_file")
 Figure \ref{fig:recplot} shows the resulting recurrence plot. Please note that
 this function does not follow the \textit{CalculateX},
 \textit{PlotX} and \textit{EstimateX} convention. The recurrence plot could 
-also be obtained with the \textit{recurrencePlot} function.
+also be obtained with the \textit{recurrencePlot} function.\\
    
 \begin{figure}[h]
   \centering
