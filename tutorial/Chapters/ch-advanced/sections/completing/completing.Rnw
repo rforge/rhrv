@@ -29,14 +29,14 @@ for the final user):
 \item \textit{Ext}: A string that will be used as file extension by the 
 loading/writing functions included in the package. The default value is ``hrv".
 \item \textit{TimeAnalysis}: This field stores the information generated using 
-time-domain analysis techniques. It is is implemented as a list in the R 
+time-domain analysis techniques. It is implemented as a list in the R 
 language.
 \item \textit{FreqAnalysis}: This field stores the  results of one or more 
 frequency analysis. Frequency analysis can be based on Fourier or on wavelets. 
-It is is implemented as a list in the R language.
+It is implemented as a list in the R language.
 \item \textit{NonLinearAnalysis}: This field stores the  results of one or more 
-nonlinear analysis. It is is implemented as a list in the R language.
-%\item \textit{Verbose}: Boolean flag that specifies if all the functions 
+nonlinear analysis. It is implemented as a list in the R language.
+\item \textit{Verbose}: Boolean flag that specifies if all the functions 
 should return additional information (mode verbose on). The \textit{SetVerbose} 
 function sets verbose mode on or off.
 \end{itemize}
@@ -70,7 +70,7 @@ hrv.data = LoadBeatAscii(hrv.data, "example.beats",
 When importing the data into the \textit{HRVData} structure, two new fields are 
 created (see Figure \ref{fig:completeData}):
 \begin{itemize}
-\item \textit{Datetime}: Date and time associate with the record.
+\item \textit{Datetime}: Date and time associated with the record.
 \item \textit{Beat}: A \textit{dataframe} object which stores the positions of 
 the beats in the sub-field \textit{Time} .
 \end{itemize}
@@ -160,7 +160,7 @@ outliers removal ends when the user presses ``End".
 using the \textit{InterpolateNIHR} function, which by default uses linear 
 interpolation. However, it is possible to select a cubic spline interpolation 
 by setting 
-\textit{method = "spline"} (default value is \textit{method = "linear"}). Thus, 
+\textit{method = ``spline"} (default value is \textit{method = ``linear"}). Thus, 
 as an illustrative example, let's interpolate the RR data using splines and a 
 sampling frequency of $8$ Hz (This is just an illustrative example, for most of 
 the situations $4$ Hz will be enough. By setting an unnecessarily high sampling 
@@ -170,7 +170,7 @@ frequency, we are overloading the computer):
 hrv.data = InterpolateNIHR (hrv.data, freqhr = 8, method = "spline")
 @
 
-This functions creates two new fields in the \textit{HRVData} structure:
+This function creates two new fields in the \textit{HRVData} structure:
 \begin{itemize}
 \item \textit{Freq\_HR}: Sampling frequency used in the interpolation. The 
 default sampling frequency value is $4\;Hz$.
@@ -186,10 +186,10 @@ parameter, in seconds) and the interval width of the bins that will be used to
 compute the histogram (\textit{interval} parameter, in milliseconds), as shown 
 in chapter \ref{ch:Quick}. \\
 
-This functions fills (one position of) the \textit{TimeAnalysis} in the 
+This function fills (one position of) the \textit{TimeAnalysis} in the 
 \textit{HRVData} structure by computing the following parameters: SDNN, SDANN, 
 SDNNIDX, pNN50, rMSSD, IRRR, MADRR, TINN and HRVi (see Figure 
-\ref{fig:completeData} and section \ref{sec:timedomain}). The size of the 
+\ref{fig:completeData} and Section \ref{sec:timedomain}). The size of the 
 window involved in the computations is also stored in the \textit{size} field.
 
 
@@ -263,7 +263,7 @@ user may choose a linear axis (``linear") or a logarithmic axis
 spectrogram = PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
  sizesp=2048)
 @
-Note that most part of the energy of the figure \ref {fig:plottingSpectrogram} 
+Note that most of the energy shwon in figure \ref {fig:plottingSpectrogram} 
 is concentrated in the low frequencies. To obtain a more
 detailed graphic in this zone of the spectrum, we can use the 
 \textit{freqRange} parameter. For example, if we wish to plot the spectrum in 

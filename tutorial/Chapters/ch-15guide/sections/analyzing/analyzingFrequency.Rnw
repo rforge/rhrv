@@ -19,9 +19,8 @@ parameter in the
 frequency analysis functions.\\
 
 The most important function to perform spectral \gls{HRV} analysis is the 
-\textit{CalculatePowerBand} function. The \textit{CalculatePowerBand} computes 
-the
-spectrogram of the \gls{HR} series in the \gls{ULF},
+\textit{CalculatePowerBand} function. The \textit{CalculatePowerBand} function
+computes the spectrogram of the \gls{HR} series in the \gls{ULF},
 \gls{VLF}, \gls{LF} and \gls{HF} frequency bands using STFT or wavelets. 
 Boundaries of the bands may be chosen 
 by the user. If boundaries are not specified, default values 
@@ -50,7 +49,7 @@ $sizesp=2^N$. If the user does not specify it, the program selects a proper
 length for the calculations.
 \end{itemize}
 When using \textit{CalculatePowerBand}, the \textit{indexFreqAnalysis} 
-parameter (in order to indicate which spectral analysis we are we working with) 
+parameter (in order to indicate which spectral analysis we are working with) 
 and the boundaries of the frequency bands may also be specified.\\
 
 As an example, let's perform a frequency analysis in the typical \gls{HRV} 
@@ -156,7 +155,7 @@ illustrate the basic use of \textit{CalculatePowerBand}. However, it is
 possible to create and use
 the same \textit{HRVData} for performing several spectral analysis. When we do 
 this, we use the parameter  "indexFreqAnalysis" to indicate which spectral 
-analysis we are we working with. For example, we could perform both
+analysis we are working with. For example, we could perform both
 Fourier and wavelet based analysis:
 <<echo=FALSE>>=
 hrv.data = CreateHRVData( )
@@ -227,12 +226,12 @@ analysis.\label{fig:examplePlotWave}}
 the most important differences between Fourier and wavelet-based analysis. The 
 most important differences may be summarized as follows:
 \begin{itemize}
-\item The power range is not the same when using Fourier use that when using 
+\item The power range is not the same when using Fourier than when using 
 wavelets due
 to the windowing used in both techniques. Thus, we
 should avoid direct comparisons between the numerical results obtained with 
 Fourier with those obtained using wavelets.
-\item The Fourier's power spectrum is smoother that the wavelet's power 
+\item The Fourier's power spectrum is smoother than the wavelet's power 
 spectrum. This is a consequence of the higher temporal resolution that the 
 wavelet-based analysis provides. We could try to increase Fourier's
 frequency resolution by decreasing the window' size used in the analysis. The 

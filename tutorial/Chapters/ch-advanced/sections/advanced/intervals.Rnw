@@ -12,7 +12,7 @@ WFDB (\textit{LoadApneaWFDB}). Episodes may also be added programmatically to
 the time series using the \textit{AddEpisodes} function. All episodes are 
 stored under the \textit{Episodes} field of the \textit{HRVData} structure (see 
 Figure \ref{fig:completeData}). The plotting functions allow the user to 
-include episodic information in the graphics. We will discuss all this points 
+include episodic information in the graphics. We will discuss all these points 
 in more detail below.\\
 \subsection{AddEpisodes\label{par:AddEpisodes}} The simplest way of adding 
 episodic information is using the \textit{AddEpisodes} function. 
@@ -102,9 +102,9 @@ The resulting plot is shown in Figure \ref{fig:episodicFrequency}.
 bands.\label{fig:episodicFrequency}}
 \end{figure}
 
-\subsection{LoadEpisodesAscii} The \textit{LoadEpisodesAscii} allows the user 
-to read episodic information stored in an ASCII file saving it into the 
-\textit{HRVData} data structure. The expected format of each line is:\\
+\subsection{LoadEpisodesAscii} The \textit{LoadEpisodesAscii} function
+allows the user  to read episodic information stored in an ASCII file saving it
+into the \textit{HRVData} data structure. The expected format of each line is:\\
 \begin{center}
 \begin{tabular}{ c c c c }
 InitTime &Tag & Duration&  Value\\
@@ -115,14 +115,14 @@ HH:MM:SS  &``Tag name"& double &integer
 The first column is the start time of the episode with the ``HH:MM:SS" format. 
 The second column serves the same purpose as the \textit{Tag} parameter in 
 \textit{AddEpisodes}. The third column specifies the duration of the episode in 
-seconds. Finally, the forth column assigns a  numerical value for each episode 
+seconds. Finally, the fourth column assigns a  numerical value for each episode 
 ( the same function performed by the \textit{Value} parameter in the 
 \textit{AddEpisodes} function). \\
 
-It must be taken into account that the \textit{LoadEpisodesAscii} skips the 
-first line of the ASCII file because it assumes that the first line will 
-contain a header ( the format of this header does not really matter). If there 
-is no header line in the file, the user
+It must be taken into account that the \textit{LoadEpisodesAscii} function 
+skips the first line of the ASCII file because it assumes that the first line 
+will contain a header ( the format of this header does not really matter). If 
+there is no header line in the file, the user
 can specify it to the function using the \textit{header} parameter (by default, 
 it is
 setted to TRUE).\\
@@ -130,9 +130,9 @@ setted to TRUE).\\
 As an example, we are going to create an ASCII file containing the same 
 information as the episodes ``A" and ``B" that we programmatically introduced 
 in the \textit{AddEpisodes}(\ref{par:AddEpisodes}) paragraph. We will also add 
-information about a "C" episode that the \textit{LoadEpisodesAscii} will skip. 
-We shall call this file ``annotationsFile.txt". This file will have the 
-following content:
+information about a ``C" episode that the \textit{LoadEpisodesAscii} function
+will skip. We shall call this file ``annotationsFile.txt". This file will
+have the following content:
 \begin{center}
 \begin{tabular}{ c c c c }
 InitTime&  Type & Duration&  Value\\
@@ -144,8 +144,8 @@ InitTime&  Type & Duration&  Value\\
 \end{center} 
 
 The \textit{LoadEpisodesAscii} function takes as input parameters: the absolute 
-path to the episodes file to be readed (\textit{FileName}), the types of 
-episodes that should be readed (\textit{Tag}) and the time (``HH:MM:SS") at 
+path to the episodes file to be read (\textit{FileName}), the types of 
+episodes that should be read (\textit{Tag}) and the time (``HH:MM:SS") at 
 which the recording began (\textit{InitTime}). This last parameter enables 
 reading those files in which the initial time of episodes was specified in 
 absolute time, and not relative to the start of the recording. Since we wrote 
@@ -215,7 +215,7 @@ cat("Normal mean: ",mean(splitting.data$OutEpisodes),"\n")
 @
 
 Although the previous example illustrates how to access the data inside and 
-outside a  certain type of episode, we could have use the 
+outside a  certain type of episode, we could have used the 
 \textit{AnalyzeHRbyEpisodes} for comparing its means. This function analyzes 
 the heart rate series evaluating the desired function (\textit{func} parameter) 
 inside and outside the episodes of interest (\textit{Tag} parameter). Thus, we 
@@ -227,7 +227,7 @@ cat("Apnea mean:: ",result$resultIn,"\n")
 cat("Normal mean: ",result$resultOut,"\n")
 @
 
-There also exist an splitting function that separates the spectral power per 
+There also exists an splitting function that separates the spectral power per 
 band in two lists using an specific episode type: the 
 \textit{SplitPowerBandByEpisodes} (however there is no analogue function to the 
 \textit{AnalyzeHRbyEpisodes} function). In addition to the \textit{Tag} 

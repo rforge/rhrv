@@ -95,7 +95,7 @@ other researchers disagree about the usefulness of the LF/HF index
 \cite{berntson1997}.\\
 
 Finally, the rhythms associated with \gls{VLF} have not been studied as deeply 
-as the higher frequencies. Indeed, some authors doubt that there there is a 
+as the higher frequencies. Indeed, some authors doubt that there is a 
 specific physiological process attributable to these heart period changes. 
 Furthermore, the VLF band is affected by algorithms  of baseline removal 
 \cite{forceHRV}. Despite all these objections, some authors have related the 

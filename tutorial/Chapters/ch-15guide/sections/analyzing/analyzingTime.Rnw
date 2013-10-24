@@ -3,7 +3,7 @@ The simplest way of performing a \gls{HRV} analysis in RHRV is using the time
 analysis techniques 
 provided by the \textit{CreateTimeAnalysis} function. This function computes 
 the time-domain
-parameters presented in section \ref{sec:timedomain} and stores them in the 
+parameters presented in Section \ref{sec:timedomain} and stores them in the 
 \textit{HRVData} structure. The most interesting parameter that the user may 
 specify is the width of the window that
 will be used to analyze short segments from the RR time series (\textit{size} 

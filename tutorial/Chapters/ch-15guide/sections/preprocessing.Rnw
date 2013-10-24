@@ -92,7 +92,7 @@ hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
 RHRV provides, it 
 is usually interesting to plot the time series with which we are working. The 
 \textit{PlotNIHR} function permits the graphical representation of the 
-\gls{niHR} series whereas that the \textit{PlotHR} function permits to 
+\gls{niHR} series whereas the \textit{PlotHR} function permits to 
 graphically represent the interpolated \gls{HR} time series.\\
 <<plottingNIHR,results=hide,run=FALSE,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
 PlotNIHR(hrv.data)

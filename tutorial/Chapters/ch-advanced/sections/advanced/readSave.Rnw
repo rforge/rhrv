@@ -23,7 +23,7 @@ Error in WriteToFile(hrv.data, name = "HRVstructure", overwrite = FALSE) :
     --- File exists... No overwriting it!! ---
     --- Quitting now!! ---
 \end{verbatim}
-Note that the function inform about the existence of a previous file named 
+Note that the function informs about the existence of a previous file named 
 ``HRVstructure.hrv".\\
 
 In order to read \textit{HRVData} structures that had been previously stored, 

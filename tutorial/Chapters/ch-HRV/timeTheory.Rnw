@@ -37,7 +37,7 @@ RR$ time series; and the median of the absolute values of the  $\Delta RR$ time
 series (\glslink{MADRR}{MADRR}, Median of the Absolute Differences of the RR 
 intervals).\\
 
-Another commonly used measures derived from interval differences include NN50, 
+Other commonly used measures derived from interval differences include NN50, 
 the number of interval differences of successive RR intervals greater than 50 
 ms, and \glslink{pNN50}{pNN50}, the proportion derived
 by dividing NN50 by the total number of RR intervals.\\
@@ -49,7 +49,7 @@ Finally, in addition to these statistical parameters, there are some geometric
 measures that can be calculated from the RR interval histogram. The \gls{HRV} 
 triangular index measurement is the integral of the density distribution (that 
 is, the number of all RR intervals) divided by the maximum of the density 
-distribution. The density distribution may be estimated by using an histogram, 
+distribution. The density distribution may be estimated by using a histogram, 
 thus  the size of the bins should be specified. Another geometrical measure is 
 the triangular interpolation of NN (RR) interval histogram 
 (\glslink{TINN}{TINN}), which is calculated as the baseline width of the 

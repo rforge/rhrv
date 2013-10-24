@@ -1,9 +1,4 @@
 % !Rnw root = ../../tutorial.Rnw
-<<echo=FALSE,include=FALSE>>=
-library("knitr")
-opts_knit$set(self.contained=FALSE)
-@
-
 \chapter{Installation\label{ch:installation}}
 \section{Installation} This guide assumes that the user has some basic 
 knowledge of the R environment. If this is not your case, you can find a nice 

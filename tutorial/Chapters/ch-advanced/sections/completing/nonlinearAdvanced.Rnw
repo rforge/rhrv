@@ -106,7 +106,7 @@ with the \textit{corrOrder} parameter in the \textit{CalculateCorrDim} (the
 default is $2$, the correlation dimension). The order must fulfill 
 \textit{corrOrder > 1}. The generalized correlation dimension of order $q = 1$ 
 is known as the information dimension, that is computed with the
-\textit{CalculateInfDim} function (see section \ref{seq:infDimAdv}). \\
+\textit{CalculateInfDim} function (see Section \ref{seq:infDimAdv}). \\
  
 As a quick example, we will try to  calculate the correlation dimension of
 order 4 for our new \textit{hrv.data}. Figures \ref{fig:genCorrDim}
@@ -148,7 +148,7 @@ hrv.data = EstimateCorrDim(hrv.data, indexNonLinearAnalysis = 1,
 
 
 \subsubsection{Information dimension\label{seq:infDimAdv}}
-As seen in section \ref{seq:infDimTheory} the information dimension is a
+As seen in Section \ref{seq:infDimTheory} the information dimension is a
 particular case of the generalized correlation 
 dimension when setting the order $q = 1$. In the \textit{RHRV} package,
 the information dimension is computed using the \textit{CalculateInfDim}, 
@@ -158,9 +158,9 @@ Since the \textit{EstimateInfDim} and \textit{PlotInfDim} are analogous to the
 \textit{EstimateCorrDim} and \textit{PlotCorrDim} functions, we shall only 
 review the \textit{CalculateInfDim} function.\\
 
-In section \ref{seq:infDimTheory} we introduced the method for estimating
+In Section \ref{seq:infDimTheory} we introduced the method for estimating
 the information dimension in practical applications. This algorithm looks for
-the scaling behaviour of the the average radius that contains a given portion 
+the scaling behaviour of the average radius that contains a given portion 
 (a "fixed-mass") of the total points in the phase space. By performing
 a linear regression of $\log(p)\;Vs.\;\log(<r>)$ (being $p$ the fixed-mass of 
 the total points), an estimate of the information dimension ($D_1$) is
@@ -224,7 +224,7 @@ estimate of the information dimension.\\
 \subsubsection{Poincar\'{e} Plot\label{seq:poincarePlot}}
 The \textit{PoincarePlot} function implements all the functionality for 
 performing Poincar\'{e} plot analysis, whether you employ the ``classic" 
-calculation methods or those based on confidence regions (see section
+calculation methods or those based on confidence regions (see Section
 \ref{seq:poincareTheory}). \\
 
 In order to compute the ``classic" $SD_1$ and $SD_2$

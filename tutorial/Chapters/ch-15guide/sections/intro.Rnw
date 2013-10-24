@@ -25,7 +25,7 @@ frequency-domain analysis or nonlinear analysis.
 \item Plot the results of the analysis that has been performed and access the 
 ``raw" data.
 \end{enumerate}
-In section \ref{sec:quickPrep} we will address points 1-5, whereas that in 
+In section \ref{sec:quickPrep} we will address points 1-5, whereas in 
 section \ref{sec:quickAna} we will deal with points 6 and 7. All the examples 
 of this chapter will use the 
 example beats file ``example.beats" that may be downloaded from 

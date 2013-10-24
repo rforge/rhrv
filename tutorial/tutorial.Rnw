@@ -169,10 +169,10 @@
 \else
 %\abstract{ % at the moment, we don't use abstract}
 
-%\acknowledgements{
-%I would like to thank...
-%\input{acknowledgements}
-%}
+\acknowledgements{
+We would like to thank Matias Garcia-Constantino for his kind contributions and
+suggestions.
+}
 
 %\dedication{blabla. }
 

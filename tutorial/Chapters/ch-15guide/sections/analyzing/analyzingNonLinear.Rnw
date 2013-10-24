@@ -1,4 +1,4 @@
-\textit{RHRV} implements all the nonlinear functionality presented in section 
+\textit{RHRV} implements all the nonlinear functionality presented in Section 
 \ref{sec:NonlinearTheory}. As we shall see in the next sections, most 
 of the nonlinear statistics share a common name 
 convention for their functions:  the \textit{CalculateX}, the 
@@ -43,7 +43,7 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 
 In the next few sections we shall present the basics for performing the most
 widely-used nonlinear analysis algorithms (Although some of the algorithms will
-not be presented here, but in section \ref{seq:nonlinearAdvanced}). Due to the
+not be presented here, but in Section \ref{seq:nonlinearAdvanced}). Due to the
 heterogeneity of the nonlinear algorithms, we will also explain how to access 
 the computations for each algorithm as they are presented.
 
@@ -121,7 +121,7 @@ test is low. We have use it here for illustrative purposes. Figure
 
 
 \subsubsection{Phase space reconstruction\label{sec:phaseSpace}}
-As exposed in section \ref{sec:phaseSpaceTheory} the Takens embedding theorem
+As exposed in Section \ref{sec:phaseSpaceTheory} the Takens embedding theorem
 provides a method for phase space reconstruction. However, it does not provide
 information on how to select $\tau$ and $m$ parameters. Fortunately, the
 \textit{RHRV} package provides functionality for estimating both 
@@ -191,7 +191,7 @@ by using the functions
 explained in this section and the next one. However we strongly recommend to 
 estimate them just once because
 of computational efficiency. Thus, we store the \textit{kTimeLag} parameter to 
-use it in all the examples of these section.\\
+use it in all the examples of this section.\\
 
 
 Figure  \ref{fig:timeLag} shows the autocorrelation function used in the time 
@@ -217,7 +217,7 @@ the $E1(d)$ and the $E2(d)$ functions, where $d$ denotes the dimension.\\
 $E1(d)$ stops changing when $d$ is greater than or equal to the embedding 
 dimension $m$, staying close to 1. On the other hand, $E2(d)$ is used to
 distinguish deterministic signals from stochastic signals.
-For deterministic signals, there exist some $d$ fulfilling
+For deterministic signals, there exists some $d$ fulfilling
 $E2(d)\neq 1$. For stochastic signals, $E2(d)$ is approximately 1 for all the 
 values. The \textit{CalculateEmbeddingDim} function implements this algorithm
 in the \textit{RHRV} package.\\
@@ -225,7 +225,7 @@ in the \textit{RHRV} package.\\
 The \textit{CalculateEmbeddinDim} takes as input parameters the \textit{HRVData}
 structure, the number of points of the time series to be used for estimating 
 the embedding dimension (\textit{numberPoints}); the time lag calculated in the
-previous section (\textit{timeLag}); the maximum possible embedding dimension 
+previous Section (\textit{timeLag}); the maximum possible embedding dimension 
 (\textit{maxEmbeddingDim}); the threshold that $E1(d)$ most cross for
 considering that it is close to the limit value 1 (\textit{threshold. Default
 0.95}); the maximum relative change in $E1(d)$ with respect to $E1(d-1)$ in 
@@ -393,10 +393,10 @@ computed.\\
 
 Since the correlation dimension is the most important of the nonlinear 
 dimensions, the generalized dimensions (including the information dimension) 
-shall be presented in section \ref{seq:nonlinearAdvanced}.
+shall be presented in Section \ref{seq:nonlinearAdvanced}.
 
 \paragraph{Sample entropy}
-In section \ref{seq:sampEnTheory} we saw that in order to compute the sample
+In Section \ref{seq:sampEnTheory} we saw that in order to compute the sample
 entropy  of order $q$ ($H_q$) of a time series we first have to calculate:
 $$h_q(m,r) = log\left( \frac{C_q(m,r)}{C_q(m+1,r)} \right),$$
 and then, we may obtain $H_q$  by taking the limit:
@@ -499,7 +499,7 @@ print(estimation)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \paragraph{Maximum Lyapunov exponent}
-As presented in section \ref{seq:maxLyapTheory}, the first step in order to
+As presented in Section \ref{seq:maxLyapTheory}, the first step in order to
 calculate the maximum Lyapunov exponent should be computing the $S(t)$ 
 function. In \textit{RHRV}, the $S(t)$ shall be estimated with the
 \textit{CalculateMaxLyapunov} function. The \textit{CalculateMaxLyapunov}
@@ -598,7 +598,7 @@ cat("The Max Lyapunov exponent is ",max.exponent,"\n")
 
 \paragraph{Detrended Fluctuation Analysis}
 Before introducing the \textit{RHRV} functionality for performing DFA, 
-we have to review the DFA procedure presented in section \ref{seq:dfaTheo}.
+we have to review the DFA procedure presented in Section \ref{seq:dfaTheo}.
 
 \begin{enumerate}
   \item Integrate the time series to be analyzed. The time series resulting 

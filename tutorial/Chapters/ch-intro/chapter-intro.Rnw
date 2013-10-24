@@ -92,21 +92,18 @@ components of \gls{HRV}. Section \ref{sec:obtainingHRV} continues discussing
 the extraction of heart beat periods. The derivation and the preprocessing of 
 \gls{HRV} time series are also described.  In Section \ref{sec:analysisTechn}, 
 the most common \gls{HRV} analysis methods are summarized (although they will 
-be be covered in more depth when they are introduced in the document). The 
+be covered in more depth when they are introduced in the document). The 
 descriptions
 of the methods are divided into time-domain, frequency-domain, and nonlinear. A 
 discussion on the important issue of stationarity is included. The rest of the 
 chapter (Section \ref{sec:pathologies}) is focused on the use of \gls{HRV} as a 
 predictor of different pathologies and its clinical applications.\\
 
-Chapter \ref{ch:installation} explains how get RHRV installed in your computer. 
-This guide assumes that you have already installed R on your computer.\\
+Chapter \ref{ch:installation} explains explains how to get RHRV installed in 
+your computer. This guide assumes that you have already installed R in your 
+computer.\\
 
 Chapter \ref{ch:Quick} presents a ``15-minutes guide to RHRV''. This chapter 
 presents the essential functions needed to perform some basic analysis with 
-RHRV. Chapter \ref{ch:advanced} completes the functionality introduced in chapter 
-\ref{ch:Quick} and presents more advanced features available in RHRV. Although 
-there exist some functionality in the RHRV package for performing nonlinear 
-analysis of a \gls{HR} signal, this current version of the tutorial will not 
-treat these functions. Future versions of this tutorial will deal with this 
-functionality.
+RHRV. Chapter \ref{ch:advanced} completes the functionality introduced in Chapter 
+\ref{ch:Quick} and presents more advanced features available in RHRV. 

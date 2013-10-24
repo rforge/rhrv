@@ -119,7 +119,7 @@ With this notation, the ``classic" correlation sum is $C(r) = C_2(r)$. It is
 possible  to determine generalized dimensions $D_q$ using the slope obtained by 
 performing a linear regression of $log(Cq(r))\;Vs.\;(q-1)log(r)$.
 The case $q=1$ leads to the information dimension, that is treated separately
-in this package. see sections  \ref{seq:infDimTheory} and \ref{seq:infDimAdv}). 
+in this package. see Sections  \ref{seq:infDimTheory} and \ref{seq:infDimAdv}). 
 The considerations discussed for the correlation dimension estimate are also 
 valid for these generalized dimensions.
 \subsubsection{Information dimension\label{seq:infDimTheory}}
