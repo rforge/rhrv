@@ -6,13 +6,13 @@ remaining nonlinear functions.\\
 
 The example file ``example2.beats" that we shall use in the next sections
 can be downloaded from the project's website
-\href{http://rhrv.r-forge.r-project.org/}. The file was obtained from an ECG
+\href{http://rhrv.r-forge.r-project.org/}{http://rhrv.r-forge.r-project.org/}.
+The file was obtained from an ECG
 of one of the authors of the \textit{RHRV} package and thus we expect
-the file to be from a healthy subject!\\
+the file to be from a healthy subject!
 
 <<RRnormal>>=
 hrv.data = CreateHRVData( )
-hrv.data = SetVerbose(hrv.data,FALSE)
 hrv.data = LoadBeatAscii(hrv.data, 
                          RecordName="example2.beats",
                          RecordPath="beatsFolder")
@@ -20,18 +20,21 @@ hrv.data = BuildNIHR(hrv.data)
 hrv.data = FilterNIHR(hrv.data)
 hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
 hrv.data = CreateNonLinearAnalysis(hrv.data)
+hrv.data = SetVerbose(hrv.data,TRUE)
 @
 
 First of all, we should run the nonlinearity tests in order to make sure that
 the time series shows some degree of nonlinearity. We leave the test to the 
 reader. Now, we shall estimate both time lag and embedding dimension parameters
 of our new RR time series. As always, we first estimate
-the time lag. The autocorrelation function used for the computations is shown
-in Figure \ref{fig:autocorrReal}.\\
+the time lag. The autocorrelation function used for the selection of the time
+lag is shown
+in Figure \ref{fig:autocorrReal}. This figure also suggest that a 
+suitable choice for the Theiler window could be $\approx 200$.
 
 <<timeLagReal,fig=TRUE,pdf=TRUE, include=FALSE>>=
 kTimeLag = CalculateTimeLag(hrv.data, method = "first.minimum",
-                 lagMax = 800)
+                 lagMax = 300)
 @
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +52,7 @@ However, in most \gls{HRV} publications, the time
 lag value is not usually selected above 10 or 15. \\
 
 Now, we may try to obtain an estimation of the embedding dimension (see Figure
- \ref{fig:embeddingReal}):
+ \ref{fig:embeddingReal}). The optimum embedding dimension is $12$.
 <<embeddingDimReal,fig=TRUE, pdf = TRUE, include=FALSE>>=
 kEmbeddingDim = CalculateEmbeddingDim(hrv.data,
                                       numberPoints = 10000, 
@@ -84,25 +87,26 @@ this procedure will certainly not solve the discretization problem,
 it will alleviate it:\\
  
 <<NonLinearNoiseReduction,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
-hrv.data = NonLinearNoiseReduction(hrv.data, embeddingDim = kEmbeddingDim)                            
+hrv.data = NonLinearNoiseReduction(hrv.data, 
+                                   embeddingDim = kEmbeddingDim)                            
 @
 
 Additional parameters for the \textit{NonLinearNoiseReduction} function are
-\textit{ECGsamplingFreq}: the \gls{ECG} sampling frequency  (optionally. But it 
-can improve the performance of the algorithm) and \textit{radius}: 
-The radius used to looking for neighbours in the phase space.\\
+\textit{ECGsamplingFreq}: the \gls{ECG} sampling frequency  (optional, but it 
+can improve the performance of the algorithm if provided) and \textit{radius}: 
+the radius used to looking for neighbours in the phase space.\\
 
 \subsubsection{Generalized correlation dimensions\label{seq:genCD}}
 Section \ref{seq:corrDimTheo} presented the \textit{CalculateCorrDim}, 
-\textit{EstimateCorrDim} and \textit{PlotCorrDim} for computing the embedding
-dimension of an RR time series. These functions can also be used for computing
-the generalized correlation dimension. The user only has to specify the order 
-of the correlation dimension
+\textit{EstimateCorrDim} and \textit{PlotCorrDim} functions for computing the 
+correlation dimension of an RR time series. These functions can also be used 
+for computing the generalized correlation dimension. The user only has to 
+specify the order of the correlation dimension
 with the \textit{corrOrder} parameter in the \textit{CalculateCorrDim} (the 
 default is $2$, the correlation dimension). The order must fulfill 
-\textit{corrOrder > 1}. The generalized correlation dimension of order $q$ is
-known as the information dimension, that is computed with the
-\textit{CalculateInfDim} function (see section \ref{seq:infDimAdv}. \\
+\textit{corrOrder > 1}. The generalized correlation dimension of order $q = 1$ 
+is known as the information dimension, that is computed with the
+\textit{CalculateInfDim} function (see section \ref{seq:infDimAdv}). \\
  
 As a quick example, we will try to  calculate the correlation dimension of
 order 4 for our new \textit{hrv.data}. Figures \ref{fig:genCorrDim}
@@ -117,7 +121,7 @@ hrv.data = CalculateCorrDim(hrv.data,
                             maxEmbeddingDim = kEmbeddingDim + 2,
                             timeLag = kTimeLag, minRadius = 1,
                             maxRadius = 200, pointsRadius = 100, 
-                            theilerWindow = 20, doPlot = TRUE,
+                            theilerWindow = 200, doPlot = TRUE,
                             corrOrder = 4)
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,8 +134,8 @@ hrv.data = CalculateCorrDim(hrv.data,
 
 <<genCorrDimEst,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
 hrv.data = EstimateCorrDim(hrv.data, indexNonLinearAnalysis = 1,
-                            regressionRange=c(2*10^5,5*10^5)^(1/3),
-                            useEmbeddings = 12:14)
+                            regressionRange=c(3*10^5,9*10^5),
+                            useEmbeddings = 13:14)
                   
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,7 +148,7 @@ hrv.data = EstimateCorrDim(hrv.data, indexNonLinearAnalysis = 1,
 
 
 \subsubsection{Information dimension\label{seq:infDimAdv}}
-As seen in section ref{seq:infDimTheory} the information dimension is a
+As seen in section \ref{seq:infDimTheory} the information dimension is a
 particular case of the generalized correlation 
 dimension when setting the order $q = 1$. In the \textit{RHRV} package,
 the information dimension is computed using the \textit{CalculateInfDim}, 
@@ -178,7 +182,7 @@ hrv.data = CalculateInfDim(hrv.data,
                            minFixedMass=2*10^-3,maxFixedMass=0.25,
                            numberFixedMassPoints=10,
                            radius=0.8,increasingRadiusFactor=1.05,
-                           numberPoints=500, theilerWindow=100,
+                           numberPoints=500, theilerWindow=200,
                            doPlot=TRUE)
 @
 Figure \ref{fig:infDim} shows $<\log p(r)>$ Vs. $\log(r)$ as obtained from the
@@ -199,7 +203,7 @@ hrv.data = EstimateInfDim(hrv.data,
                            regressionRange=c(0.0025,0.100), 
                            doPlot=TRUE)
 
-
+# Let's print again the value of the information dimension!
 cat("The information dimension is ",
     hrv.data$NonLinearAnalysis[[my.index]]$infDim$statistic,"\n")
 @
@@ -219,19 +223,20 @@ estimate of the information dimension.\\
 % 
 \subsubsection{Poincar\'{e} Plot\label{seq:poincarePlot}}
 The \textit{PoincarePlot} function implements all the functionality for 
-performing Poincar\'{e} plot analysis. Whether you employ the ``classical" 
+performing Poincar\'{e} plot analysis, whether you employ the ``classic" 
 calculation methods or those based on confidence regions (see section
 \ref{seq:poincareTheory}). \\
 
 In order to compute the ``classic" $SD_1$ and $SD_2$
 parameters in the Poincar\'{e} plot, 
 the most important arguments of the \textit{RHRV} routine are the 
-\textit{timeLag} ($\tau$ in the theoretic section: \ref{seq:poincareTheory}) 
+\textit{timeLag} ($\tau$, that must be setted to 1) 
 and \textit{doPlot} (if TRUE, the Poincar\'{e} plot is shown). The following
 lines illustrate the use of this function. The resulting Poincar\'{e} plot is 
 shown in Figure \ref{fig:poincare}. \\
 
 <<Poincare,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
+# Set timeLag = 1 to obtain the "classic" Poincare parameters
 hrv.data = PoincarePlot(hrv.data,
                          indexNonLinearAnalysis=1,
                          timeLag=1, doPlot=TRUE)
@@ -241,17 +246,16 @@ hrv.data = PoincarePlot(hrv.data,
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.85\textwidth]{figures/tutorial-Poincare}
-  \caption{Poincar\'{e} Plot.\label{fig:poincare}}
+  \caption{``Classic" Poincar\'{e} Plot.\label{fig:poincare}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 
-Figure \ref{fig:poincare} shows the resulting Poincar\'{e} plot. We may 
-appreciate that the fit could be improved. For this reason, \textit{RHRV}
-provides functionality for fitting the ellipse (and computing both 
+Figure \ref{fig:poincare} shows the resulting Poincar\'{e} plot. \textit{RHRV}
+also provides functionality for fitting the ellipse (and computing both 
 $SD_1$ and $SD_2$ parameters) using the theory of the
 confidence regions. In order to enable the confidence region estimation the user
 can set \textit{confidenceEstimation = TRUE}. The confidence level can be 
-selected with the \textit{confidence} paramter (default:0.95). It must be noted
+selected with the \textit{confidence} parameter (default:0.95). It must be noted
 that when \textit{timeLag > 1}, the confidence region approach is always used.\\
 
 Figure \ref{fig:poincareConfidence} shows the result of applying the
@@ -262,7 +266,7 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 hrv.data = PoincarePlot(hrv.data,
                          indexNonLinearAnalysis=2,
                          timeLag=1, confidenceEstimation = TRUE,
-                         confidence = 0.95,
+                         confidence = 0.9,
                          doPlot=TRUE)
 @
  
@@ -270,18 +274,17 @@ hrv.data = PoincarePlot(hrv.data,
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.85\textwidth]{figures/tutorial-PoincareConfidence}
-  \caption{Poincar\'{e} Plot.\label{fig:poincareConfidence}}
+  \caption{Poincar\'{e} Plot using the confidence region estimation.\label{fig:poincareConfidence}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The $SD_1$ and $SD_2$ parameters are stored under the
-\textit{hrv.data\$NonLinearAnalysis[[index]]\$PoincarePlot} list that may be
-accessed as usual:
+\textit{PoincarePlot} list  of the \textit{NonLinearAnalysis}. Of coruse, they
+can be accessed as usual:
 
 <<AccessingData>>=
 # results of the first fit ...
 print(hrv.data$NonLinearAnalysis[[1]]$PoincarePlot)
 # ... vs results of the second one
 print(hrv.data$NonLinearAnalysis[[2]]$PoincarePlot)
-
 @

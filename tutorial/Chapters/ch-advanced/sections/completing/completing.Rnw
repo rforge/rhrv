@@ -276,7 +276,7 @@ PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
 The result of this script is shown in figure \ref{fig:plottingSpectrogram2}.
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingSpectrogram}
+\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingSpectrogram}
 \caption{Plot obtained with the \textit{PlotSpectrogram} 
 function.\label{fig:plottingSpectrogram}}
 \end{figure}
@@ -284,7 +284,7 @@ function.\label{fig:plottingSpectrogram}}
 
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingSpectrogram2}
+\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingSpectrogram2}
 \caption[Plotting with the \textit{PlotSpectrogram} function using the 
 \textit{freqRange} parameter]{Plot obtained with the \textit{PlotSpectrogram} 
 function and the \textit{freqRange} parameter.\label{fig:plottingSpectrogram2}}

@@ -1,14 +1,12 @@
-MY_FILE = tutorial
-
 all: tex glossary tex pdf 
 
-glossary: $(MY_FILE).tex
-	makeglossaries $(MY_FILE)
+glossary: tutorial.tex
+	makeglossaries tutorial
 
-pdf: $(MY_FILE).tex
-	R CMD texi2pdf $(MY_FILE).tex
+pdf: tutorial.tex
+	R CMD texi2pdf --build='local' tutorial.tex
 
-tex: $(MY_FILE).Rnw
-	R CMD Sweave $(MY_FILE).Rnw
+tex: tutorial.Rnw
+	R CMD Sweave tutorial.Rnw
 
 
