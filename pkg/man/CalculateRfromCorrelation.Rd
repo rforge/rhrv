@@ -29,3 +29,10 @@ M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
   \code{\link{CalculateFracDim}} 
 }
 \keyword{ misc }
+
+
+\note{
+This function is used in the \code{\link{CalculateFracDim}} function, which is
+\bold{deprecated}. We suggest the use of the \code{\link{CalculateCorrDim}} function 
+instead of \code{\link{CalculateFracDim}}.
+}

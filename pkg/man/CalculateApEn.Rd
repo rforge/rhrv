@@ -44,3 +44,7 @@ M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
   \code{\link{AvgIntegralCorrelation}} for averaging correlation calculations\cr
 }
 \keyword{ misc }
+\note{
+This function is \bold{deprecated}. We suggest the use of the 
+\code{\link{CalculateSampleEntropy}} function instead, which is faster.
+}

@@ -50,7 +50,7 @@
   the embedding dimension, staying close to 1. On the other
   hand, E2(d) is used to distinguish deterministic signals
   from stochastic signals. For deterministic signals, there
-  exist some d such that E2(d)!=1. For stochastic signals,
+  exists some d such that E2(d)!=1. For stochastic signals,
   E2(d) is approximately 1 for all the values.
 }
 \note{

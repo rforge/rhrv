@@ -1,9 +1,14 @@
 AvgIntegralCorrelation <-
 function(HRVData, Data, m, tau, r) {
-# -------------------------------------
-# Averages Integral Correlation
-# -------------------------------------
-
+  # -------------------------------------
+  # Averages Integral Correlation
+  # -------------------------------------
+  warning(
+    paste("--- Warning: AvgIntegralCorrelation() is deprecated ---",
+          "  --- Use CalculateSampleEntropy() instead ---",
+          "  --- See help for more information!! ---",
+          sep="\n")
+  )
 	Cmr = IntegralCorrelation(HRVData,Data,m=m,tau=tau,r=r)
 
 	if (HRVData$Verbose) {

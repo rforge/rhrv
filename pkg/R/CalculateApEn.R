@@ -3,7 +3,12 @@ function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), m=
 # -------------------------------------
 # Calculates Approximate Entropy
 # -------------------------------------
-
+  warning(
+    paste("--- Warning: CalculateApEn() is deprecated ---",
+          "  --- Use CalculateSampleEntropy() instead ---",
+          "  --- See help for more information!! ---",
+          sep="\n")
+  )
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
 		SetVerbose(HRVData,verbose)

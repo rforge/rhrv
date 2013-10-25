@@ -32,3 +32,7 @@ M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
   \code{\link{CalculateRfromCorrelation}} for finding r distance at which the correlation has a certain value
 }
 \keyword{ misc }
+\note{
+This function is \bold{deprecated}. We suggest the use of the 
+\code{\link{CalculateCorrDim}} function instead, which is faster.
+}
