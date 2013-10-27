@@ -28,7 +28,7 @@
 #'                             maxEmbeddingDim=8,timeLag=1,minRadius=1,maxRadius=15,
 #'                             pointsRadius=20,theilerWindow=10,corrOrder=2,doPlot=FALSE)
 #' hrv.data = CalculateSampleEntropy(hrv.data,indexNonLinearAnalysis=1,doPlot=FALSE)
-#' hrv.data = PlotSampleEntropy(hrv.data,indexNonLinearAnalysis=1)
+#' PlotSampleEntropy(hrv.data,indexNonLinearAnalysis=1)
 #' hrv.data = EstimateSampleEntropy(hrv.data,indexNonLinearAnalysis=1,regressionRange=c(6,10))
 #' }
 #' @author Constantino A. Garcia
@@ -52,7 +52,7 @@ CalculateSampleEntropy <-
     
     ## Computing sample entropy
     if (HRVData$Verbose){
-        cat("  --- Computing the sample entropy of order",getOrder(corrDimObject),"---\n")
+        cat("  --- Computing the sample entropy of order",nlOrder(corrDimObject),"---\n")
     }
     
 

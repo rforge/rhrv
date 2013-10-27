@@ -12,16 +12,17 @@
 #' In order to estimate \eqn{D_1}{D1}, the algorithm looks for the scaling behaviour of the average
 #' radius that contains a given portion (a "fixed-mass") of the total points in the phase space. By performing
 #' a linear regression of \eqn{\log(p)\;Vs.\;\log(<r>)}{ln p Vs ln <r>} (being \eqn{p} the fixed-mass of the total points), an estimate
-#' of \eqn{D_1}{D1} is obtained. 
-#' 
-#' The calculations for the information dimension are heavier than
-#' those needed for the correlation dimension. Thus, this method only explores 
-#' one embedding dimension. However, the user should run
+#' of \eqn{D_1}{D1} is obtained. The user should run
 #' the method for different embedding dimensions for checking if \eqn{D_1}{D1} saturates.
 
+#' 
+#' The calculations for the information dimension are heavier than
+#' those needed for the correlation dimension.
 #' @param HRVData Data structure that stores the beats register and information related to it
-#' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
-#' @param embeddingDim Integer denoting the dimension in which we shall embed the RR time series. 
+#' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis.
+#' @param minEmbeddingDim Integer denoting the minimum dimension in which we shall embed the time series.
+#' @param maxEmbeddingDim Integer denoting the maximum dimension in which we shall embed the time series.
+#' Thus, we shall estimate the correlation dimension between \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' Takens' vectors.
 #' @param minFixedMass Minimum percentage of the total points that the algorithm shall use for the estimation.
@@ -46,7 +47,7 @@
 #' @seealso \code{\link{CalculateCorrDim}}.
 CalculateInfDim <-
   function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), 
-           embeddingDim = NULL, timeLag = NULL, minFixedMass = 0.0001,
+           minEmbeddingDim = NULL, maxEmbeddingDim = NULL, timeLag = NULL, minFixedMass = 0.0001,
            maxFixedMass = 0.005, numberFixedMassPoints = 50,
            radius = 1, increasingRadiusFactor = 1.05, numberPoints = 500,
            theilerWindow = 100, doPlot = TRUE){
@@ -66,12 +67,17 @@ CalculateInfDim <-
       stop("RR time series not present\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,embeddingDim)
+    estimations = automaticEstimation(HRVData,timeLag,minEmbeddingDim)
     timeLag = estimations[[1]]
-    embeddingDim = estimations[[2]]
+    minEmbeddingDim = estimations[[2]]
+    
+    if (is.null(maxEmbeddingDim) || (maxEmbeddingDim < minEmbeddingDim)){
+      maxEmbeddingDim = minEmbeddingDim
+    }
     
     
-    infDimObject = infDim(time.series = HRVData$Beat$RR, embedding.dim=embeddingDim,
+    infDimObject = infDim(time.series = HRVData$Beat$RR, min.embedding.dim = minEmbeddingDim, 
+                           max.embedding.dim =  maxEmbeddingDim, 
                            time.lag = timeLag, min.fixed.mass=minFixedMass, 
                            max.fixed.mass=maxFixedMass,
                            number.fixed.mass.points=numberFixedMassPoints,
@@ -90,6 +96,8 @@ CalculateInfDim <-
 # @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
 #' @param regressionRange Vector with 2 components denoting the range where the function will perform linear regression
 # @param doPlot Logical value. If TRUE (default value), a plot of the correlation sum is shown.
+#' @param useEmbeddings A numeric vector specifying which embedding dimensions should the algorithm
+#'  use to compute the information dimension.
 #' @return The \emph{EstimateInfDim} function estimates the information dimension of the 
 #' RR time series by averaging the slopes of the correlation sums with q=1.
 #'  The slopes are determined by performing a linear regression
@@ -101,7 +109,7 @@ CalculateInfDim <-
 #' @rdname CalculateInfDim
 EstimateInfDim <-
   function(HRVData,indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), 
-           regressionRange = NULL, doPlot = TRUE) {
+           regressionRange = NULL, useEmbeddings = NULL, doPlot = TRUE) {
     # -------------------------------------
     # Estimates Information Dimension
     # -------------------------------------
@@ -120,6 +128,7 @@ EstimateInfDim <-
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic = 
       estimate(infDimObject,regression.range=regressionRange,
+               use.embeddings=useEmbeddings,
                do.plot=doPlot)
     
     if (HRVData$Verbose){

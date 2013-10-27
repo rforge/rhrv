@@ -34,7 +34,7 @@
   \item{maxEmbeddingDim}{Integer denoting the maximum
   dimension in which we shall embed the time series. Thus,
   we shall estimate the correlation dimension between
-  minEmbeddingDim and maxEmbeddingDim}
+  \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.}
 
   \item{timeLag}{Integer denoting the number of time steps
   that will be use to construct the Takens' vectors.}

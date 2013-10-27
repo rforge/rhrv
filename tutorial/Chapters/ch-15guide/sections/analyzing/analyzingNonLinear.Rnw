@@ -504,11 +504,9 @@ calculate the maximum Lyapunov exponent should be computing the $S(t)$
 function. In \textit{RHRV}, the $S(t)$ shall be estimated with the
 \textit{CalculateMaxLyapunov} function. The \textit{CalculateMaxLyapunov}
 function will average the divergence of several reference points
-in a m-dimensional space. The \textit{embeddingDim} and \textit{timeLag} 
-specify the parameters for the phase space reconstruction.
-It must be noted that this function only uses one embedding
-dimension for computing the divergence. The  number
-of reference points that the routine will try to use in order
+in a m-dimensional space. The \textit{minEmbeddingDim}, \textit{maxEmbeddingDim}
+and \textit{timeLag}  specify the parameters for the phase space reconstruction.
+The  number of reference points that the routine will try to use in order
 to compute the divergence is specified with the \textit{minRefPoints} 
 parameter. A point in phase space is considered to be a reference point if
 there exist a minimum number of close neighbours. 500 points are usually enough 
@@ -519,10 +517,8 @@ maximum distance in which the routine will look for close neighbours. Since we
 are working with the RR time series, a radius in the radius' range $[1-10]$ ms 
 seems a proper choice for selecting very close phase space points. \\
 
-In the following example we shall compute the divergence for just one embedding
-dimension for the sake of simplicity. However, we strongly recommend computing
-the maximal Lyapunov exponent for several embedding dimensions in order to check
-that it doesn't depend on the embedding dimension.\\
+In order to compute the maximal Lyapunov exponent for our example file we could
+write:\\
 
 <<mfrow,echo=FALSE>>=
 par(mfrow=c(1,1))
@@ -532,7 +528,8 @@ my.index = 1
 hrv.data = CalculateMaxLyapunov(
                           hrv.data, 
                           indexNonLinearAnalysis = my.index,
-                          embeddingDim= kEmbeddingDim, 
+                          minEmbeddingDim= kEmbeddingDim, 
+                          maxEmbeddingDim= kEmbeddingDim+2, 
                           timeLag = kTimeLag,
                           radius = 3, theilerWindow = 20,
                           doPlot = FALSE)
@@ -564,7 +561,9 @@ regression performed by the \textit{EstimateMaxLyapunov} is shown in Figure
 hrv.data = EstimateMaxLyapunov(
                           hrv.data, 
                           indexNonLinearAnalysis = my.index,
-                          regressionRange = c(1,6), doPlot = TRUE)
+                          regressionRange = c(1,6),
+                          useEmbeddings = (kEmbeddingDim):(kEmbeddingDim+2),
+                          doPlot = TRUE)
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
@@ -700,10 +699,14 @@ Let's apply the \textit{RQA} function to our example:
 
 <<RQA,eval=FALSE,fig=TRUE,eps=FALSE,pdf=TRUE,include=FALSE>>=
 hrv.data = RQA(hrv.data, indexNonLinearAnalysis = my.index,
+               embeddingDim=kEmbeddingDim, timeLag = kTimeLag,         
                radius = 2, doPlot=TRUE)
 @
 <<readRQA,echo=FALSE>>=
 hrv.data = dget(file="RQA_file")
+@
+<<RQAfinal,echo=FALSE,fig=TRUE,pdf=TRUE,include=FALSE>>=
+a=RecurrencePlot(hrv.data,embeddingDim=kEmbeddingDim, timeLag = kTimeLag, radius=2)
 @
 <<RQA2>>=
 # let's see which statistics have been computed...
@@ -713,13 +716,10 @@ cat("Entropy of the diagonal lines: ",
     hrv.data$NonLinearAnalysis[[1]]$rqa$ENTR,
     "\n")
 @
-<<readRQA,echo=FALSE>>=
-hrv.data = dget(file="RQA_file")
-@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.6\textwidth]{figures/RQAplot}
+  \includegraphics[width=0.6\textwidth]{figures/tutorial-RQAfinal}
   \caption{Recurrence plot.\label{fig:recplot}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

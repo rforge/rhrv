@@ -6,15 +6,16 @@
 \usage{
   CalculateInfDim(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-    embeddingDim = NULL, timeLag = NULL,
-    minFixedMass = 1e-04, maxFixedMass = 0.005,
-    numberFixedMassPoints = 50, radius = 1,
-    increasingRadiusFactor = 1.05, numberPoints = 500,
-    theilerWindow = 100, doPlot = TRUE)
+    minEmbeddingDim = NULL, maxEmbeddingDim = NULL,
+    timeLag = NULL, minFixedMass = 1e-04,
+    maxFixedMass = 0.005, numberFixedMassPoints = 50,
+    radius = 1, increasingRadiusFactor = 1.05,
+    numberPoints = 500, theilerWindow = 100, doPlot = TRUE)
 
   EstimateInfDim(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-    regressionRange = NULL, doPlot = TRUE)
+    regressionRange = NULL, useEmbeddings = NULL,
+    doPlot = TRUE)
 
   PlotInfDim(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
@@ -25,10 +26,15 @@
   register and information related to it}
 
   \item{indexNonLinearAnalysis}{Reference to the data
-  structure that will contain the nonlinear analysis}
+  structure that will contain the nonlinear analysis.}
 
-  \item{embeddingDim}{Integer denoting the dimension in
-  which we shall embed the RR time series.}
+  \item{minEmbeddingDim}{Integer denoting the minimum
+  dimension in which we shall embed the time series.}
+
+  \item{maxEmbeddingDim}{Integer denoting the maximum
+  dimension in which we shall embed the time series. Thus,
+  we shall estimate the correlation dimension between
+  \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.}
 
   \item{timeLag}{Integer denoting the number of time steps
   that will be use to construct the Takens' vectors.}
@@ -72,6 +78,10 @@
   the range where the function will perform linear
   regression}
 
+  \item{useEmbeddings}{A numeric vector specifying which
+  embedding dimensions should the algorithm use to compute
+  the information dimension.}
+
   \item{...}{Additional plot parameters.}
 }
 \value{
@@ -114,14 +124,12 @@
   points in the phase space. By performing a linear
   regression of \eqn{\log(p)\;Vs.\;\log(<r>)}{ln p Vs ln
   <r>} (being \eqn{p} the fixed-mass of the total points),
-  an estimate of \eqn{D_1}{D1} is obtained.
+  an estimate of \eqn{D_1}{D1} is obtained. The user should
+  run the method for different embedding dimensions for
+  checking if \eqn{D_1}{D1} saturates.
 
   The calculations for the information dimension are
   heavier than those needed for the correlation dimension.
-  Thus, this method only explores one embedding dimension.
-  However, the user should run the method for different
-  embedding dimensions for checking if \eqn{D_1}{D1}
-  saturates.
 }
 \note{
   In order to run \emph{EstimateInfDim}, it is necessary to

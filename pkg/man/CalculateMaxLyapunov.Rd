@@ -6,13 +6,15 @@
 \usage{
   CalculateMaxLyapunov(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-    embeddingDim = NULL, timeLag = NULL, radius = 2,
-    theilerWindow = 100, minNeighs = 5, minRefPoints = 500,
+    minEmbeddingDim = NULL, maxEmbeddingDim = NULL,
+    timeLag = NULL, radius = 2, theilerWindow = 100,
+    minNeighs = 5, minRefPoints = 500,
     numberTimeSteps = 20, doPlot = TRUE)
 
   EstimateMaxLyapunov(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-    regressionRange = NULL, doPlot = TRUE)
+    regressionRange = NULL, useEmbeddings = NULL,
+    doPlot = TRUE)
 
   PlotMaxLyapunov(HRVData,
     indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
@@ -25,8 +27,13 @@
   \item{indexNonLinearAnalysis}{Reference to the data
   structure that will contain the nonlinear analysis}
 
-  \item{embeddingDim}{Integer denoting the dimension in
-  which we shall embed the time series}
+  \item{minEmbeddingDim}{Integer denoting the minimum
+  dimension in which we shall embed the time series}
+
+  \item{maxEmbeddingDim}{Integer denoting the maximum
+  dimension in which we shall embed the time series. Thus,
+  we shall estimate the correlation dimension between
+  \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.}
 
   \item{timeLag}{Integer denoting the number of time steps
   that will be use to construct the Takens' vectors.
@@ -61,6 +68,10 @@
   \item{regressionRange}{Vector with 2 components denoting
   the range where the function will perform linear
   regression}
+
+  \item{useEmbeddings}{A numeric vector specifying which
+  embedding dimensions should the algorithm use to compute
+  the maximal Lyapunov exponent.}
 
   \item{...}{Additional plot parameters.}
 }
@@ -111,7 +122,9 @@
   an estimate of the maximal Lyapunov exponent, but the
   user must check that there is a linear region in the
   \eqn{S(t) Vs t}. If such a region does not exist, the
-  estimation should be discarded.
+  estimation should be discarded.  The user should also run
+  the method for different embedding dimensions for
+  checking if \eqn{D_1}{D1} saturates.
 }
 \note{
   This function is based on the
@@ -126,10 +139,14 @@
 \dontrun{
 # ...
 hrv.data = CreateNonLinearAnalysis(hrv.data)
-hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,embeddingDim=5,
-                                timeLag=1,radius=10,theilerWindow=100,doPlot=FALSE)
+hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
+                                 minEmbeddingDim=5,
+                                 maxEmbeddingDim = 5,
+                                 timeLag=1,radius=10,
+                                 theilerWindow=100, doPlot=FALSE)
 hrv.data = PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
-hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1, regressionRange=c(1,10))
+hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
+                               regressionRange=c(1,10))
 }
 }
 \author{

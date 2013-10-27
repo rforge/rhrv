@@ -14,12 +14,15 @@
 #' The user should plot \eqn{S(t) Vs t} when looking for the maximal lyapunov exponent and, if for some temporal range
 #' \eqn{S(t)} shows a linear behaviour, its slope is an estimate of the maximal Lyapunov exponent per unit of time. The estimate
 #'  routine allows the user to get always an estimate of the maximal Lyapunov exponent, but the user must check that there is a linear region in the  
-#' \eqn{S(t) Vs t}. If such a region does not exist, the estimation should be discarded.
+#' \eqn{S(t) Vs t}. If such a region does not exist, the estimation should be discarded.  The user should also
+#' run the method for different embedding dimensions for checking if \eqn{D_1}{D1} saturates.
 #' @note This function is based on the \code{\link[nonlinearTseries]{maxLyapunov}} function from the 
 #' nonlinearTseries package.
 #' @param HRVData Data structure that stores the beats register and information related to it
 #' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
-#' @param embeddingDim Integer denoting the dimension in which we shall embed the time series 
+#' @param minEmbeddingDim Integer denoting the minimum dimension in which we shall embed the time series
+#' @param maxEmbeddingDim Integer denoting the maximum dimension in which we shall embed the time series. Thus,
+#' we shall estimate the correlation dimension between \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' Takens' vectors. Default: timeLag = 1
 #' @param radius Maximum distance in which will look for nearby trajectories. Default: radius = 2
@@ -45,17 +48,21 @@
 #' \dontrun{
 #' # ...
 #' hrv.data = CreateNonLinearAnalysis(hrv.data)
-#' hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,embeddingDim=5,
-#'                                 timeLag=1,radius=10,theilerWindow=100,doPlot=FALSE)
-#' hrv.data = PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
-#' hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1, regressionRange=c(1,10))
+#' hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
+#'                                  minEmbeddingDim=5,
+#'                                  maxEmbeddingDim = 5,
+#'                                  timeLag=1,radius=10,
+#'                                  theilerWindow=100, doPlot=FALSE)
+#' PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
+#' hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1, 
+#'                                regressionRange=c(1,10))
 #' }
 #' @author Constantino A. Garcia
 #' @rdname CalculateMaxLyapunov
 #' @seealso \code{\link[nonlinearTseries]{maxLyapunov}}
 CalculateMaxLyapunov <-
   function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
-            embeddingDim = NULL, timeLag = NULL,
+            minEmbeddingDim = NULL, maxEmbeddingDim = NULL, timeLag = NULL,
             radius = 2, theilerWindow = 100, minNeighs = 5, minRefPoints = 500,
             numberTimeSteps = 20, doPlot = TRUE) {
     # -------------------------------------
@@ -72,13 +79,19 @@ CalculateMaxLyapunov <-
       stop("RR time series not present\n")
     }
     
-    estimations = automaticEstimation(HRVData,timeLag,embeddingDim)
+    estimations = automaticEstimation(HRVData,timeLag, minEmbeddingDim)
     timeLag = estimations[[1]]
-    embeddingDim = estimations[[2]]
+    minEmbeddingDim = estimations[[2]]
+    
+    if (is.null(maxEmbeddingDim) || (maxEmbeddingDim < minEmbeddingDim)){
+      maxEmbeddingDim = minEmbeddingDim
+    }
     
     
-    maxLyapObject = maxLyapunov(time.series=HRVData$Beat$RR,
-                                embedding.dim= embeddingDim, time.lag= timeLag,
+    maxLyapObject = maxLyapunov(time.series=HRVData$Beat$RR, 
+                                min.embedding.dim= minEmbeddingDim, 
+                                max.embedding.dim = maxEmbeddingDim,
+                                time.lag= timeLag,
                                 radius = radius, theiler.window= theilerWindow,
                                 min.neighs = minNeighs, min.ref.points = minRefPoints,
                                 max.time.steps = numberTimeSteps,
@@ -91,6 +104,8 @@ CalculateMaxLyapunov <-
 
 ############################## EstimateMaxLyapunov ##########################
 #' @param regressionRange Vector with 2 components denoting the range where the function will perform linear regression
+#' @param useEmbeddings A numeric vector specifying which embedding dimensions should the algorithm use to compute
+#' the maximal Lyapunov exponent.
 #' @return The \emph{EstimateMaxLyapunov} function estimates the maximum Lyapunov exponent of the 
 #' RR time series  by performing a linear regression
 #' over the time steps' range specified in \emph{regressionRange}.If \emph{doPlot} is TRUE,
@@ -100,7 +115,8 @@ CalculateMaxLyapunov <-
 #' is necessary to have performed the divergence computations before with \emph{ComputeMaxLyapunov}. 
 #' @rdname CalculateMaxLyapunov
 EstimateMaxLyapunov <-
-  function(HRVData,indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), regressionRange = NULL, doPlot = TRUE) {
+  function(HRVData,indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), 
+           regressionRange = NULL, useEmbeddings = NULL, doPlot = TRUE) {
     # -------------------------------------
     # Estimates maximum Lyapunov exponent from the computations performed with the
     # CalculateMaxLyapunovFunction
@@ -119,7 +135,8 @@ EstimateMaxLyapunov <-
     }
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$statistic = 
-      estimate(maxLyapObject, regression.range = regressionRange, do.plot=doPlot)
+      estimate(maxLyapObject, regression.range = regressionRange,
+               use.embeddings = useEmbeddings, do.plot=doPlot)
     
     if (HRVData$Verbose){
       cat("  --- Maximum Lyapunov exponent =", HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$statistic,"---\n")  

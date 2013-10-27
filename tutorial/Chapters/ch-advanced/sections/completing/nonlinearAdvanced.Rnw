@@ -167,17 +167,16 @@ the total points), an estimate of the information dimension ($D_1$) is
 obtained.\\
 
 It must be noted that the calculations for the information dimension are 
-heavier than those needed for the correlation dimension. Thus, 
-\textit{EstimateCorrDim} only explores one embedding dimension. However, 
+heavier than those needed for the correlation dimension.  However, 
 the user should run the method for different embedding dimensions for checking
-if $D_1$ saturates. For the sake of simplicity, we just run the example
-for one embedding dimension:\\
+if $D_1$ saturates.\\
 
 <<infDim,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
 my.index = 1
 hrv.data = CalculateInfDim(hrv.data,
                            indexNonLinearAnalysis=my.index,
-                           embeddingDim=kEmbeddingDim,
+                           minEmbeddingDim=kEmbeddingDim-1,
+                           maxEmbeddingDim=kEmbeddingDim+1,
                            timeLag=kTimeLag,
                            minFixedMass=2*10^-3,maxFixedMass=0.25,
                            numberFixedMassPoints=10,
@@ -201,6 +200,7 @@ and then accessing it using \$ under the \textit{statistic} field.\\
 hrv.data = EstimateInfDim(hrv.data,
                            indexNonLinearAnalysis=my.index,
                            regressionRange=c(0.0025,0.100), 
+                           useEmbeddings = (kEmbeddingDim-1):(kEmbeddingDim+1),
                            doPlot=TRUE)
 
 # Let's print again the value of the information dimension!

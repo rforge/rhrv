@@ -43,7 +43,7 @@
 #' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
 #' @param minEmbeddingDim Integer denoting the minimum dimension in which we shall embed the time series
 #' @param maxEmbeddingDim Integer denoting the maximum dimension in which we shall embed the time series. Thus,
-#' we shall estimate the correlation dimension between minEmbeddingDim and maxEmbeddingDim
+#' we shall estimate the correlation dimension between \emph{minEmbeddingDim} and \emph{maxEmbeddingDim}.
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' Takens' vectors.
 #' @param minRadius Minimum distance used to compute the correlation sum C(r)
@@ -66,7 +66,7 @@
 #'              minEmbeddingDim=2, maxEmbeddingDim=8,timeLag=1,minRadius=1,
 #'              maxRadius=15, pointsRadius=20,theilerWindow=10,
 #'              corrOrder=2,doPlot=FALSE)
-#'  hrv.data = PlotCorrDim(hrv.data,indexNonLinearAnalysis=1)
+#'  PlotCorrDim(hrv.data,indexNonLinearAnalysis=1)
 #'  hrv.data = EstimateCorrDim(hrv.data,indexNonLinearAnalysis=1,
 #'              useEmbeddings=6:8,regressionRange=c(1,10))
 #' }
@@ -149,10 +149,10 @@ EstimateCorrDim <-
     corrDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations
     
     if (HRVData$Verbose){
-      if (getOrder(corrDimObject)==2){
+      if (nlOrder(corrDimObject)==2){
         cat("  --- Estimating the Correlation dimension ---\n")  
       }else{
-        cat("  --- Estimating the generalized Correlation dimension of order", getOrder(corrDimObject) ,"---\n")
+        cat("  --- Estimating the generalized Correlation dimension of order", nlOrder(corrDimObject) ,"---\n")
       }
     }
     
@@ -162,10 +162,10 @@ EstimateCorrDim <-
                xlab="radius r", ylab="log(C(r))",main="Radius (r) Vs Correlation Sum (r)")
     
     if (HRVData$Verbose){
-      if (getOrder(corrDimObject)==2){
+      if (nlOrder(corrDimObject)==2){
         cat("  --- Correlation dimension =", HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic,"---\n")  
       }else{
-        cat("  --- Generalized Correlation dimension of order", getOrder(corrDimObject) ,"=",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic,"---\n")
+        cat("  --- Generalized Correlation dimension of order", nlOrder(corrDimObject) ,"=",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic,"---\n")
       }
     }
     return(HRVData)
