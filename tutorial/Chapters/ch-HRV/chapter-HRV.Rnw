@@ -23,6 +23,14 @@ sympathetic activity constantly interact. The continuous modulation of the
 \ref{Fig:varhr}. The beat to beat interval variations are the result of the 
 interaction of the beat-to-beat control mechanisms.\\
 
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.2\textwidth,angle=90]{figures/varhr.pdf}
+\caption[Heart rate variation]{\label{Fig:varhr} Heart rate variation as a 
+consequence of the modulation of the ANS.}
+\end{center}
+\end{figure}
+
 Due to the different speed of response of both branches of the \gls{ANS}, it is 
 possible to use the frequency analysis to discriminate between the sympathetic 
 and parasympathetic contributions to the \gls{HRV}. Akselrod et 
@@ -46,15 +54,6 @@ taken from \cite{ansScholar}.}
 \end{center}
 \end{figure} 
 
-
-
-\begin{figure}[h]
-\begin{center}
-\includegraphics[width=0.2\textwidth,angle=90]{figures/varhr.pdf}
-\caption[Heart rate variation]{\label{Fig:varhr} Heart rate variation as a 
-consequence of the modulation of the ANS.}
-\end{center}
-\end{figure}
 
 Among all the \gls{HF} mechanisms involved in the heart rate modulation we find 
 the so called
@@ -156,7 +155,8 @@ are more
 easily detected than the P waves and, for convenience, the heart beat period is 
 computed as the time difference
 between two successive QRS complexes. For the sake of simplicity, we will not 
-discuss the QRS detectors in this tutorial.\\
+discuss the QRS detectors in this tutorial. Further information about 
+QRS detection may be found in \cite{kohler2002principles}.\\
 
 
 \subsection{Constructing HRV time series}
@@ -207,11 +207,9 @@ not a function of the frequency, rather of cycles per beat. A third approach
 receives the name
 of the spectrum of the counts, that is, it uses a series of impulses (delta 
 functions) 
-positioned at beat occurrence times. This approach relies
-
-on the commonly accepted Integral Pulse Frequency Modulator (IPFM) model 
-\cite{berger1986},\cite{hyndman}, that simulates the modulation of the 
-sinoatrial node.\\
+positioned at beat occurrence times. This approach relies on the commonly 
+accepted Integral Pulse Frequency Modulator (IPFM) model \cite{berger1986},
+\cite{hyndman}, that simulates the modulation of the sinoatrial node.\\
 
 \subsection{Preprocessing HRV time series}
 

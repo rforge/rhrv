@@ -2,7 +2,8 @@
 \alias{AvgIntegralCorrelation}
 \title{ Calculates the average of the Integral Correlations }
 \description{
-   The Integral correlation is calculated for every vector of the m-dimensional space, and then the average of all these values is calculated
+WARNING: \bold{deprecated} function. 
+The Integral correlation is calculated for every vector of the m-dimensional space, and then the average of all these values is calculated
 }
 \usage{
 AvgIntegralCorrelation(HRVData, Data, m, tau, r)

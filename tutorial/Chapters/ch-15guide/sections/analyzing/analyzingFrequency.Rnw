@@ -93,19 +93,19 @@ size = 300, shift = 30 )
 \begin{itemize}
 \item \textit{Wavelet}: Mother wavelet used to calculate the spectrogram. Some 
 of the most widely used Wavelets are available: Haar (``haar"), extremal phase 
-(``d4", ``d6", ``d8" and ``d16") and the least asymmetric (``la8", ``la16" and 
-``la20") Daubechies and the best localized (``bl14" and ``bl20") Wavelets among 
-others. The default value is ``d4". The name of the wavelet specifies the 
-``family" (the family determines the shape of the Wavelet and its properties) 
-and the length of the wavelet. For example, ``la8" belongs to the Least 
-Asymmetric family and has a length of 8 samples. We may give a simple advice 
-for wavelet selection based on the wavelet's length: shorter wavelets usually 
-have better temporal resolution, but worse frequency resolution. On the other 
-hand, longer wavelets usually have worse temporal resolution, but they provide 
-better frequency resolution. Better temporal resolution means that we can study 
-shorter time intervals. On the other hand, a better frequency resolution means 
-better ``frequency discrimination". That is, shorter wavelets will tend to fail 
-when discriminating close frequencies.
+(``d4", ``d6", ``d8" and ``d16") and the least asymmetric Daubechies (``la8",
+``la16" and ``la20")  and the best localized Daubechies (``bl14" and ``bl20")
+Wavelets among others. The default value is ``d4". The name of the wavelet
+specifies the ``family" (the family determines the shape of the Wavelet and
+its properties) and the length of the wavelet. For example, ``la8" belongs to 
+the Least Asymmetric family and has a length of 8 samples. We may give a simple
+advice for wavelet selection based on the wavelet's length: shorter wavelets 
+usually have better temporal resolution, but worse frequency resolution. On the 
+other hand, longer wavelets usually have worse temporal resolution, but they
+provide better frequency resolution. Better temporal resolution means that we 
+can study shorter time intervals. On the other hand, a better frequency
+resolution means better ``frequency discrimination". That is, shorter wavelets
+will tend to fail when discriminating close frequencies.
 
 \item \textit{Bandtolerance}: Maximum error allowed when the Wavelet-based 
 analysis is performed \cite{waveletBiosignals}, \cite{waveletArticle}. It can 

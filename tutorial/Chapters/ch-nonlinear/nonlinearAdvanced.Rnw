@@ -1,4 +1,4 @@
-% !Rnw root = completing.Rnw
+% !Rnw root = ch-nonlinear.Rnw
 All the nonlinear functions presented in \ref{sec:quickNL} used as example
 file an RR time series generated synthetically from a nonlinear process. In
 this section we will deal with a real RR time series and we will present all the
@@ -45,7 +45,7 @@ kTimeLag = CalculateTimeLag(hrv.data, method = "first.minimum",
   \label{fig:autocorrReal}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-We can appreciate that there is quite autocorrelation in the time series even 
+We can appreciate that there is high autocorrelation in the time series even 
 for large time lag values. Although our estimation is reasonable it may happen
 that  some RR series have their ``optimum" time lag at $100$ or even more. 
 However, in most \gls{HRV} publications, the time
@@ -67,7 +67,7 @@ kEmbeddingDim = CalculateEmbeddingDim(hrv.data,
   \label{fig:embeddingReal}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Nonlinear noise reduction}
+\subsection{Nonlinear noise reduction}
 Since the RR intervals are derived from an \gls{ECG}, the RR time series
 may suffer from discretization problems. If the \gls{ECG} was discretized very
 coarsely, many RR intervals shall have the same value. Thus, there will be
@@ -96,17 +96,17 @@ Additional parameters for the \textit{NonLinearNoiseReduction} function are
 can improve the performance of the algorithm if provided) and \textit{radius}: 
 the radius used to looking for neighbours in the phase space.\\
 
-\subsubsection{Generalized correlation dimensions\label{seq:genCD}}
-Section \ref{seq:corrDimTheo} presented the \textit{CalculateCorrDim}, 
+\subsection{Generalized correlation dimensions\label{sec:genCD}}
+Section \ref{sec:corrDimTheo} presented the \textit{CalculateCorrDim}, 
 \textit{EstimateCorrDim} and \textit{PlotCorrDim} functions for computing the 
 correlation dimension of an RR time series. These functions can also be used 
 for computing the generalized correlation dimension. The user only has to 
 specify the order of the correlation dimension
 with the \textit{corrOrder} parameter in the \textit{CalculateCorrDim} (the 
-default is $2$, the correlation dimension). The order must fulfill 
+default value is $2$, the correlation dimension). The order must fulfill 
 \textit{corrOrder > 1}. The generalized correlation dimension of order $q = 1$ 
 is known as the information dimension, that is computed with the
-\textit{CalculateInfDim} function (see Section \ref{seq:infDimAdv}). \\
+\textit{CalculateInfDim} function (see Section \ref{sec:infDimAdv}). \\
  
 As a quick example, we will try to  calculate the correlation dimension of
 order 4 for our new \textit{hrv.data}. Figures \ref{fig:genCorrDim}
@@ -127,7 +127,7 @@ hrv.data = CalculateCorrDim(hrv.data,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.6\textwidth]{figures/tutorial-genCorrDim}
+  \includegraphics[width=0.8\textwidth]{figures/tutorial-genCorrDim}
   \caption{Generalized correlation dimension computations.\label{fig:genCorrDim}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -147,8 +147,8 @@ hrv.data = EstimateCorrDim(hrv.data, indexNonLinearAnalysis = 1,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\subsubsection{Information dimension\label{seq:infDimAdv}}
-As seen in Section \ref{seq:infDimTheory} the information dimension is a
+\subsection{Information dimension\label{sec:infDimAdv}}
+As seen in Section \ref{sec:infDimTheory} the information dimension is a
 particular case of the generalized correlation 
 dimension when setting the order $q = 1$. In the \textit{RHRV} package,
 the information dimension is computed using the \textit{CalculateInfDim}, 
@@ -158,7 +158,7 @@ Since the \textit{EstimateInfDim} and \textit{PlotInfDim} are analogous to the
 \textit{EstimateCorrDim} and \textit{PlotCorrDim} functions, we shall only 
 review the \textit{CalculateInfDim} function.\\
 
-In Section \ref{seq:infDimTheory} we introduced the method for estimating
+In Section \ref{sec:infDimTheory} we introduced the method for estimating
 the information dimension in practical applications. This algorithm looks for
 the scaling behaviour of the average radius that contains a given portion 
 (a "fixed-mass") of the total points in the phase space. By performing
@@ -168,7 +168,7 @@ obtained.\\
 
 It must be noted that the calculations for the information dimension are 
 heavier than those needed for the correlation dimension.  However, 
-the user should run the method for different embedding dimensions for checking
+the user should run the method for different embedding dimensions to check
 if $D_1$ saturates.\\
 
 <<infDim,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
@@ -191,7 +191,7 @@ and then accessing it using \$ under the \textit{statistic} field.\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.6\textwidth]{figures/tutorial-infDim}
+  \includegraphics[width=0.8\textwidth]{figures/tutorial-infDim}
   \caption{Information dimension computations in \textit{RHRV}.\label{fig:infDim}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -221,11 +221,11 @@ estimate of the information dimension.\\
 
 
 % 
-\subsubsection{Poincar\'{e} Plot\label{seq:poincarePlot}}
+\subsection{Poincar\'{e} Plot\label{sec:poincarePlot}}
 The \textit{PoincarePlot} function implements all the functionality for 
 performing Poincar\'{e} plot analysis, whether you employ the ``classic" 
 calculation methods or those based on confidence regions (see Section
-\ref{seq:poincareTheory}). \\
+\ref{sec:poincareTheory}). \\
 
 In order to compute the ``classic" $SD_1$ and $SD_2$
 parameters in the Poincar\'{e} plot, 
@@ -255,8 +255,9 @@ also provides functionality for fitting the ellipse (and computing both
 $SD_1$ and $SD_2$ parameters) using the theory of the
 confidence regions. In order to enable the confidence region estimation the user
 can set \textit{confidenceEstimation = TRUE}. The confidence level can be 
-selected with the \textit{confidence} parameter (default:0.95). It must be noted
-that when \textit{timeLag > 1}, the confidence region approach is always used.\\
+selected with the \textit{confidence} parameter (default value is $0.95$). It 
+must be noted that when \textit{timeLag > 1}, the confidence region approach is
+always used.\\
 
 Figure \ref{fig:poincareConfidence} shows the result of applying the
 following piece of code:

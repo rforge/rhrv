@@ -99,11 +99,16 @@ discussion on the important issue of stationarity is included. The rest of the
 chapter (Section \ref{sec:pathologies}) is focused on the use of \gls{HRV} as a 
 predictor of different pathologies and its clinical applications.\\
 
-Chapter \ref{ch:installation} explains explains how to get RHRV installed in 
+Chapter \ref{ch:installation} explains how to get RHRV installed in 
 your computer. This guide assumes that you have already installed R in your 
 computer.\\
 
 Chapter \ref{ch:Quick} presents a ``15-minutes guide to RHRV''. This chapter 
-presents the essential functions needed to perform some basic analysis with 
-RHRV. Chapter \ref{ch:advanced} completes the functionality introduced in Chapter 
-\ref{ch:Quick} and presents more advanced features available in RHRV. 
+presents the essential functions needed to perform basic time and frequency 
+domain analysis with RHRV. Chapter \ref{ch:advanced} completes the functionality
+introduced in Chapter \ref{ch:Quick} and presents more advanced features 
+available in RHRV focusing on reading RR intervals stored in different formats 
+and episodic information analysis.\\
+
+Chapter \ref{ch:nonlinear} introduces the functionality needed to perform 
+\gls{HRV} nonlinear analysis with RHRV.

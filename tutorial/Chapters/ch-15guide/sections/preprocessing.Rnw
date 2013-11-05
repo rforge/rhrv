@@ -105,13 +105,13 @@ Figures \ref{fig:exampleNIHR} and \ref{fig:exampleHR}, respectively.\\
 
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingNIHR}
+\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingNIHR}
 \caption{Non interpolated Heart Rate time plot example.\label{fig:exampleNIHR}}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingHR}
+\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingHR}
 \caption{Interpolated Heart Rate time plot example.\label{fig:exampleHR}}
 \end{figure}
 

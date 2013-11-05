@@ -33,9 +33,9 @@ $$RMSSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j)^2}.$$
 
 Other measures using the successive RR interval differences include the length 
 of the interval determined by the first and the third quantile of the $\Delta 
-RR$ time series; and the median of the absolute values of the  $\Delta RR$ time 
-series (\glslink{MADRR}{MADRR}, Median of the Absolute Differences of the RR 
-intervals).\\
+RR$ time series (\glslink{IRRR}{IRRR}); and the median of the absolute values 
+of the  $\Delta RR$ time series (\glslink{MADRR}{MADRR}, Median of the Absolute 
+Differences of the RR intervals).\\
 
 Other commonly used measures derived from interval differences include NN50, 
 the number of interval differences of successive RR intervals greater than 50 

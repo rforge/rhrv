@@ -25,7 +25,7 @@ hrv.data = CreateTimeAnalysis(hrv.data, size = 300,
     		interval = 7.8125)
 @
 If the verbose mode is on, the program will display the results of the 
-calculations in the screen. Otherwise, the user must access the ``raw" data as 
+calculations on the screen. Otherwise, the user must access the ``raw" data as 
 explained before to obtain the results.\\
 
 Finally, we show a complete example for performing a basic time-domain 

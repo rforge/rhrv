@@ -2,7 +2,8 @@
 \alias{IntegralCorrelation}
 \title{ Calculates the Integral Correlation }
 \description{
-   The Integral correlation is calculated for every vector of the m-dimensional space
+WARNING: \bold{deprecated} function.
+The Integral correlation is calculated for every vector of the m-dimensional space
 }
 \usage{
 IntegralCorrelation(HRVData, Data, m, tau, r)

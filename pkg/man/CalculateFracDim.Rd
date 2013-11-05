@@ -2,11 +2,12 @@
 \alias{CalculateFracDim}
 \title{ Calculates Fractal Dimension }
 \description{
-   Calculates Fractal Dimension as indicated by Pincus
+WARNING: \bold{deprecated} function.
+Calculates Fractal Dimension as indicated by Pincus
 }
 \usage{
-CalculateFracDim(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), m = 10, 
-		tau = 3, Cra = 0.005, Crb = 0.75, N = 1000, verbose=NULL)
+CalculateFracDim(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
+    m = 10, tau = 3, Cra = 0.005, Crb = 0.75, N = 1000, verbose=NULL)
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }

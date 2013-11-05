@@ -2,7 +2,8 @@
 \alias{CalculateRfromCorrelation}
 \title{ Calculates ra and rb from Correlation }
 \description{
-	Calculates ra and rb distances that verify that their correlation values are Cra and Crb
+WARNING: \bold{deprecated} function. 
+Calculates ra and rb distances that verify that their correlation values are Cra and Crb
 }
 \usage{
 CalculateRfromCorrelation(HRVData, Data, m, tau, Cra, Crb)

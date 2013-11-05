@@ -21,7 +21,7 @@ spurious points.
 with equally spaced values.
 \item Plot the interpolated \gls{HR} series.
 \item Perform the desired analysis. The user can perform time-domain analysis, 
-frequency-domain analysis or nonlinear analysis.
+frequency-domain analysis and/or nonlinear analysis.
 \item Plot the results of the analysis that has been performed and access the 
 ``raw" data.
 \end{enumerate}

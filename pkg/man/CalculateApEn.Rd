@@ -2,7 +2,8 @@
 \alias{CalculateApEn}
 \title{ Calculates Approximate Entropy }
 \description{
-   Calculates Approximate Entropy as indicated by Pincus
+WARNING: \bold{deprecated} function.
+Calculates Approximate Entropy as indicated by Pincus
 }
 \usage{
 CalculateApEn(HRVData,

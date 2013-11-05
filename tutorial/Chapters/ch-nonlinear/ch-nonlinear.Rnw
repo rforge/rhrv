@@ -1,0 +1,6 @@
+% !Rnw root = ../tutorial.Rnw
+\chapter{HRV nonlinear analysis\label{ch:nonlinear}}
+\section{An introduction to nonlinear analysis techniques\label{sec:quickNL}}
+\SweaveInput{analyzingNonLinear.Rnw}
+\section{Advanced nonlinear analysis techniques\label{sec:nonlinearAdvanced}}
+\SweaveInput{nonlinearAdvanced.Rnw}

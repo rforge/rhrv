@@ -144,7 +144,7 @@ hrv.data = CalculateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
                                  maxEmbeddingDim = 5,
                                  timeLag=1,radius=10,
                                  theilerWindow=100, doPlot=FALSE)
-hrv.data = PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
+PlotMaxLyapunov(hrv.data,indexNonLinearAnalysis=1)
 hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
                                regressionRange=c(1,10))
 }

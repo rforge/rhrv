@@ -13,8 +13,9 @@ detrended fluctuation analysis, sample entropy and
 recurrence quantification analysis. Table \ref{tab:nonlinearStats} summarizes
 the most important 
 nonlinear statistics that have been included in \textit{RHRV}. In the next
-sections, we shall present a quick theoretical review of all these methods,
-leaving some details for its practical presentation.\\
+sections, we shall present a quick theoretical review of all these methods.
+More details will be given later in the tutorial when we show how to use these 
+methods in RHRV.\\
 
 \begin{center}
   \begin{table}
@@ -54,12 +55,12 @@ space reconstruction from a single time series $x(n)$ could be achieved by using
 the vectors:
 
 \begin{equation}
-  \left\lbrace \boldsymbol{x_i}=\left[x(i), x(i + \tau), ..., 
-x(i+(m-1)\cdot\tau)\right] \right\rbrace,
+ \boldsymbol{x_i}=\left[x(i), x(i + \tau), ..., 
+x(i+(m-1)\cdot\tau)\right],
   \label{lab:takens}   
 \end{equation}
 
-Sections \ref{seq:tau} and \ref{seq:m} deals with the problem of selecting both 
+Sections \ref{sec:tau} and \ref{sec:m} deals with the problem of selecting both 
 $m$ (the so-called embedding dimension) and $\tau$ (the time lag parameter) 
 using \textit{RHRV}.
 
@@ -70,9 +71,11 @@ The estimation of the correlation
 dimension requires the computation of the so-called correlation sum $C(r)$. The 
 correlation sum is defined over the $N$ points from the phase space as follows:
 
-$$C(r) = \frac{ \# \lbrace (x_i,x_j): distance(x_i,x_j) < r\rbrace}{N^2},$$
+$$C(r) = \frac{ \# \lbrace (\boldsymbol{x_i}, \boldsymbol{x_j}):
+distance(\boldsymbol{x_i},\boldsymbol{x_j}) < r\rbrace}{N^2},$$
 
-where $\#$ represents the cardinality of the set.However, this estimator is
+where $\#$ represents the cardinality of the set and $r$ a radius in the 
+embedding dimension. However, this estimator is
 biased when the pairs in the sum are not 
 statistically independent.
 For example, Taken's vectors that are close in time, are usually close in the 
@@ -92,9 +95,9 @@ regression of $log_{10}(C(r))$ Vs. $log_{10}(r)$. Since this dimension is
 supposed to
 be an invariant of the system, it should not depend on the dimension of the 
 Taken's vectors 
-used to estimate it (given that we are using an embedding dimension that is 
-large enough). Thus, the user should plot $log(C(r))$ Vs. 
-$log(r)$ for several
+used to estimate it (provided that we are using an embedding dimension that is 
+large enough to reconstruct the phase space). Thus, the user should plot
+$log(C(r))$ Vs. $log(r)$ for several
 embedding dimensions when looking for the correlation dimension and, if for 
 some range $log(C(r))$ shows a similar linear behaviour in different 
 embedding dimensions (i.e. parallel slopes), these slopes are an estimate of 
@@ -119,13 +122,13 @@ With this notation, the ``classic" correlation sum is $C(r) = C_2(r)$. It is
 possible  to determine generalized dimensions $D_q$ using the slope obtained by 
 performing a linear regression of $log(Cq(r))\;Vs.\;(q-1)log(r)$.
 The case $q=1$ leads to the information dimension, that is treated separately
-in this package. see Sections  \ref{seq:infDimTheory} and \ref{seq:infDimAdv}). 
+in this package. see Sections  \ref{sec:infDimTheory} and \ref{sec:infDimAdv}). 
 The considerations discussed for the correlation dimension estimate are also 
 valid for these generalized dimensions.
-\subsubsection{Information dimension\label{seq:infDimTheory}}
+\subsubsection{Information dimension\label{sec:infDimTheory}}
 The information dimension is a particular case of the generalized correlation 
-dimension when setting the order $q = 1$. It is possible to demonstrate that the 
-it may be defined as:
+dimension when setting the order $q = 1$. It is possible to demonstrate that 
+it can be defined as:
 
 \begin{equation}
 D_1=lim_{r \rightarrow 0} <\log p(r)>/\log(r),
@@ -144,7 +147,7 @@ total points in the phase space. By performing
 a linear regression of $\log(p)\;Vs.\;\log(<r>)$,
 an estimate of $D_1$ is obtained. 
 
-\subsubsection{Sample entropy\label{seq:sampEnTheory}}
+\subsubsection{Sample entropy\label{sec:sampEnTheory}}
 The sample entropy measures the complexity of a time series. Large values of the
 Sample Entropy indicate high complexity whereas that smaller values 
 characterize more regular signals. The sample entropy  of order $q$ is computed
@@ -161,7 +164,7 @@ H_q = lim_{\substack{r\rightarrow 0\\ m \rightarrow \infty}} h_q(m,r).
 \label{eq:entropy}
 \end{equation}
 
-\subsubsection{Maximum Lyapunov exponent\label{seq:maxLyapTheory}}
+\subsubsection{Maximum Lyapunov exponent\label{sec:maxLyapTheory}}
 Close trajectories diverge exponentially fast in a chaotic system. The averaged 
 exponent that determines the divergence rate is called the Lyapunov exponent 
 (usually denoted with $\lambda$). If $\delta(0)$ is the distance between two 
@@ -173,8 +176,8 @@ $$\delta(t) \propto \delta(0)\cdot exp(\lambda t).$$
 Thus, the lyapunov exponent is estimated using the slope obtained by performing
 a linear regression of $S(t)=\lambda \cdot t \approx log(\delta(t)/\delta (0))$ 
 on t. In practical applications, we should check the 
-existence of a linear region when plotting $S(t)$ Vs. $t$: if for
-some temporal range S(t) shows a linear 
+existence of a linear region when plotting $S(t)$ Vs. $t$. If for
+some temporal range this plot shows a linear 
 behaviour, its slope is an estimate of the maximal Lyapunov exponent per
 unit of time.  If such a region does not exist, the estimation should be
 discarded.\\
@@ -183,7 +186,7 @@ Also, just as for the correlation dimension computations, the  maximal Lyapunov
 exponent should be computed for several embedding dimensions in order to 
 check that it doesn't depend on the embedding dimension. 
 
-\subsubsection{Detrended Fluctuation Analysis (DFA)\label{seq:dfaTheo}}
+\subsubsection{Detrended Fluctuation Analysis (DFA)\label{sec:dfaTheo}}
 The Detrended Fluctuation Analysis (DFA) is a widely used technique for 
 detecting correlations in time series. These functions are able to estimate 
 several scaling exponents from the RR time series being analyzed. These scaling 
@@ -201,18 +204,21 @@ root square. By repeating the previous steps for several segment sizes (let's
 denote it by $t$: number of beats), we obtain the so-called \textit{fluctuation 
 function} $F(t)$.
   \item If the data presents long-range power law correlations: $F(t) \propto 
-t^\alpha$ and we may estimate the exponent using regression.
+t^\alpha$, we can estimate the exponent using regression.
   \item Usually, when plotting $log(F(t))$ Vs $log(t)$ we may distinguish two 
-linear regions. By regression them separately, we obtain two scaling exponents, 
-$\alpha_1$ (the exponent for small values of $t$, characterizing short-term 
-fluctuations) and $\alpha_2$ (the exponent for great values of $t$,
-characterizing long-term fluctuations). 
+linear regions. By performing a regression on each of them separately, we obtain
+two scaling exponents, $\alpha_1$ (the exponent for small values of $t$, 
+characterizing short-term fluctuations) and $\alpha_2$ (the exponent for large 
+values of $t$, characterizing long-term fluctuations). 
 \end{enumerate}
 
 \subsubsection{Recurrence Quantification Analysis (RQA)}
 The Recurrence Quantification Analysis (RQA) is an advanced technique for the 
 nonlinear analysis that allows to quantify the number and duration of the 
-recurrences in the phase space. The recurrence plot
+recurrences in the phase space. A recurrence is a time instant in which
+the trajectory returns to a phase space region it has visited before. Thus, it
+is a representation of those instants of time in which $\boldsymbol{x_i} 
+\approx \boldsymbol{x_j})$ for every $i$ and $j$. The recurrence plot
 is the graphical representation of the recurrence matrix of the RR time series. 
 The \textit{RQA} function 
 allows to compute several statistics derived from the RQA analysis of the RR 
@@ -239,8 +245,7 @@ lines\\ \hline
 lines.  The main diagonal is not taken into account\\ \hline
   Divergence&\textit{DIV}&Inverse of Lmax\\ \hline
   Longest vertical line&\textit{Vmax}&Longest vertical line\\ \hline
-  Trapping time&\textit{Vmean}&Average length of the vertical lines. This 
-parameter is also referred to as the Trapping time\\ \hline
+  Trapping time&\textit{Vmean}&Average length of the vertical lines.\\ \hline
   Entropy&\textit{ENTR}&Shannon entropy of the diagonal line lengths 
 distribution\\ \hline
   Trend&\textit{TREND}&Trend of the number of recurrent points depending on the 
@@ -252,7 +257,7 @@ depending on the distance to the main diagonal\\ \hline
   \end{table}
 \end{center}
 
-\subsubsection{Poincar\'{e} plot\label{seq:poincareTheory}}
+\subsubsection{Poincar\'{e} plot\label{sec:poincareTheory}}
 The Poincar\'{e} plot is a graphical representation of the dependance between 
 successive RR intervals obtained by plotting the $RR_{j+\tau}$ as a function of 
 $RR_{j}$. This dependance is often quantified by fitting an ellipse to the 
@@ -268,4 +273,4 @@ $SD_1$ characterizes short-term variability whereas that $SD_2$ characterizes
 long-term variability. However, sometimes the ellipse that is fitted using this 
 approach is too small. \textit{RHRV} also allows the user to fit a ellipse by 
 estimating a confidence region. If $\tau > 1$, the confidence region
-approach is always used. More details shall be given in \ref{seq:poincarePlot}.
+approach is always used. More details shall be given in \ref{sec:poincarePlot}.

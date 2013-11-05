@@ -48,7 +48,9 @@ hrv.data = BuildNIHR(hrv.data)
 hrv.data = InterpolateNIHR (hrv.data, freqhr = 4)
 hrv.data = CreateFreqAnalysis(hrv.data)
 hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
-                               type = "wavelet", wavelet = "la8", bandtolerance = 0.01, relative = FALSE)
-results = AnalyzePowerBandsByEpisodes(hrv.data,indexFreqAnalysis=1,Tag="Apnea",func=mean)}
+                               type = "wavelet", wavelet = "la8",
+                                bandtolerance = 0.01, relative = FALSE)
+results = AnalyzePowerBandsByEpisodes(hrv.data,indexFreqAnalysis=1,
+                                       Tag="Apnea",func=mean)}
 }
 

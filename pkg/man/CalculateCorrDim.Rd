@@ -173,7 +173,7 @@
              minEmbeddingDim=2, maxEmbeddingDim=8,timeLag=1,minRadius=1,
              maxRadius=15, pointsRadius=20,theilerWindow=10,
              corrOrder=2,doPlot=FALSE)
- hrv.data = PlotCorrDim(hrv.data,indexNonLinearAnalysis=1)
+ PlotCorrDim(hrv.data,indexNonLinearAnalysis=1)
  hrv.data = EstimateCorrDim(hrv.data,indexNonLinearAnalysis=1,
              useEmbeddings=6:8,regressionRange=c(1,10))
 }

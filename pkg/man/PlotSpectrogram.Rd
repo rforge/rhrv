@@ -5,7 +5,8 @@
   Plots spectrogram of the heart rate signal as calculated by CalculateSpectrogram() function
 }
 \usage{
-PlotSpectrogram(HRVData, size, shift, sizesp=NULL, freqRange = NULL, scale="linear", verbose=NULL) 
+PlotSpectrogram(HRVData, size, shift, sizesp=NULL, freqRange = NULL, 
+                scale="linear", verbose=NULL) 
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }

@@ -121,7 +121,7 @@ seconds. Finally, the fourth column assigns a  numerical value for each episode
 
 It must be taken into account that the \textit{LoadEpisodesAscii} function 
 skips the first line of the ASCII file because it assumes that the first line 
-will contain a header ( the format of this header does not really matter). If 
+will contain a header (the format of this header does not really matter). If 
 there is no header line in the file, the user
 can specify it to the function using the \textit{header} parameter (by default, 
 it is

@@ -17,7 +17,7 @@ structure.
 
 \begin{figure}[h]
 \centering
-\includegraphics{figures/completeHRVData.pdf}
+\includegraphics{figures/AdvancedHRVData.pdf}
 \caption{All the fields stored in the \textit{HRVData} 
 structure.\label{fig:completeData}}
 \end{figure}
@@ -86,7 +86,7 @@ the RR (Equation \ref{Eq:RR}) and instantaneous heart rate series (Equation
 sub-field (see Figure \ref{fig:completeData}).\\
 
 \subsection{Filtering the time series}
-The automatic removal of outliers was performed with the \textit{FilterNIHR} 
+The automatic removal of outliers is performed with the \textit{FilterNIHR} 
 function. This function implements
 an algorithm that uses adaptive thresholds for rejecting or accepting beats 
 \cite{vila1997time}. The rule for beat acceptation or rejection is to compare 
@@ -94,7 +94,7 @@ the present beat with  the previous one, the following one and with an updated
 mean of the RR interval. The different adaptive thresholds establish an upper 
 limit for the relative errors of each of these comparisons. The \textit{long} 
 parameter allows the user to specify the number of beats that shall be used to 
-calculate the updated mean (default value are 50 heartbeats). Also, the 
+calculate the updated mean (default value is 50 heartbeats). Also, the 
 \textit{last} parameter permits the user to specify the initial threshold value 
 in \% (default value is $13\%$). Finally, the algorithm also applies a 
 comparison with acceptable physiological values. The user can specify the range 
@@ -263,6 +263,13 @@ user may choose a linear axis (``linear") or a logarithmic axis
 spectrogram = PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
  sizesp=2048)
 @
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/tutorial-plottingSpectrogram}
+\caption{Plot obtained with the \textit{PlotSpectrogram} 
+function.\label{fig:plottingSpectrogram}}
+\end{figure}
+
 Note that most of the energy shwon in figure \ref {fig:plottingSpectrogram} 
 is concentrated in the low frequencies. To obtain a more
 detailed graphic in this zone of the spectrum, we can use the 
@@ -274,21 +281,11 @@ PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
 	sizesp=2048,freqRange = c(0,0.2))
 @
 The result of this script is shown in figure \ref{fig:plottingSpectrogram2}.
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingSpectrogram}
-\caption{Plot obtained with the \textit{PlotSpectrogram} 
-function.\label{fig:plottingSpectrogram}}
-\end{figure}
-
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/tutorial-plottingSpectrogram2}
-\caption[Plotting with the \textit{PlotSpectrogram} function using the 
-\textit{freqRange} parameter]{Plot obtained with the \textit{PlotSpectrogram} 
+\includegraphics[width=0.7\textwidth]{figures/tutorial-plottingSpectrogram2}
+\caption[\textit{PlotSpectrogram} using the \textit{freqRange} parameter]{Plot obtained with the \textit{PlotSpectrogram} 
 function and the \textit{freqRange} parameter.\label{fig:plottingSpectrogram2}}
 \end{figure}
 
-\subsection{Nonlinear analysis\label{seq:nonlinearAdvanced}} 
-\SweaveInput{nonlinearAdvanced.Rnw}

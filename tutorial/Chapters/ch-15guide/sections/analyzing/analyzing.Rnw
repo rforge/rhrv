@@ -5,5 +5,7 @@
 \SweaveInput{analyzingTime.Rnw}
 \subsection{Frequency-domain analysis techniques\label{sec:quickFreq}}
 \SweaveInput{analyzingFrequency.Rnw}
-\subsection{Nonlinear analysis techniques\label{sec:quickNL}}
-\SweaveInput{analyzingNonLinear.Rnw}
+\subsection{Nonlinear analysis techniques}
+Since nonlinear analysis techniques use more advanced concepts than both
+time and frequency domain analysis techniques, we shall introduce them in
+the separate Chapter \ref{ch:nonlinear}.

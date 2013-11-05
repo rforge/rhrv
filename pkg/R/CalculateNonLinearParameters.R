@@ -55,6 +55,11 @@ CalculateTimeLag <-
     
     timeLagEstimate = timeLag(time.series=HRVData$Beat$RR,method=method,value=value,
             lag.max=lagMax,do.plot=doPlot)
+    
+    if (HRVData$Verbose){
+      cat("  --- Time Lag = ",timeLagEstimate," ---\n")
+    }
+    
     if (timeLagEstimate > kMaxLag){
       warning("Time lag is too high!! We recommend using time lag <= 500\n")
     }
