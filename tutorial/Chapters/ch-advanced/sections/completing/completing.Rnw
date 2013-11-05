@@ -109,7 +109,7 @@ decrease the \textit{maxbpm} parameter to $180$ bpm. The results are shown in
 Figure \ref{fig:completeFilterNIHR} (compare it with Figure 
 \ref{fig:exampleNIHR}). 
 
-<<echo=FALSE>>=
+<<echo=FALSE,fig=FALSE,include=FALSE,pdf=FALSE>>=
 hrv.data = CreateHRVData( )
 hrv.data = SetVerbose(hrv.data,FALSE)
 hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")

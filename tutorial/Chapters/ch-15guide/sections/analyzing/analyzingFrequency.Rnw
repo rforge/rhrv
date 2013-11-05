@@ -154,7 +154,7 @@ just 1 frequency analysis to
 illustrate the basic use of \textit{CalculatePowerBand}. However, it is 
 possible to create and use
 the same \textit{HRVData} for performing several spectral analysis. When we do 
-this, we use the parameter  "indexFreqAnalysis" to indicate which spectral 
+this, we use the parameter  ``indexFreqAnalysis" to indicate which spectral 
 analysis we are working with. For example, we could perform both
 Fourier and wavelet based analysis:
 <<echo=FALSE>>=
@@ -187,7 +187,7 @@ hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 2,
 the spectrogram of each frequency band: the \textit{PlotPowerBand} function. 
 The {PlotPowerBand} receives as inputs the \textit{HRVData}
 structure and the index of the frequency analysis that the user wants to 
-plot(\textit{indexFreqAnalysis} argument). Optionally, the user can specify 
+plot (\textit{indexFreqAnalysis} argument). Optionally, the user can specify 
 additional parameters for modifying the plots (whether to use or not normalized 
 plots, specify the y-axis, etc.). For the sake of simplicity we will only use 
 the \textit{ymax} parameter (for specifying the maximum y-axis of the power 
@@ -209,13 +209,13 @@ The plots obtained with \textit{PlotPowerBand} are shown in Figures
 
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingFreqFourier}
+\includegraphics[width=0.7\textwidth]{figures/tutorial-plottingFreqFourier}
 \caption{Plot obtained with the \textit{PlotPowerBand} for the Fourier-based 
 analysis.\label{fig:examplePlotFourier}}
 \end{figure}
 \begin{figure}[h]
 \centering
-\includegraphics{figures/tutorial-plottingFreqWavelet}
+\includegraphics[width=0.7\textwidth]{figures/tutorial-plottingFreqWavelet}
 \caption{Plot obtained with the \textit{PlotPowerBand} for the Wavelet-based 
 analysis.\label{fig:examplePlotWave}}
 \end{figure}

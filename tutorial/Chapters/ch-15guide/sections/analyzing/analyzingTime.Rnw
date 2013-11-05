@@ -33,7 +33,7 @@ analysis. The console output is also shown. It should be noted that it is not
 necessary to perform the interpolation process before applying 
 the time-domain techniques since these parameters are calculated directly from 
 the RR-time series. \\
-<<completeTimeAnalysis,results=verbatim,echo=TRUE,fig=FALSE,include=FALSE,pdf = TRUE, eps = FALSE>>=
+<<completeTimeAnalysis,results=verbatim,echo=TRUE,fig=FALSE,include=FALSE,pdf=FALSE>>=
 hrv.data = CreateHRVData()
 hrv.data = SetVerbose(hrv.data,FALSE)
 hrv.data = LoadBeatAscii(hrv.data,"example.beats","beatsFolder")

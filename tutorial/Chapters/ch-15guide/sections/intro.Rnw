@@ -7,8 +7,8 @@ more advanced functionality of the package, or functionality geared to certain
 particular types of analysis. RHRV can be freely downloaded from the R-CRAN 
 repository \cite{cran}.\\
 
-We propose the following basic program flow to perform \gls{HRV} spectral 
-analysis using the RHRV package:
+We propose the following basic program flow to perform \gls{HRV} analysis using 
+the RHRV package:
 
 \begin{enumerate}
 \item Load heart beat positions. For the sake of simplicity, in this section we 
