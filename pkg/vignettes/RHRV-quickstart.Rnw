@@ -1,7 +1,6 @@
 % \VignetteIndexEntry{RHRV-quickstart}
-% \VignetteDepends{RHRV}
+% \VignetteDepends{RHRV, highlight}
 % \VignetteEngine{highlight::highlight}
-% \VignetteDepends{Rcpp, highlight}
 % \VignetteKeyword{HRV}
 % \VignetteKeyword{Heart Rate Variability}
 
@@ -15,7 +14,7 @@
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE, prefix.string = figures/quickstart, highlight=TRUE} 
+\SweaveOpts{engine=R,concordance=TRUE, prefix.string = figures/quickstart, highlight=TRUE} 
 
 
 \title{RHRV Quick Start Tutorial}
@@ -264,7 +263,7 @@ default value), whereas that a typical value for the \textit{interval} is about
 
 <<timeAnalysis,results=verbatim,echo=TRUE>>=
 hrv.data = CreateTimeAnalysis(hrv.data, size = 300,
-      	interval = 7.8125)
+        interval = 7.8125)
 @
 If the verbose mode is on, the program will display the results of the 
 calculations on the screen. Otherwise, the user must access the ``raw" data 
@@ -563,4 +562,3 @@ analysis has the same number of samples as the original $RR$ time series.
 %\appendix % all chapters following will be labeled as appendices
 
 \end{document}
-
