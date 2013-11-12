@@ -1,6 +1,6 @@
 % !Rnw root = advanced.Rnw
  RHRV provides a lot of functionality for importing data files containing heart 
-beats positions. Supported formats include ASCII (\textit{LoadBeatAscii} 
+beat positions. Supported formats include ASCII (\textit{LoadBeatAscii} 
 function), EDF (\textit{LoadBeatEDFPlus}), Polar (\textit{LoadBeatPolar}), 
 Suunto (\textit{LoadBeatSuunto}) and WFDB data files (\textit{LoadBeatWFDB}) 
 \cite{mitbih}. We have already dealt with the \textit{LoadBeatASCII} function. 

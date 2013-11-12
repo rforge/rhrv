@@ -9,7 +9,7 @@ have download and installed R, you can install RHRV by typing:
 install.packages("RHRV")
 @
 You can also install it by downloading it from the CRAN \cite{cran}. Once the 
-download has finished, open R , move to the directory where you have download 
+download has finished, open R, move to the directory where you have download 
 it (by using the R command \textit{setwd}) and type:
 
 <<installDonwnloaded, eval=FALSE>>=

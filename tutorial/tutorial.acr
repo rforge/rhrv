@@ -2,127 +2,126 @@
 \begin{theglossary}\glossaryheader
 \glsgroupheading{A}\relax \glsresetentrylist %
 \glossaryentryfield{ANS}{\glsnamefont{ANS}}{Autonomic Nervous System}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{3}\delimN 
-		\setentrycounter{page}\glsnumberformat{8\delimN 9}\delimN 
-		\setentrycounter{page}\glsnumberformat{12\delimN 13}\delimN 
-		\setentrycounter{page}\glsnumberformat{20}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{4}\delimN 
+		\setentrycounter{page}\glsnumberformat{9}\delimN 
+		\setentrycounter{page}\glsnumberformat{11}\delimN 
+		\setentrycounter{page}\glsnumberformat{13}\delimN 
+		\setentrycounter{page}\glsnumberformat{21}}}\glsgroupskip
 \glsgroupheading{B}\relax \glsresetentrylist %
-\glossaryentryfield{bpm}{\glsnamefont{bpm}}{beats per minute}{\relax }{\glossaryentrynumbers{\relax 
+\glossaryentryfield{bpm}{\glsnamefont{bpm}}{Beats Per Minute}{\relax }{\glossaryentrynumbers{\relax 
 		\setentrycounter{page}\glsnumberformat{16}}}\glsgroupskip
 \glsgroupheading{D}\relax \glsresetentrylist %
 \glossaryentryfield{DFT}{\glsnamefont{DFT}}{Discrete Fourier Transform}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{20}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{21}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}}}\glsgroupskip
 \glsgroupheading{E}\relax \glsresetentrylist %
 \glossaryentryfield{ECG}{\glsnamefont{ECG}}{electrocardiogram}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{13}\delimN 
-		\setentrycounter{page}\glsnumberformat{41}\delimN 
-		\setentrycounter{page}\glsnumberformat{131}\delimN 
-		\setentrycounter{page}\glsnumberformat{133}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{14}\delimN 
+		\setentrycounter{page}\glsnumberformat{42}\delimN 
+		\setentrycounter{page}\glsnumberformat{134\delimN 135}}}\glsgroupskip
 \glsgroupheading{F}\relax \glsresetentrylist %
 \glossaryentryfield{FFT}{\glsnamefont{FFT}}{Fast Fourier Transform}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{20}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{21}}}\glsgroupskip
 \glsgroupheading{H}\relax \glsresetentrylist %
 \glossaryentryfield{HF}{\glsnamefont{HF}}{High Frequency}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{9}\delimN 
 		\setentrycounter{page}\glsnumberformat{11\delimN 12}\delimN 
-		\setentrycounter{page}\glsnumberformat{19}\delimN 
-		\setentrycounter{page}\glsnumberformat{23\delimN 24}\delimN 
-		\setentrycounter{page}\glsnumberformat{53}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}\delimN 
-		\setentrycounter{page}\glsnumberformat{92}}}%
-\glossaryentryfield{HR}{\glsnamefont{HR}}{Heart Rate}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{3}\delimN 
-		\setentrycounter{page}\glsnumberformat{8}\delimN 
-		\setentrycounter{page}\glsnumberformat{16}\delimN 
 		\setentrycounter{page}\glsnumberformat{20}\delimN 
-		\setentrycounter{page}\glsnumberformat{40\delimN 41}\delimN 
-		\setentrycounter{page}\glsnumberformat{44\delimR 46}\delimN 
-		\setentrycounter{page}\glsnumberformat{52\delimN 53}\delimN 
-		\setentrycounter{page}\glsnumberformat{68}\delimN 
-		\setentrycounter{page}\glsnumberformat{71}\delimN 
-		\setentrycounter{page}\glsnumberformat{80}\delimN 
-		\setentrycounter{page}\glsnumberformat{87}\delimN 
-		\setentrycounter{page}\glsnumberformat{90}\delimN 
-		\setentrycounter{page}\glsnumberformat{98}}}%
-\glossaryentryfield{HRV}{\glsnamefont{HRV}}{Heart Rate Variability}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{3\delimR 9}\delimN 
-		\setentrycounter{page}\glsnumberformat{12\delimN 13}\delimN 
-		\setentrycounter{page}\glsnumberformat{15}\delimN 
-		\setentrycounter{page}\glsnumberformat{17\delimR 20}\delimN 
 		\setentrycounter{page}\glsnumberformat{24}\delimN 
-		\setentrycounter{page}\glsnumberformat{33\delimN 34}\delimN 
-		\setentrycounter{page}\glsnumberformat{40}\delimN 
-		\setentrycounter{page}\glsnumberformat{46}\delimN 
-		\setentrycounter{page}\glsnumberformat{49}\delimN 
+		\setentrycounter{page}\glsnumberformat{54}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}\delimN 
+		\setentrycounter{page}\glsnumberformat{93}}}%
+\glossaryentryfield{HR}{\glsnamefont{HR}}{Heart Rate}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{4}\delimN 
+		\setentrycounter{page}\glsnumberformat{9}\delimN 
+		\setentrycounter{page}\glsnumberformat{16}\delimN 
+		\setentrycounter{page}\glsnumberformat{21}\delimN 
+		\setentrycounter{page}\glsnumberformat{41\delimN 42}\delimN 
+		\setentrycounter{page}\glsnumberformat{45\delimR 47}\delimN 
 		\setentrycounter{page}\glsnumberformat{53\delimN 54}\delimN 
-		\setentrycounter{page}\glsnumberformat{130}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{69}\delimN 
+		\setentrycounter{page}\glsnumberformat{72}\delimN 
+		\setentrycounter{page}\glsnumberformat{81}\delimN 
+		\setentrycounter{page}\glsnumberformat{88}\delimN 
+		\setentrycounter{page}\glsnumberformat{90}\delimN 
+		\setentrycounter{page}\glsnumberformat{99}}}%
+\glossaryentryfield{HRV}{\glsnamefont{HRV}}{Heart Rate Variability}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{4\delimR 9}\delimN 
+		\setentrycounter{page}\glsnumberformat{11}\delimN 
+		\setentrycounter{page}\glsnumberformat{13}\delimN 
+		\setentrycounter{page}\glsnumberformat{16}\delimN 
+		\setentrycounter{page}\glsnumberformat{18\delimR 21}\delimN 
+		\setentrycounter{page}\glsnumberformat{25}\delimN 
+		\setentrycounter{page}\glsnumberformat{34}\delimN 
+		\setentrycounter{page}\glsnumberformat{41}\delimN 
+		\setentrycounter{page}\glsnumberformat{47}\delimN 
+		\setentrycounter{page}\glsnumberformat{49}\delimN 
+		\setentrycounter{page}\glsnumberformat{54\delimN 55}\delimN 
+		\setentrycounter{page}\glsnumberformat{132}}}\glsgroupskip
 \glsgroupheading{I}\relax \glsresetentrylist %
 \glossaryentryfield{IRRR}{\glsnamefont{IRRR}}{length of the interval determined by the first and the third quantile of the $\Delta RR$ time series}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{19}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{20}}}\glsgroupskip
 \glsgroupheading{L}\relax \glsresetentrylist %
 \glossaryentryfield{LF}{\glsnamefont{LF}}{Low Frequency}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{9}\delimN 
-		\setentrycounter{page}\glsnumberformat{11}\delimN 
-		\setentrycounter{page}\glsnumberformat{23\delimN 24}\delimN 
-		\setentrycounter{page}\glsnumberformat{53}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}\delimN 
-		\setentrycounter{page}\glsnumberformat{92}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{11\delimN 12}\delimN 
+		\setentrycounter{page}\glsnumberformat{24}\delimN 
+		\setentrycounter{page}\glsnumberformat{54}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}\delimN 
+		\setentrycounter{page}\glsnumberformat{93}}}\glsgroupskip
 \glsgroupheading{M}\relax \glsresetentrylist %
-\glossaryentryfield{MADRR}{\glsnamefont{MADRR}}{median of the absolute values of the successive differences between the RR intervals}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{19}}}%
+\glossaryentryfield{MADRR}{\glsnamefont{MADRR}}{Median of the Absolute values of the successive Differences between the RR intervals}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{20}}}%
 \glossaryentryfield{MODWPT}{\glsnamefont{MODWPT}}{Maximal Overlap Discrete Wavelet Packet Transform}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{57}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{58}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}}}\glsgroupskip
 \glsgroupheading{N}\relax \glsresetentrylist %
 \glossaryentryfield{niHR}{\glsnamefont{niHR}}{Non Interpolated Heart Rate}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{44\delimR 46}\delimN 
-		\setentrycounter{page}\glsnumberformat{48}\delimN 
-		\setentrycounter{page}\glsnumberformat{71}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{45\delimR 47}\delimN 
+		\setentrycounter{page}\glsnumberformat{49}\delimN 
+		\setentrycounter{page}\glsnumberformat{72}}}\glsgroupskip
 \glsgroupheading{P}\relax \glsresetentrylist %
 \glossaryentryfield{pNN50}{\glsnamefont{pNN50}}{proportion of successive RR intervals greater than 50 ms}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{19}}}%
-\glossaryentryfield{PSD}{\glsnamefont{PSD}}{power spectrum density}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{20}\delimN 
-		\setentrycounter{page}\glsnumberformat{23}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{20}}}%
+\glossaryentryfield{PSD}{\glsnamefont{PSD}}{Power Spectrum Density}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{21}\delimN 
+		\setentrycounter{page}\glsnumberformat{24}}}\glsgroupskip
 \glsgroupheading{R}\relax \glsresetentrylist %
-\glossaryentryfield{RMSSD}{\glsnamefont{RMSSD}}{root mean square of successive differences}{\relax }{\glossaryentrynumbers{\relax 
+\glossaryentryfield{RMSSD}{\glsnamefont{RMSSD}}{Root Mean Square of Successive Differences}{\relax }{\glossaryentrynumbers{\relax 
 		\setentrycounter{page}\glsnumberformat{19}}}%
 \glossaryentryfield{RSA}{\glsnamefont{RSA}}{Respiratory Sinus Arrhythmia}{\relax }{\glossaryentrynumbers{\relax 
 		\setentrycounter{page}\glsnumberformat{11}}}\glsgroupskip
 \glsgroupheading{S}\relax \glsresetentrylist %
 \glossaryentryfield{SA}{\glsnamefont{SA}}{sinoatrial node}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{8}}}%
+		\setentrycounter{page}\glsnumberformat{9}}}%
 \glossaryentryfield{SDANN}{\glsnamefont{SDANN}}{Standard Deviation of the Average NN/(RR) intervals calculated over short periods}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{18}}}%
+		\setentrycounter{page}\glsnumberformat{19}}}%
 \glossaryentryfield{SDNN}{\glsnamefont{SDNN}}{Standard Deviation of the NN interval}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{18}}}%
+		\setentrycounter{page}\glsnumberformat{18\delimN 19}}}%
 \glossaryentryfield{SDNNIDX}{\glsnamefont{SDNN index}}{the mean of the standard deviation calculated over the windowed RR intervals}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{18}}}%
-\glossaryentryfield{SDSD}{\glsnamefont{SDSD}}{standard deviation of successive differences}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{18}}}%
+		\setentrycounter{page}\glsnumberformat{19}}}%
+\glossaryentryfield{SDSD}{\glsnamefont{SDSD}}{Standard Deviation of Successive Differences}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{19}}}%
 \glossaryentryfield{STFT}{\glsnamefont{STFT}}{Short Time Fourier Transform}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{21\delimR 23}\delimN 
-		\setentrycounter{page}\glsnumberformat{53\delimN 54}\delimN 
-		\setentrycounter{page}\glsnumberformat{72\delimN 73}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{23}\delimN 
+		\setentrycounter{page}\glsnumberformat{54\delimN 55}\delimN 
+		\setentrycounter{page}\glsnumberformat{73\delimN 74}}}\glsgroupskip
 \glsgroupheading{T}\relax \glsresetentrylist %
-\glossaryentryfield{TINN}{\glsnamefont{TINN}}{triangular interpolation of NN (RR) interval histogram}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{19\delimN 20}}}\glsgroupskip
+\glossaryentryfield{TINN}{\glsnamefont{TINN}}{Triangular Interpolation of NN (RR) interval histogram}{\relax }{\glossaryentrynumbers{\relax 
+		\setentrycounter{page}\glsnumberformat{20}}}\glsgroupskip
 \glsgroupheading{U}\relax \glsresetentrylist %
 \glossaryentryfield{ULF}{\glsnamefont{ULF}}{Ultra Low Frequency}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{12}\delimN 
-		\setentrycounter{page}\glsnumberformat{23\delimN 24}\delimN 
-		\setentrycounter{page}\glsnumberformat{53}\delimN 
-		\setentrycounter{page}\glsnumberformat{57}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}\delimN 
-		\setentrycounter{page}\glsnumberformat{92}}}\glsgroupskip
+		\setentrycounter{page}\glsnumberformat{13}\delimN 
+		\setentrycounter{page}\glsnumberformat{24}\delimN 
+		\setentrycounter{page}\glsnumberformat{54}\delimN 
+		\setentrycounter{page}\glsnumberformat{58}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}\delimN 
+		\setentrycounter{page}\glsnumberformat{93}}}\glsgroupskip
 \glsgroupheading{V}\relax \glsresetentrylist %
 \glossaryentryfield{VLF}{\glsnamefont{VLF}}{Very Low Frequency}{\relax }{\glossaryentrynumbers{\relax 
-		\setentrycounter{page}\glsnumberformat{9}\delimN 
-		\setentrycounter{page}\glsnumberformat{12}\delimN 
-		\setentrycounter{page}\glsnumberformat{23\delimN 24}\delimN 
-		\setentrycounter{page}\glsnumberformat{53}\delimN 
-		\setentrycounter{page}\glsnumberformat{57}\delimN 
-		\setentrycounter{page}\glsnumberformat{73}\delimN 
-		\setentrycounter{page}\glsnumberformat{92}}}%
+		\setentrycounter{page}\glsnumberformat{11}\delimN 
+		\setentrycounter{page}\glsnumberformat{13}\delimN 
+		\setentrycounter{page}\glsnumberformat{24}\delimN 
+		\setentrycounter{page}\glsnumberformat{54}\delimN 
+		\setentrycounter{page}\glsnumberformat{58}\delimN 
+		\setentrycounter{page}\glsnumberformat{74}\delimN 
+		\setentrycounter{page}\glsnumberformat{93}}}%
 \end{theglossary}\glossarypostamble

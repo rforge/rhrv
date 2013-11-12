@@ -45,7 +45,7 @@ be selected by translating the window in time. When this transform is applied
 to discrete signals, it is referred to as the \gls{STFT}.\\
 
 Another widely used transform that uses time-frequency atoms is the wavelet 
-transform. A Wavelet is a ``small wave'' with zero mean that grows and decays 
+transform. A wavelet is a ``small wave'' with zero mean that grows and decays 
 in a limited time period. Since any of these small waves results in different 
 wavelets, there are several wavelet families. Figure \ref{fig:wavelets} shows 
 two such wavelets. The reference wavelet fulfilling the above conditions is 
@@ -72,8 +72,8 @@ efficiency.\\
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[scale=0.6]{figures/basicWavelets2.png}
-\caption[Two Wavelets]{\label{fig:wavelets} Two Wavelets. The top of the figure 
-shows the Morlet Wavelet. The bottom of the figure shows a Gaussian Wavelet.}
+\caption[Two wavelets]{\label{fig:wavelets} Two wavelets. The top of the figure 
+shows the Morlet wavelet. The bottom of the figure shows a Gaussian wavelet.}
 \end{center}
 \end{figure} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,7 +90,7 @@ are distinguished in a spectrum calculated from short-term recordings:
 \gls{VLF}, \gls{LF} and \gls{HF} components. However,  \gls{VLF} assessed from 
 short-term recordings is 
 a dubious  parameter and, therefore, it should be avoided when interpreting the 
-\gls{PSD} in this kind of recordings \cite{forceHRV}. Spectral analysis 
+\gls{PSD} in this type of recordings \cite{forceHRV}. Spectral analysis 
 resulting from long-term recordings include \gls{VLF}, \gls{LF} and \gls{HF} 
 bands. In the long recordings, the \gls{VLF} band may be split into the 
 \gls{ULF} and the \gls{VLF} components.\\

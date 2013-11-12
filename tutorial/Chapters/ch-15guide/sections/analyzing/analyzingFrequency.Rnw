@@ -35,7 +35,7 @@ compatibility,
 the default value for this parameter is \textit{``fourier"}. \\
 
 \subsubsection{Fourier} When using the \gls{STFT} to compute the spectrogram 
-using the \textit{CalculatePowerBand} function, the user may specify the 
+employing the \textit{CalculatePowerBand} function, the user may specify the 
 following parameters related with the \gls{STFT}:
 \begin{itemize}
 \item \textit{Size}: the size of window for calculating the spectrogram 
@@ -56,7 +56,7 @@ As an example, let's perform a frequency analysis in the typical \gls{HRV}
 spectral bands based on the \gls{STFT} . We may select 300 s (5 minutes) and 30 
 s as window size and  displacement
 values because these are typical values when performing \gls{HRV} spectral 
-analysis. The value of the zero-padding should be chosen so that is greater 
+analysis. The value of the zero-padding should be chosen to be greater 
 than the number of samples of the window size. Assuming that the sampling 
 frequency is $4\;Hz$, the zero-padding value must fulfill $sizesp \geq 
 size\cdot f_s$. In this occasion, we select the smallest power of $2$ that 
@@ -88,15 +88,15 @@ obtain exactly the same results:
 hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
 size = 300, shift = 30 )
 @
-\subsubsection{Wavelets} When using Wavelet analysis with the 
+\subsubsection{Wavelets} When using wavelet analysis with the 
 \textit{CalculatePowerBand} function, the user may specify:  
 \begin{itemize}
-\item \textit{Wavelet}: Mother wavelet used to calculate the spectrogram. Some 
-of the most widely used Wavelets are available: Haar (``haar"), extremal phase 
+\item \textit{Wavelet}: mother wavelet used to calculate the spectrogram. Some 
+of the most widely used wavelets are available: Haar (``haar"), extremal phase 
 (``d4", ``d6", ``d8" and ``d16") and the least asymmetric Daubechies (``la8",
 ``la16" and ``la20")  and the best localized Daubechies (``bl14" and ``bl20")
-Wavelets among others. The default value is ``d4". The name of the wavelet
-specifies the ``family" (the family determines the shape of the Wavelet and
+wavelets among others. The default value is ``d4". The name of the wavelet
+specifies the ``family" (the family determines the shape of the wavelet and
 its properties) and the length of the wavelet. For example, ``la8" belongs to 
 the Least Asymmetric family and has a length of 8 samples. We may give a simple
 advice for wavelet selection based on the wavelet's length: shorter wavelets 
@@ -107,13 +107,15 @@ can study shorter time intervals. On the other hand, a better frequency
 resolution means better ``frequency discrimination". That is, shorter wavelets
 will tend to fail when discriminating close frequencies.
 
-\item \textit{Bandtolerance}: Maximum error allowed when the Wavelet-based 
+\item \textit{Bandtolerance}: maximum error allowed when the wavelet-based 
 analysis is performed \cite{waveletBiosignals}, \cite{waveletArticle}. It can 
-be specified as an absolute or a relative error depending on the 
+be specified as either an absolute or a relative error depending on the 
 \textit{``relative"} parameter value. Default value is $0.01$. 
-\item \textit{Relative}: Logic value specifying which type of band tolerance 
+\item \textit{Relative}: logic value specifying which type of band tolerance 
 shall be used: relative (in percentage) or absolute (default value). 
 \end{itemize}
+
+
 Let $[f_l,f_u]$ be any frequency band specified by the user and let $[f_1,f_2]$ 
 be a frequency interval associated with some node in the \linebreak 
 \gls{MODWPT} tree \cite{percival2006}. The relative error $\epsilon_r$ of $f_l$ 
@@ -150,7 +152,7 @@ ULFmin = 0, ULFmax = 0.03, VLFmin = 0.03, VLFmax = 0.05,
  LFmin = 0.05, LFmax = 0.15, HFmin = 0.15,   HFmax = 0.4 )
 @
 \subsubsection{Creating several analyses} In the previous examples we have used 
-just 1 frequency analysis to 
+just one frequency analysis to 
 illustrate the basic use of \textit{CalculatePowerBand}. However, it is 
 possible to create and use
 the same \textit{HRVData} for performing several spectral analysis. When we do 
@@ -204,8 +206,9 @@ PlotPowerBand(hrv.data, indexFreqAnalysis = 1, ymax = 200, ymaxratio = 1.7)
 # Plotting wavelet analysis
 PlotPowerBand(hrv.data, indexFreqAnalysis = 2, ymax = 700, ymaxratio = 50)
 @
+
 The plots obtained with \textit{PlotPowerBand} are shown in Figures 
-\ref{fig:examplePlotFourier} and \ref{fig:examplePlotWave}, respectively.
+\ref{fig:examplePlotFourier} and \ref{fig:examplePlotWave}, respectively.\\
 
 \begin{figure}[h]
 \centering
@@ -216,12 +219,12 @@ analysis.\label{fig:examplePlotFourier}}
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/tutorial-plottingFreqWavelet}
-\caption{Plot obtained with the \textit{PlotPowerBand} for the Wavelet-based 
+\caption{Plot obtained with the \textit{PlotPowerBand} for the wavelet-based 
 analysis.\label{fig:examplePlotWave}}
 \end{figure}
 
 
-\subsubsection{A brief comparison: Wavelets Vs. Fourier} Figures 
+\subsubsection{A brief comparison: wavelets Vs. Fourier} Figures 
 \ref{fig:examplePlotFourier} and \ref{fig:examplePlotWave} illustrate some of 
 the most important differences between Fourier and wavelet-based analysis. The 
 most important differences may be summarized as follows:

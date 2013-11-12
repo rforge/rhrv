@@ -12,8 +12,7 @@ the RHRV package:
 
 \begin{enumerate}
 \item Load heart beat positions. For the sake of simplicity, in this section we 
-will focus in
-ASCII files. 
+will focus in ASCII files. 
 \item Build the instantaneous \gls{HR} series and filter it to eliminate 
 spurious points.
 \item Plot the instantaneous \gls{HR} series.
@@ -30,7 +29,7 @@ section \ref{sec:quickAna} we will deal with points 6 and 7. All the examples
 of this chapter will use the 
 example beats file ``example.beats" that may be downloaded from 
 \href{http://rhrv.r-forge.r-project.org/}{http://rhrv.r-forge.r-project.org/}. 
-Optionally, the data from this file has been included in RHRV. The user can 
+Aditionally, the data from this file has been included in RHRV. The user can 
 access this data executing:
 
 <<accesingData,results=verbatim,echo=TRUE,run=FALSE,fig=FALSE,eps=FALSE>>=
@@ -40,13 +39,12 @@ data("HRVData")
 # heart beats: the beats have been filtered, interpolated, ... 
 data("HRVProcessedData")
 @
-The example file is an ASCII file that contains the beats positions obtained 
+The example file is an ASCII file that contains the beat positions obtained 
 from a 2 hours \gls{ECG} (one beat position per row). The subject of the 
 \gls{ECG} is a patient suffering from paraplegia and hypertension (systolic 
 blood pressure above 200 mmHg).  During the recording, he is supplied with 
 prostaglandin E1 (a vasodilator that is rarely employed) and systolic blood 
 pressure fell to 100 mmHg for over an hour. Then, the blood pressure increased 
-slowly up to approximately
- 150 mmHg. 
+slowly up to approximately 150 mmHg.\\
 
 The console output shall be shown for every example.

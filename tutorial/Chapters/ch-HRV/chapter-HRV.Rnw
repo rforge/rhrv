@@ -8,7 +8,7 @@ influenced by both
 the sympathetic and parasympathetic branches of
 the \gls{ANS} (see Figure \ref{fig:influencia}). Sympathetic activity increases 
 the heart rate and its response is slow (a few seconds). On the other
-hand the Parasympathetic activity decreases the heart rate and its response is 
+hand the parasympathetic activity decreases the heart rate and its response is 
 faster (0.2-0.6 seconds). Parasympathetic influence
 on heart rate is mediated by the action of the vagus nerve. 
 There are also some feedback mechanisms modulating the heart rates, that try to 
@@ -16,12 +16,23 @@ maintain cardiovascular
 homeostasis by responding to the perturbations sensed by baroreceptors and 
 chemoreceptors.\\
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[angle=90,height=7in]{figures/influencia.pdf}
+\caption[Modulation of the heart rate by the ANS]{\label{fig:influencia} 
+Modulation of the heart by the sympathetic and parasympathetic systems. Figure 
+taken from \cite{ansScholar}.}
+\end{center}
+\end{figure} 
+
 
 Under resting conditions, vagal tone prevails. However, parasympathetic and 
 sympathetic activity constantly interact. The continuous modulation of the 
 \gls{ANS} results in continuous variations in heart rate as shown in Figure 
 \ref{Fig:varhr}. The beat to beat interval variations are the result of the 
 interaction of the beat-to-beat control mechanisms.\\
+
+
 
 \begin{figure}[h]
 \begin{center}
@@ -34,7 +45,7 @@ consequence of the modulation of the ANS.}
 Due to the different speed of response of both branches of the \gls{ANS}, it is 
 possible to use the frequency analysis to discriminate between the sympathetic 
 and parasympathetic contributions to the \gls{HRV}. Akselrod et 
-al.\cite{akselrod1981} described three components in the \gls{HRV} power 
+al. \cite{akselrod1981} described three components in the \gls{HRV} power 
 spectrum
 with physiological relevance: the \gls{VLF} component (frequencies below 0.03 
 Hz),
@@ -45,14 +56,6 @@ boundaries.\\
 
 
 
-\begin{figure}[H]
-\begin{center}
-\includegraphics[angle=90,height=7in]{figures/influencia.pdf}
-\caption[Modulation of the heart rate by the ANS]{\label{fig:influencia} 
-Modulation of the heart by the sympathetic and parasympathetic systems. Figure 
-taken from \cite{ansScholar}.}
-\end{center}
-\end{figure} 
 
 
 Among all the \gls{HF} mechanisms involved in the heart rate modulation we find 
@@ -63,9 +66,9 @@ component is believed to be of parasympathetic origin. It should be noted that,
 although it is common to set the upper limit of the \gls{HF} band to 0.4-0.5 
 Hz, it may extend up to 1 Hz for children or adults during exercise.\\
 
-The \gls{LF} component is a subject of controversy.  Some \cite{akselrod1981}, 
-\cite{appel1989beat} consider that the \gls{LF} phenomena is  of both
- sympathetic and parasympathetic origin, although some authors have suggested 
+The \gls{LF} component is a subject of controversy.  Some consider that the 
+\gls{LF} phenomena is  of both  sympathetic and parasympathetic origin 
+\cite{akselrod1981}, \cite{appel1989beat}, although some authors have suggested 
 that the sympathetic system predominates \cite{kamath}, \cite{malliani}.
 This discrepancy is due to the fact that, in conditions of sympathetic 
 excitation, a decrease in the absolute power of the \gls{LF} band is observed. 
@@ -73,11 +76,10 @@ This band also includes the component referred
  to as the 10-second rhythm or the Mayer wave, caused by oscillations in 
 baroreceptor and chemoreceptor reflex control systems.\\
  
-Spectral analysis of 24-hour recordings  \cite{24hrecords}, \cite{malliani} 
-shows that in healthy individuals 
+Spectral analysis of 24-hour recordings  shows that in healthy individuals 
 both \gls{LF} and \gls{HF} bands exhibit a circadian pattern and reciprocal 
 fluctuations, with higher values of the \gls{LF} in the
-daytime and of \gls{HF} at night.\\
+daytime and of \gls{HF} at night \cite{24hrecords}, \cite{malliani}.\\
 
 \gls{LF} and \gls{HF} power can increase under different conditions. An 
 increase of \gls{LF} is observed during mental stress, standing and
@@ -176,7 +178,7 @@ RR_n=\alpha \cdot (t_n-t_{n-1}),
 \label{Eq:RR}
 \end{equation}
 where $\alpha$ is a conversion parameter that may vary depending of the units 
-in which the $RR$ time series is going to be expressed. Usually, the $RR$ 
+in which the $RR$ time series will be expressed. Usually, the $RR$ 
 intervals are expressed in ms and thus, if the occurrence times are expressed 
 in seconds, $\alpha$ is setted as $\alpha=1000$.
 It must be noticed that, in some studies, the \gls{HRV} is constructed as the 
@@ -194,7 +196,7 @@ used.\\
 
 The resulting RR series will consist of a set of pairs $(t_n,RR_n)$. It should 
 be noted that this time series is not equidistantly sampled 
-(that's why the time value, $t_n$, must be specified). This must be taken into 
+(that is why the time value, $t_n$, must be specified). This must be taken into 
 account before frequency-domain analysis, since it requires an uniformly 
 sampled time series. 
 There are several approaches  to overcome this issue \cite{forceHRV}. RHRV  
@@ -217,10 +219,10 @@ Before performing the analysis of any RR time series, a filtering operation
 must be carried out in order to eliminate outliers or spurious points present 
 in the signal with
 unacceptable physiological values. Outliers present in the series originate 
-from the detection of an artefact as a heartbeat (RR interval too short), or 
+from the detection of an artifact as a heartbeat (RR interval too short), or 
 from the loss of a heartbeat in the detection procedure (RR interval too 
 large). The RR time series may also contain some physiological artifacts. 
-Physiological artefacts include ectopic beats (an ectopic beat occurs when the 
+Physiological artifacts include ectopic beats (an ectopic beat occurs when the 
 heart beat is not
 triggered by the SA-node, causing an ``extra'' beat) and arrhythmic events. If 
 detection of the heartbeat has been revised and corrected manually by a 

@@ -7,6 +7,8 @@
 \documentclass[10pt]{article}
 \usepackage{hyperref}
 \usepackage[USletter]{vmargin}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \setmargrb{0.75in}{0.75in}{0.75in}{0.75in}
 
 \newcommand{\proglang}[1]{\textsf{#1}}
@@ -18,7 +20,9 @@
 
 
 \title{RHRV Quick Start Tutorial}
-\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero and Xos\'{e} Vila} 
+\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero, Xos\'{e} Vila,\\ Arturo M\'{e}ndez,
+Leandro Rodr\'{i}guez-Li\~{n}ares and  Mar\'{i}a Jos\'{e} Lado\\
+$^*$E-mail: \href{mailto:constantinoantonio.garcia@usc.es}{constantinoantonio.garcia@usc.es}} 
 \date{\today}
 \maketitle
 
@@ -27,7 +31,7 @@
 \cite{vilaRHRV}. Due to the large collection of features that \pkg{RHRV} offers, we 
 shall only refer to the most important functionality to 
 perform a basic Heart Rate Variability (\textit{HRV}) analysis. The interested
-reader is referred to the free tutorial \cite{rhrv-tutorial} for further 
+reader is referred to the free tutorial \cite{rhrvtutorial} for further 
 information. 
 }
 
@@ -40,7 +44,7 @@ homepage also provides an ``R Installation and Administration" guide. Once you
 have download and installed R, you can install \pkg{RHRV} by typing:
 
 <<install, eval=FALSE>>=
-install.packages("RHRV")
+install.packages("RHRV", dependencies = TRUE)
 @
 You can also install it by downloading it from the CRAN \cite{cran}. Once the 
 download has finished, open \proglang{R} , move to the directory where you have download 
@@ -79,7 +83,7 @@ In section \ref{sec:quickPrep} we will address points 1-5, whereas in
 section \ref{sec:quickAna} we will deal with points 6 and 7. All the examples 
 of this chapter will use the example beats file ``example.beats" that may be
 downloaded from \href{http://rhrv.r-forge.r-project.org/}{http://rhrv.r-forge.r-project.org/}. 
-Optionally, the data from this file has been included in RHRV. The user can 
+Aditionally, the data from this file has been included in RHRV. The user can 
 access this data executing:
 
 <<accesingData,results=verbatim,echo=TRUE,run=FALSE,fig=FALSE,eps=FALSE>>=
@@ -160,14 +164,14 @@ hrv.data = LoadBeatAscii(hrv.data, "example.beats",
 
 The console information is only displayed if the verbose mode is on. The
 \textit{Scale} parameter is related to the time units of the file. $1$
-denotes seconds, $0.1$ deciseconds and so on. The \textit{Date} and 
+denotes seconds, $0.1$ tenth of seconds and so on. The \textit{Date} and 
 \textit{Time}
 parameters specify when the file was recorded. The 
 \textit{RecordPath} can be omitted if the \textit{RecordName} is in the 
 working directory.\\
 
 Further information about this function and other input formats may be found
-in the online tutorial \cite{rhrv-tutorial}.
+in the online tutorial \cite{rhrvtutorial}.
 \subsection{Calculating \textit{HR} and filtering} To compute the HRV time series the 
 \textit{BuildNIHR} function can be used (\textit{Build Non Interpolated Heart 
 Rate}). This function constructs both the RR and 
@@ -182,9 +186,9 @@ hrv.data = BuildNIHR(hrv.data)
 
 A Filtering operation must be carried out in order to eliminate outliers or 
 spurious points present in the \textit{niHR} time series with
-unacceptable physiological values. Outliers present in the series originate 
-from the detection of an artefact as a heartbeat (RR interval too short) and 
-loss of a heartbeat in the detection procedure (RR interval too large). The 
+unacceptable physiological values. Outliers present in the series originate both
+from detecting an artifact as a heartbeat (RR interval too short) or not
+detecting a heartbeat (RR interval too large). The 
 outliers removal may be both manual or automatic. In this quick introduction, 
 we will use the automatic removal.  The automatic removal of spurious points 
 can be performed by the \textit{FilterNIHR} function. The \textit{FilterNIHR} 
@@ -267,7 +271,7 @@ hrv.data = CreateTimeAnalysis(hrv.data, size = 300,
 @
 If the verbose mode is on, the program will display the results of the 
 calculations on the screen. Otherwise, the user must access the ``raw" data 
-using the \$ operator of the \proglang{R} language. 
+using the \$ operator of the \proglang{R} language.\\
 
 Finally, we show a complete example for performing a basic time-domain 
 analysis. The console output is also shown. It should be noted that it is not 
@@ -303,12 +307,9 @@ order of creation). To create such  an analysis structure, the
 hrv.data = CreateFreqAnalysis(hrv.data)
 @
 Notice that, if verbose mode is on, the \textit{CreateFreqAnalysis} function 
-informs us about
-the number of frequency analysis structures that have been created. In order to 
-select a 
-particular spectral analysis, we will use the \textit{indexFreqAnalysis} 
-parameter in the 
-frequency analysis functions.\\
+informs us about the number of frequency analysis structures that have been
+created. In order to select a particular spectral analysis, we will use the 
+\textit{indexFreqAnalysis} parameter in the frequency analysis functions.\\
 
 The most important function to perform spectral \textit{HRV} analysis is the 
 \textit{CalculatePowerBand} function. The \textit{CalculatePowerBand} function
@@ -339,10 +340,11 @@ measured in seconds. The \pkg{RHRV} package employs a Hamming window to perform 
 \item \textit{Shift}: the displacement of window for calculating the 
 spectrogram measured in seconds.
 \item \textit{Sizesp}: the number of points for calculating each window of the 
-\textit{STFT}. Thus, it is highly recommended to select \textit{sizesp} so that 
-$sizesp=2^N$. If the user does not specify it, the program selects a proper
-length for the calculations.
+\textit{STFT}. If the user does not specify it, the program selects a proper
+length for the calculations (it selects \textit{sizesp} so that 
+$sizesp=2^m$, for some $m \in \mathbb{N}$).
 \end{itemize}
+
 When using \textit{CalculatePowerBand}, the \textit{indexFreqAnalysis} 
 parameter (in order to indicate which spectral analysis we are working with) 
 and the boundaries of the frequency bands may also be specified.\\
@@ -351,12 +353,8 @@ As an example, let's perform a frequency analysis in the typical \textit{HRV}
 spectral bands based on the \textit{STFT} . We may select 300 s (5 minutes) and 30 
 s as window size and  displacement
 values because these are typical values when performing \textit{HRV} spectral 
-analysis. The value of the zero-padding should be chosen so that is greater 
-than the number of samples of the window size. Assuming that the sampling 
-frequency is $4\;Hz$, the zero-padding value must fulfill $sizesp \geq 
-size\cdot f_s$. In this occasion, we select the smallest power of $2$ that 
-meets the previous condition: $sizesp = 2048 = 2^{11} > 1200 = 300\cdot4$. 
-Thus, we may write:
+analysis. We let the program choose the value of the zero-padding. Thus, we may
+write:
 
 <<STFTanalysis,results=verbatim>>=
 hrv.data = CreateHRVData( )
@@ -371,16 +369,13 @@ hrv.data = SetVerbose(hrv.data,TRUE)
 # for the frequency bands, since they match
 # the default values
 hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
-size = 300, shift = 30, sizesp = 2048, type = "fourier",
+size = 300, shift = 30, type = "fourier",
 ULFmin = 0, ULFmax = 0.03, VLFmin = 0.03, VLFmax = 0.05,
- LFmin = 0.05, LFmax = 0.15, HFmin = 0.15,   HFmax = 0.4 )
+LFmin = 0.05, LFmax = 0.15, HFmin = 0.15,   HFmax = 0.4 )
 @
 
-Alternatively, we could not specify the \textit{sizesp} parameter and let the 
-program decide for us. In fact, the program would use the same criteria that we 
-used
-in the previous example. Thus, we could have used the following sentence to 
-obtain exactly the same results:
+Alternatively, since most values of the arguments match its default values
+we could have written:
 
 <<STFTanalysis2,results=verbatim,eval=FALSE>>=
 hrv.data = CalculatePowerBand( hrv.data , indexFreqAnalysis= 1,
@@ -390,7 +385,7 @@ size = 300, shift = 30 )
 \subsubsection{Wavelets} When using Wavelet analysis with the 
 \textit{CalculatePowerBand} function, the user may specify:  
 \begin{itemize}
-\item \textit{Wavelet}: Mother wavelet used to calculate the spectrogram. Some 
+\item \textit{Wavelet}: mother wavelet used to calculate the spectrogram. Some 
 of the most widely used Wavelets are available: Haar (``haar"), extremal phase 
 (``d4", ``d6", ``d8" and ``d16") and the least asymmetric Daubechies (``la8",
 ``la16" and ``la20")  and the best localized Daubechies (``bl14" and ``bl20")
@@ -406,25 +401,14 @@ can study shorter time intervals. On the other hand, a better frequency
 resolution means better ``frequency discrimination". That is, shorter wavelets
 will tend to fail when discriminating close frequencies.
 
-\item \textit{Bandtolerance}: Maximum error allowed when the Wavelet-based 
+\item \textit{Bandtolerance}: maximum error allowed when the Wavelet-based 
 analysis is performed \cite{waveletBiosignals}, \cite{waveletArticle}. It can 
 be specified as an absolute or a relative error depending on the 
 \textit{``relative"} parameter value. Default value is $0.01$. 
-\item \textit{Relative}: Logic value specifying which type of band tolerance 
-shall be used: relative (in percentage) or absolute (default value). 
+\item \textit{Relative}: logic value specifying which type of band tolerance 
+shall be used: relative (in percentage) or absolute (default value). For the sake
+of simplicity, in this document we will use the absolute band tolerance.
 \end{itemize}
-Let $[f_l,f_u]$ be any frequency band specified by the user and let $[f_1,f_2]$ 
-be a frequency interval associated with some node in the \linebreak 
-\textit{MODWPT} tree \cite{percival2006}. The relative error $\epsilon_r$ of $f_l$ 
-over the $[f_1,f_2]$ interval is computed as 
-$$\epsilon_r=\Big|\frac{f_l-f_1}{f_u-f_l}\Big|\cdot100\%.$$
-Similarly, we may define the error $\epsilon_r$ of the upper frequency $f_u$ as
- $$\epsilon_r=\Big|\frac{f_u-f_2}{f_u-f_l}\Big| \cdot100\%.$$
-The relative error can be used to avoid introducing large errors at small 
-frequency bands (usually both \textit{ULF} and \textit{VLF} bands).\\
-
-The absolute value $\epsilon$ is defined as usual: $\epsilon=|f_2-f_u|$ for the 
-upper frequency and $\epsilon=|f_1-f_l|$ for the lower frequency.\\
 
 Let's analyze the same frequency bands as before but using the 
 wavelet-algorithm. For the sake of simplicity, we will use an absolute 
@@ -451,7 +435,7 @@ ULFmin = 0, ULFmax = 0.03, VLFmin = 0.03, VLFmax = 0.05,
 @
 
 \subsubsection{Creating several analyses} In the previous examples we have used 
-just 1 frequency analysis to 
+just one frequency analysis to 
 illustrate the basic use of \textit{CalculatePowerBand}. However, it is 
 possible to create and use
 the same \textit{HRVData} for performing several spectral analysis. When we do 
@@ -557,7 +541,46 @@ analysis has the same number of samples as the original $RR$ time series.
 % Make the bibliography single spaced
 \clearpage
 \bibliographystyle{plain}
-\bibliography{biblio/tutorial}
+\begin{thebibliography}{1}
+
+\bibitem{cran}
+The comprehensive {R} archive network. \href{http://cran.r-project.org/}{http://cran.r-project.org/}.
+
+\bibitem{Rproject}
+The {R} project for statistical computing. \href{http://www.r-project.org/}{http://www.r-project.org/}.
+
+\bibitem{waveletBiosignals}
+C.A. Garc\'{i}a, A. Otero, X.A. Vila, and M.J. Lado.
+\newblock An open source tool for heart rate variability wavelet-based spectral
+  analysis.
+\newblock In {\em International Joint Conference on Biomedical Engineering
+  Systems and Technologies, BIOSIGNALS 2012}, 2012.
+
+\bibitem{waveletArticle}
+Constantino A. Garc\'{i}a, Abraham Otero, Xos\'{e} Vila, and David G.
+  M{\'a}rquez.
+\newblock A new algorithm for wavelet-based heart rate variability analysis.
+\newblock {\em Biomedical Signal Processing and Control}, 8(6):542--550, 2013.
+
+\bibitem{rhrvtutorial}
+Constantino A. Garc\'{i}a, Abraham Otero, Xos\'{e} Vila, Arturo M\'{e}ndez,
+  Leandro Rodr\'{i}guez-Li\~{n}ares, and Mar\'{i}a Jos\'{e} Lado.
+\newblock Getting started with {RHRV},
+  \href{http://rhrv.r-forge.r-project.org/tutorial/}{http://rhrv.r-forge.r-project.org/tutorial/}, 2013.
+
+\bibitem{mitbih}
+G.B. Moody and R.G. Mark.
+\newblock The {MIT-BIH} arrhythmia database on cd-rom and software for use with
+  it.
+\newblock {\em In Computers in Cardiology}, pages 185--188, 1990.
+
+\bibitem{vilaRHRV}
+L. Rodr\'{i}guez-Li\~{n}ares, A.J. M\'{e}ndez, M.J. Lado, D.N. Olivieri,
+  X.A. Vila, and I. G\'{o}mez-Conde.
+\newblock An open source tool for heart rate variability spectral analysis.
+\newblock {\em Computer Methods and Programs in Biomedicine}, 2010.
+
+\end{thebibliography}
 
 %\appendix % all chapters following will be labeled as appendices
 

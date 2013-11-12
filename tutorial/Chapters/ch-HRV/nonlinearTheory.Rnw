@@ -47,7 +47,7 @@ A large amount of nonlinear algorithms is based on the concept of phase space.
 For a deterministic system, the phase space is the collection of all possible
 system states. That is, each point of the phase space represents all the 
 information needed to determine the evolution of the system. Of course, the
-problem now is: How we can transform an univariate time series (the RR time 
+problem now is: How can we transform an univariate time series (the RR time 
 series) in a multivariate phase space?\\
 
 The Takens embedding theorem answers this question. Takens proved that phase 
@@ -173,7 +173,7 @@ time t between the two trajectories arising from this two vectors fulfills:
 
 $$\delta(t) \propto \delta(0)\cdot exp(\lambda t).$$
 
-Thus, the lyapunov exponent is estimated using the slope obtained by performing
+Thus, the Lyapunov exponent is estimated using the slope obtained by performing
 a linear regression of $S(t)=\lambda \cdot t \approx log(\delta(t)/\delta (0))$ 
 on t. In practical applications, we should check the 
 existence of a linear region when plotting $S(t)$ Vs. $t$. If for
@@ -184,7 +184,7 @@ discarded.\\
 
 Also, just as for the correlation dimension computations, the  maximal Lyapunov
 exponent should be computed for several embedding dimensions in order to 
-check that it doesn't depend on the embedding dimension. 
+check that it does not depend on the embedding dimension. 
 
 \subsubsection{Detrended Fluctuation Analysis (DFA)\label{sec:dfaTheo}}
 The Detrended Fluctuation Analysis (DFA) is a widely used technique for 

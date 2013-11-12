@@ -9,7 +9,8 @@
 %\subtitle{Version \tutorialVersion}
 \submitted{\today}  
 \copyrightyear{2013}  
-\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero and Xos\'{e} Vila} 
+\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero, Xos\'{e} Vila,  Arturo M\'{e}ndez,
+Leandro Rodr\'{i}guez-Li\~{n}ares and  Mar\'{i}a Jos\'{e} Lado} 
     % General parameters, for ALL pages:
     \renewcommand{\topfraction}{0.85}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.6}	% max fraction of floats at bottom
@@ -142,7 +143,7 @@
   }
   {\end{list}}
 
-% another environment that's an indented list, with no spaces between items 
+% another environment that is an indented list, with no spaces between items 
 % -- if we want multiple items/lines. Useful in tables. Use \item inside the
 % environment.
 % \raggedright makes them left aligned instead of justified
@@ -150,7 +151,7 @@
     \begin{list}{}{ \itemsep 0in \itemindent 0in
     \labelsep 0in \labelwidth 0in
     \listparindent 0in
-    \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
+%     \topsep 0in \partopsep 0in \parskip 0in \parsep 0in
     \leftmargin 1em \rightmargin 0in
     \raggedright
     }

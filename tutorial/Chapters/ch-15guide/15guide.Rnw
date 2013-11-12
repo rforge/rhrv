@@ -3,6 +3,6 @@
 \SweaveInput{sections/intro.Rnw}
 \section{Preprocessing the Heart Rate series\label{sec:quickPrep}}
 \SweaveInput{sections/preprocessing.Rnw}
-\section{Analysing the Heart Rate series\label{sec:quickAna}}
+\section{Analyzing the Heart Rate series\label{sec:quickAna}}
 \SweaveInput{sections/analyzing/analyzing.Rnw}
 

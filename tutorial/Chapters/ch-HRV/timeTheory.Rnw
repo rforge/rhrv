@@ -2,6 +2,7 @@
 The simplest \gls{HRV} analysis techniques are the time domain measures. Since 
 there exist a wide variety of time domain techniques, we will focus on those 
 included in the RHRV software. \\
+
 The best known time analysis statistic may be the standard deviation of the RR 
 interval: \gls{SDNN}.
 $$SDNN=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(RR_j-\overline{RR})^2}$$
@@ -10,12 +11,12 @@ analysis, \gls{SDNN} reflects the
 power of the components responsible for variability. The  \gls{SDNN} reflects 
 both short-term and long-term variations within the RR  series. However, it 
 should be noted that total variance of \gls{HRV}
-increases with the length of the analysed recording \cite{saul1988analysis}. 
+increases with the length of the analyzed recording \cite{saul1988analysis}. 
 Thus, on arbitrarily ECGs,  \gls{SDNN}
 may not be an appropriate \gls{HRV} analysis variable because of its dependence 
 with the recording's length. To avoid this issue, statistical variables 
 calculated from segments of the total monitoring period may be used. Among this 
-kind of variables are the \glslink{SDANN}{SDANN}, the standard deviation of  
+type of variables are the \glslink{SDANN}{SDANN}, the standard deviation of  
 the average NN (RR) intervals calculated over short periods (usually 5 
 minutes); and the \glslink{SDNNIDX}{SDNN index}, the mean
 of the standard deviation calculated over the windowed RR intervals, usually 5 
@@ -27,7 +28,7 @@ The Standard Deviation of Successive Differences (\glslink{SDSD}{SDSD}) is
 given by
 $$SDSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j-\overline{\Delta RR})^2}.$$
 
-The Root Mean square 
+The Root Mean Square 
 of Successive Differences (\glslink{RMSSD}{RMSSD}) is given by
 $$RMSSD=\sqrt{\frac{1}{N-1}\sum_{j=1}^{N}(\Delta RR_j)^2}.$$
 

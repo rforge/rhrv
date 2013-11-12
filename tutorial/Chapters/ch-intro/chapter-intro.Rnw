@@ -22,7 +22,7 @@ The existence of several software tools (Kubios HRV \cite%
 {kubios}, the \gls{HRV} toolkit for MatLab \cite{matlab} or aHRV
 \cite{ahrv}, just to mention a few) have helped to popularize its use. Some of 
 these software packages are commercial and require the purchase of expensive 
-licenses (e.g., aHRV). Others while they are free, they require the purchase of 
+licenses (e.g., aHRV). Even although others are free, they require the purchase of 
 expensive commercial software on which they depend (e.g., the HRV toolkit for 
 MatLab).  Kubios is free (though not open source), but it is based on a 
 graphical user interface, which makes it extremely tedious to perform 
@@ -46,7 +46,7 @@ highlight:
 \begin{itemize}
 \item RHRV can read heart rate data in multiple formats such as ASCII, Polar, 
 Suunto and WFDB.
-\item RHRV can compute the \gls{HRV} time series from the beats positions as 
+\item RHRV can compute the \gls{HRV} time series from the beat positions as 
 well as preprocessing  and filtering the \gls{HRV} time series to eliminate 
 outliers or spurious points.
 \item RHRV includes functionality for the visualization and manipulation of the 
@@ -79,7 +79,7 @@ The RHRV package can be freely downloaded from the R-CRAN repository
 \cite{cran}. \\
 \section{Aim} The aim of this tutorial is to help the user to get started with 
 the RHRV package for the R environment. This document supposes that the user 
-has some basic knowledge about the R environment as well about \gls{HRV}. 
+has some basic knowledge about both the R environment and \gls{HRV}. 
 However, a short introduction to \gls{HRV} will be given, and further 
 references are provided.
 

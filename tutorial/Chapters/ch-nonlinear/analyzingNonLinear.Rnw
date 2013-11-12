@@ -544,7 +544,7 @@ hrv.data = CalculateMaxLyapunov(
 @
 
 As usual, the user should plot $S(t)$ Vs $t$ when looking for the 
-maximal lyapunov exponent. This can be done using the \textit{doPlot} parameter
+maximal Lyapunov exponent. This can be done using the \textit{doPlot} parameter
 of the \textit{CalculateMaxLyapunov} routine or using the
 \textit{PlotMaxLyapunov} function.
 
@@ -659,7 +659,8 @@ hrv.data =  EstimateDFA(hrv.data,
 @
 
 Figure \ref{fig:dfa} show the regression performed over the Fluctuation 
-function. 
+function. \\
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
   \centering
@@ -740,7 +741,7 @@ be our selection: RR vectors whose maximum difference is less than 2 ms.
 However, other similar values for the radius can be used. An useful rule of
 thumb for selecting the \textit{radius} parameter is choosing the radius so 
 that the recurrence matrix is sparse although it must contain certain
-vertical or diagonal lines (deterministic structures). It also must be noted
+vertical or diagonal lines (deterministic structures). It must also be noted
 that high values for the radius may result in very heavy computations.\\
 
 As seen in the previous example, in addition to the usual statistics (presented

@@ -42,13 +42,13 @@ function sets verbose mode on or off.
 \end{itemize}
 \subsection{Reading heart beats\label{sec:moreReading}} After creating the 
 empty \textit{HRVData} structure  we will usually read the corresponding data 
-file containing the heart beats positions. For the sake of simplicity, we keep 
+file containing the heart beat positions. For the sake of simplicity, we keep 
 on focussing on the ASCII files. The reader may have been wondering: ``what 
 happens if my ASCII file is specified in milliseconds?". We shall use the  
 \textit{scale} parameter to overcome this issue. By setting this parameter to 
 $1$ (default value) we are indicating that the beat positions are specified in 
 seconds; by setting it to $0.1$, we are indicating that the beats are in 
-deciseconds and so on. The function transforms the heart beats positions to 
+deciseconds and so on. The function transforms the heart beat positions to 
 seconds so all the other functions can be used as before. Other interesting 
 parameter that can be specified by the user is the date-time when the file was 
 recorded (\textit{datetime} parameter). This is particularly useful for 
@@ -103,7 +103,7 @@ of acceptable physiological values by using the \textit{minbpm} and
 respectively). Default values are designed for human beings(\textit{minbpm}=25, 
 \textit{maxbpm}=200),  but they can be specified in such a way that it may also 
 be used by animal researchers. As an illustrative example we could modify the 
-\textit{last} parameter in such a way that it doesn't allow quick fluctuations 
+\textit{last} parameter in such a way that it does not allow quick fluctuations 
 ( by decreasing \textit{last} to 1\%) in our example file. Also, we could 
 decrease the \textit{maxbpm} parameter to $180$ bpm. The results are shown in 
 Figure \ref{fig:completeFilterNIHR} (compare it with Figure 
@@ -216,9 +216,9 @@ Some additional parameters are incorporated to the \textit{FreqAnalysis}
 structure depending on the type of analysis used. When using the \gls{STFT}, 
 the \textit{size}, \textit{shift} and \textit{sizesp} fields store information 
 about the window, the window shift, and the number of points per \gls{DFT} that 
-have been used. When using the Wavelet transform, the \textit{wavelet}, 
+have been used. When using the wavelet transform, the \textit{wavelet}, 
 \textit{ bandtolerance} and \textit{depth} fields store information about the 
-mother Wavelet and the tolerance used, as well as the number of levels that the 
+mother wavelet and the tolerance used, as well as the number of levels that the 
 algorithm has descended in the \gls{MODWPT} tree \cite{waveletBiosignals}, 
 \cite{waveletArticle}.\\
 
@@ -270,7 +270,7 @@ spectrogram = PlotSpectrogram(HRVData=hrv.data, size=300, shift=60,
 function.\label{fig:plottingSpectrogram}}
 \end{figure}
 
-Note that most of the energy shwon in figure \ref {fig:plottingSpectrogram} 
+Note that most of the energy shwon in Figure \ref {fig:plottingSpectrogram} 
 is concentrated in the low frequencies. To obtain a more
 detailed graphic in this zone of the spectrum, we can use the 
 \textit{freqRange} parameter. For example, if we wish to plot the spectrum in 
@@ -280,7 +280,7 @@ the $[0,0.2]\;Hz$ band, we write:
 PlotSpectrogram(HRVData=hrv.data, size=300, shift=60, 
 	sizesp=2048,freqRange = c(0,0.2))
 @
-The result of this script is shown in figure \ref{fig:plottingSpectrogram2}.
+The result of this script is shown in Figure \ref{fig:plottingSpectrogram2}.
 
 \begin{figure}[h]
 \centering

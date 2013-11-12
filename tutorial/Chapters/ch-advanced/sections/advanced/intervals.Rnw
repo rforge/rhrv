@@ -64,7 +64,8 @@ PlotHR(hrv.data , Tag=c("A"))
 
 The plots obtained with \textit{PlotNIHR} and \textit{PlotHR} are shown in 
 Figures \ref{fig:plottingEpisodicNIHR} and \ref{fig:plottingEpisodicHR}, 
-respectively.
+respectively.\\
+
 \begin{figure}[h]
 \centering
 \includegraphics{figures/tutorial-plottingEpisodicNIHR}
@@ -174,7 +175,7 @@ use of this function requires the installation of the WFDB tools (see chapter
 As an illustrative example, we are going to read the apnea episodes for the 
 ``a03" file of the ApneaECG database from PhysioBank (see the \textit{Reading 
 files in WFDB format} paragraph). The plot of the non interpolated \gls{HR} 
-series is shown in figure \ref{fig:loadingApneaEpisodes}.
+series is shown in Figure \ref{fig:loadingApneaEpisodes}.
 <<loadingApneaEpisodes,results=verbatim,echo=TRUE,fig=TRUE,include=FALSE,pdf = TRUE, eps = FALSE>>=
 hrv.wfdb = CreateHRVData()
 hrv.wfdb = SetVerbose(hrv.wfdb, TRUE)
@@ -206,7 +207,7 @@ series inside and outside the apnea episodes from the ``a03" file, we could use:
 hrv.wfdb = InterpolateNIHR (hrv.wfdb, freqhr = 4)
 splitting.data = SplitHRbyEpisodes(hrv.wfdb, Tag = c("Apnea"))
 @
-It's straightforward to use a statistical function for comparing both vectors. 
+It is straightforward to use a statistical function for comparing both vectors. 
 For example:
 <<splitting2>>=
 cat("comparing the mean inside and outside Apnea episodes...\n")

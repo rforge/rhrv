@@ -16,7 +16,7 @@ hrv.data = SetVerbose(hrv.data, TRUE )
 
 After creating the empty \textit{HRVData} structure  the next step should be 
 loading the signal that we want to analyze into this structure. RHRV imports 
-data files containing heart beats positions. Supported formats include ASCII 
+data files containing heart beat positions. Supported formats include ASCII 
 (\textit{LoadBeatAscii} function), EDF (\textit{LoadBeatEDFPlus}), Polar 
 (\textit{LoadBeatPolar}), Suunto (\textit{LoadBeatSuunto}) and WFDB data files 
 (\textit{LoadBeatWFDB}) \cite{mitbih}. For the sake of simplicity, we will 
@@ -44,7 +44,7 @@ hrv.data = LoadBeatAscii(hrv.data, "example.beats",
 @
 The console information is only displayed if the verbose mode is on. The
 \textit{Scale} parameter is related to the time units of the file. $1$
-denotes seconds, $0.1$ deciseconds and so on. The \textit{Date} and 
+denotes seconds, $0.1$ tenth of seconds and so on. The \textit{Date} and 
 \textit{Time}
 parameters specify when the file was recorded. More details about these
 parameters will be given in section \ref{sec:moreReading}. The 
@@ -64,9 +64,9 @@ hrv.data = BuildNIHR(hrv.data)
 
 A Filtering operation must be carried out in order to eliminate outliers or 
 spurious points present in the \gls{niHR} time series with
-unacceptable physiological values. Outliers present in the series originate 
-from the detection of an artefact as a heartbeat (RR interval too short) and 
-loss of a heartbeat in the detection procedure (RR interval too large). The 
+unacceptable physiological values. Outliers present in the series originate both
+from detecting an artifact as a heartbeat (RR interval too short) or not 
+detecting a heartbeat (RR interval too large). The 
 outliers removal may be both manual or automatic. In this quick introduction, 
 we will use the automatic removal.  The automatic removal of spurious points 
 can be performed by the \textit{FilterNIHR} function. The \textit{FilterNIHR} 
@@ -100,6 +100,7 @@ PlotNIHR(hrv.data)
 <<plottingHR,results=hide,echo=TRUE,fig=TRUE,include=FALSE, pdf=TRUE, eps = FALSE>>=
 PlotHR(hrv.data)
 @
+
 The plots obtained with \textit{PlotNIHR} and \textit{PlotHR} are shown in 
 Figures \ref{fig:exampleNIHR} and \ref{fig:exampleHR}, respectively.\\
 
