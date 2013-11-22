@@ -1,6 +1,6 @@
 ############################## CalculateCorrDim ##########################
 #' Correlation sum, correlation dimension and generalized correlation dimension 
-#' (order q >1)
+#' (order q >1) 
 #' @description
 #' Functions for estimating the correlation sum and the correlation dimension of 
 #' the RR time series using phase-space reconstruction
