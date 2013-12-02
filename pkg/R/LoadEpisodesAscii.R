@@ -19,6 +19,7 @@ function(HRVData, FileName, RecordPath=".", Tag="", InitTime="0:0:0", verbose=NU
 #  	Duration in seconds
 	
   dir = getwd()
+  on.exit(setwd(dir))
   setwd(RecordPath)
 
 	if (!is.null(verbose)) {
@@ -107,7 +108,6 @@ function(HRVData, FileName, RecordPath=".", Tag="", InitTime="0:0:0", verbose=NU
    	cat("   Number of episodes:",length(HRVData$Episodes$InitTime),"\n")
 	}
 
-  setwd(dir)
 	return(HRVData)
 }
 

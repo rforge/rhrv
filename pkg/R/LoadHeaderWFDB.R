@@ -12,6 +12,8 @@ function(HRVData, RecordName, RecordPath=".", verbose=NULL) {
 	}
 	
 	dir=getwd()
+  on.exit(setwd(dir))
+
 	if (HRVData$Verbose) {
 		cat("   Path:",RecordPath,"\n")
 	}
@@ -62,8 +64,6 @@ function(HRVData, RecordName, RecordPath=".", verbose=NULL) {
 			sprintf("%02d",datetimeaux$sec),"\n",sep="")
 	}
 	HRVData$datetime=datetimeaux
-
-	setwd(dir)
 
 	return(HRVData)
 
