@@ -4,6 +4,7 @@ function(name, verbose=FALSE) {
 # Reads data model from a file
 # ---------------------------
 
+  HRVData = CreateHRVData()
 	nameext=sprintf("%s.%s",name,HRVData$Ext)
 	
 	if (verbose) {
