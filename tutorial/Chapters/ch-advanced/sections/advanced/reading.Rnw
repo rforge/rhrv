@@ -16,7 +16,7 @@ same as those of the \textit{LoadBeatAscii} function, that is:
 LoadBeatRR(HRVData, RecordName, RecordPath=".", scale = 1, 
       datetime = "1/1/1900 0:0:0")
 @
-\subsection{Reading files in WFDB format} PhysioNet \cite{physioNet} is a free 
+\subsection{Reading files in WFDB format} PhysioNet \cite{PhysioNet} is a free 
 web resource that provides large collections of recorded physiologic signals 
 (PhysioBank) and related open-source software (PhysioToolkit). In most cases, a 
 record from PhysioBank consists of at least three files, which are named using 
@@ -28,7 +28,7 @@ example, .qrs files contain an annotation for each QRS complex (heart beat) in
 the recording; .apn files contain apnea annotations; etc. For the sake of 
 simplicity, we call ``WFDB file" (WaveForm DataBase) to such a collection of 
 files containing data on the same recording \cite{mitbih}. Further details 
-about PhysioBank can be found in the Physionet website. \\
+about PhysioBank can be found in the PhysioNet website. \\
 
 The RHRV package provides the \textit{LoadBeatWFDB} function for reading WFDB 
 files. This function takes as input parameters the name of the WFDB file to be 

@@ -20,7 +20,7 @@ WriteToFile(hrv.wfdb, name="HRVstructure", overwrite = FALSE)
 @
 \begin{verbatim}
 Error in WriteToFile(hrv.data, name = "HRVstructure", overwrite = FALSE) : 
-    --- File exists... No overwriting it!! ---
+    --- File exists... Not overwriting it!! ---
     --- Quitting now!! ---
 \end{verbatim}
 Note that the function informs about the existence of a previous file named 

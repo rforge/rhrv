@@ -205,17 +205,17 @@ library(RHRV)
 \input{glossary/glossaries.tex}
 %%%%%%%%%%%%%%%%%%%%%%%%%%% Chapters %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Use SweaveInput for clearness
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 1
 \SweaveInput{./Chapters/ch-intro/chapter-intro.Rnw}
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 2
 \SweaveInput{./Chapters/ch-HRV/chapter-HRV.Rnw}
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 3
 \SweaveInput{./Chapters/ch-installation/chapter-installation.Rnw}
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 4
 \SweaveInput{./Chapters/ch-15guide/15guide.Rnw}
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 5
 \SweaveInput{./Chapters/ch-advanced/advanced.Rnw}
-%%%%% New chapter %%%%%%
+%%%%% New chapter %%%%%% 6
 \SweaveInput{./Chapters/ch-nonlinear/ch-nonlinear.Rnw}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Make the bibliography single spaced

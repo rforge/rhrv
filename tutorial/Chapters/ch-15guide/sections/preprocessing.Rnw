@@ -62,7 +62,7 @@ rate (\gls{HR}) as the
 hrv.data = BuildNIHR(hrv.data)
 @
 
-A Filtering operation must be carried out in order to eliminate outliers or 
+A filtering operation must be carried out in order to eliminate outliers or 
 spurious points present in the \gls{niHR} time series with
 unacceptable physiological values. Outliers present in the series originate both
 from detecting an artifact as a heartbeat (RR interval too short) or not 

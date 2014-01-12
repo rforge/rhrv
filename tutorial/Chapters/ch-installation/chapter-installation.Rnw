@@ -26,8 +26,8 @@ library(RHRV)
 \cite{moody2003wfdb}. If the user is not going to work with WFDB formatted 
 files, the installation of these libraries is not required for the proper 
 functioning of RHRV. The WFDB functions is a large collection of specialized 
-software for processing and manipulating the Physionet's databases 
-\cite{physioNet}. On Windows and Mac OSX operating systems is necessary to 
+software for processing and manipulating the PhysioNet's databases 
+\cite{PhysioNet}. On Windows and Mac OSX operating systems is necessary to 
 define
 a .Renviron file in the user workspace indicating the directory
 of the WFDB commands. Examples for both OS are given below: 

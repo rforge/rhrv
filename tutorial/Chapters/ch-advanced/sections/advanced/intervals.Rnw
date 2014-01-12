@@ -228,8 +228,8 @@ cat("Apnea mean:: ",result$resultIn,"\n")
 cat("Normal mean: ",result$resultOut,"\n")
 @
 
-There also exists an splitting function that separates the spectral power per 
-band in two lists using an specific episode type: the 
+There also exists a splitting function that separates the spectral power per 
+band in two lists using a specific episode type: the 
 \textit{SplitPowerBandByEpisodes} (however there is no analogue function to the 
 \textit{AnalyzeHRbyEpisodes} function). In addition to the \textit{Tag} 
 parameter, the \textit{SplitPowerBandByEpisodes} receives as input parameters, 

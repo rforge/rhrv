@@ -185,7 +185,9 @@ It must be noticed that, in some studies, the \gls{HRV} is constructed as the
 sequence of the instantaneous
 heart rates.  That is
 \begin{equation}
-\widehat{RR_n}=\frac{\beta}{t_n-t_{n-1}}.
+%\widehat{RR_n}=\frac{\beta}{t_n-t_{n-1}}.
+%!gs please check
+HR_n=\frac{\beta}{t_n-t_{n-1}}.
 \label{Eq:RRinst}
 \end{equation}
 Again, $\beta$ is used as a conversion parameter. Since the \gls{HR} is usually 
@@ -241,7 +243,7 @@ Further information may be found at \cite{forceHRV}.
 \SweaveInput{timeTheory.Rnw}
 \subsection{Frequency domain methods}
 \SweaveInput{frequencyTheory.Rnw}
-\subsection{nonlinear methods\label{sec:NonlinearTheory}}
+\subsection{Nonlinear Methods\label{sec:NonlinearTheory}}
 \SweaveInput{nonlinearTheory.Rnw}
 
 
