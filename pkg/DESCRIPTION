@@ -1,10 +1,10 @@
 Package: RHRV
 Type: Package
 Title: Heart rate variability analysis of ECG data
-Version: 3.0.7
+Version: 4.0
 Date: 2013-01-18
 Author: A. Mendez, L. Rodriguez-Linares, A. Otero, C.A. Garcia, X. Vila, M. Lado
-Maintainer: L. Rodriguez-Linares <leandro@uvigo.es>
+Maintainer: L. Rodriguez-Linares <leandro@uvigo.es>, C.A. Garcia <constantinoantonio.garcia@usc.es>
 URL: http://rhrv.r-forge.r-project.org/
 Description: This is a package for developing heart rate variability studies of ECG records
 License: GPL-2
