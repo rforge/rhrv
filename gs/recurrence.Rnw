@@ -1,0 +1,1003 @@
+%!TEX root = /Users/gs/Documents/lectures/src/dataanalysis/Rnw_out/recurrence.tex
+%$Header: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v 1.2 2014/02/05 20:05:07 j40 Exp $
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%
+%  Adjust the path names below and run the R command to process this file
+%
+% oldoptions<-options(width=72,prompt="  ", continue="  "); setwd("/Users/gs/Documents/lectures/src/dataanalysis/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); options(oldoptions)
+%
+\typeout{Clear R workspace??}
+%global flags for conditional builds
+%:flags
+\def\private{true}% comment out for public version
+\def\solutions{true}% comment out to hide solutions
+\def\usehyperref{true}% comment out to skip hyperref
+\errorcontextlines=4%default:2
+
+\documentclass[a4paper, english, utf8]{amsart}
+%\usepackage[applemac]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{url} % used by natbib
+\usepackage[square]{natbib} %[Azzalini & Bowman, 1990] 
+% for \bibliographystyle{natdin}
+
+%\usepackage{gssda}
+\usepackage{SIntro}
+%\usepackage{Sweave}%magic to avoid Sweave
+\usepackage[bookmarks, pdftex,
+pdftitle={recurrence plot},
+pdfauthor={G. Sawitzki}, 
+colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
+%\usepackage[author-year, backrefs]{amsrefs}	%for citelist. load after hyperref!
+
+
+\usepackage{gssda}
+\usepackage{colortbl}
+\usepackage{verbatim}        % small example code
+\usepackage{graphicx, fancyvrb, fancyref}
+%\graphicspath{{./}{./media/}{../media/}}%Graetzer, p. 420
+
+\newcommand{\figref}[1]{Figure\ \vref{#1}}
+
+%\includegraphics[width=1.0\linewidth]{recurrence-ch04diabetesrecurrence}
+
+\title{Statistical Data Analysis: \\Recurrence Plot}
+\author[G. Sawitzki]{G\"unther Sawitzki}
+\date{2013-11}
+\email{\url{gs@statlab.uni-heidelberg.de}}
+\address{\noindent G\"unther Sawitzki\newline
+\indent StatLab Heidelberg\newline
+\indent Im Neuenheimer Feld 294\newline
+\indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
+\keywords{data analysis, distribution diagnostics, recurrence plot}
+\thanks{\emph{This waste book is a companion to   ``G. Sawitzki: Statistical Data Analysis''}\\
+\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision: 1.2 $\\
+\indent \url{gs@statlab.uni-heidelberg.de}
+}%\\
+
+%: layout
+\RequirePackage{layouts} %used for LaTeX info only
+\addtolength{\textheight}{12mm}
+\addtolength{\topmargin}{-9mm}   % still fits on US paper
+\addtolength{\textwidth}{26mm}   % still fits on US paper - 6.00612 in on A4
+\setlength{\oddsidemargin}{10mm}
+\setlength{\evensidemargin}{\oddsidemargin}
+
+%  ****************************************
+%  *           PARAGRAPHING               *
+%  ****************************************
+%
+\parskip 12pt plus .25pt
+\parindent 0pt %1em
+\partopsep 2pt plus 1pt minus 1pt
+
+%:Sweave
+\SweaveOpts{echo=TRUE}
+\newcommand\Stt[1]{\textsl{\texttt{#1}}}
+\renewcommand\urladdr[1]{\texttt{#1}}
+
+%\usepackage{a4wide}
+
+%%%%% from Sweave.sty
+\setkeys{Gin}{width=0.8\textwidth}
+
+\definecolor{sincol}{rgb}{0.0,0.0,0.8}% darkblue [r=0,   g=0,   b=.8]
+\definecolor{soutcol}{rgb}{0.0,0.3,0.1}% darkgreen r=0.0,   g=.6, b=0]
+
+\newcommand{\R}{{\normalfont\textsf{R}}{}}
+\newcommand\code[1]{\textsl{\texttt{#1}}}
+\newcommand\codex[1]{\textsl{\texttt{#1}}\index{#1@\texttt{#1}|textit}}
+
+\makeindex
+%\makenomenclature
+\listfiles
+%:{document}
+\begin{document}
+
+% content 
+\maketitle
+
+{\centering
+\includegraphics[width=0.4\linewidth]{recurrence-chirprec}
+
+}
+
+{
+\parskip 0pt
+%\parindent 0pt %1em
+%\partopsep 12pt plus 1pt minus 1pt
+\tableofcontents
+}
+
+%
+
+
+\section{Setup}
+
+<<echo=FALSE,print=FALSE>>=
+graphics.off()
+quartz(width=11,height=11)
+# we need larger displays. change this for other displays
+
+<<>>=
+save.RNGseed <- 87149 #.Random.seed
+save.RNGkind <- RNGkind()
+# save.RNGseed
+save.RNGkind
+set.seed(save.RNGseed, save.RNGkind[1])
+<<>>=
+laptime <- function(){
+return(round(structure(proc.time() - chunk.time.start, class = "proc_time")[3],3))
+chunk.time.start <<- proc.time()
+}
+
+<<>>=
+# install.packages("sintro",repos="http://r-forge.r-project.org",type="source")
+library(sintro)
+@
+We use
+<<>>=
+library(nonlinearTseries)
+@
+
+To display state space, we us a variant of pairs().
+<<>>=
+statepairs <- function(states, rank=FALSE){
+	main <- paste("Takens states:",deparse(substitute(states)))
+	if (rank) {states <- apply(uniftakens,2,rank,ties.method="random")
+	main <- paste(main," ranked")}
+	pairs(states, 
+	main=main, 
+	col=rgb(0,0,0,0.2))
+}
+@
+\section{Test Cases}
+@
+We set up a small series of test signals.
+
+For convenience, some source code from other libraries is included to make this self-contained.
+
+As a global constant, we set up the length of the series to be used.
+
+<<>>=
+nsignal <- 128
+system.time.start <- proc.time()
+
+@
+For representation, we use a common layout.
+<<>>=
+plotsignal <- function (signal) {
+par(mfrow=c(1,2))
+plot(signal, col="blue", pch=20, xlab="t" )
+
+plot(signal, type="l", 
+	main=deparse(substitute(signal)), xlab="t")
+points(signal, col="blue", pch=20 )
+}
+
+<<sin10, fig=TRUE, include=FALSE, width=10, height=5 >>=
+sin10 <- function(n=nsignal) {sin( (1:n)/n* 2*pi*10)}
+plotsignal(sin10())
+@
+See \figref{fig:recurrence-sin10},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-sin10}
+\caption{Test case: sin10. Signal and linear interpolation.}
+\label{fig:recurrence-sin10}
+\end{center}
+\end{figure}
+
+
+<<unif, fig=TRUE, include=FALSE, width=10, height=5 >>=
+unif <- function(n=nsignal) {runif(n)}
+xunif<-unif()
+plotsignal(xunif)
+@
+See \figref{fig:recurrence-unif},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-unif}
+\caption{Test case: unif - uniform random numbers. Signal and linear interpolation.}
+\label{fig:recurrence-unif}
+\end{center}
+\end{figure}
+
+<<chirp, fig=TRUE, include=FALSE, width=10, height=5 >>=
+chirp <- function(n=nsignal) {
+# this is copied from library(signal)
+signal.chirp <- function(t, f0 = 0, t1 = 1, f1 = 100, 
+                  form = c("linear", "quadratic", "logarithmic"), phase = 0){
+
+  form <- match.arg(form)
+  phase <- 2*pi*phase/360
+
+  switch(form,
+    "linear" = {
+        a <- pi*(f1 - f0)/t1
+        b <- 2*pi*f0
+        cos(a*t^2 + b*t + phase)
+    },
+    "quadratic" = {
+        a <- (2/3*pi*(f1-f0)/t1/t1)
+        b <- 2*pi*f0
+        cos(a*t^3 + b*t + phase)
+    },
+    "logarithmic" = {
+        a <- 2*pi * t1 / log(f1 - f0)
+        b <- 2*pi * f0
+        x <- (f1-f0)^(1/t1)
+        cos(a*x^t + b*t + phase)
+    })
+}
+
+signal.chirp(seq(0, 0.6, len=nsignal))
+}
+plotsignal(chirp())
+@
+See \figref{fig:recurrence-chirp},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-chirp}
+\caption{Test case: chirp signal. Signal and linear interpolation.}
+\label{fig:recurrence-chirp}
+\end{center}
+\end{figure}
+
+@
+\todo{include doppler {waveslim}}
+
+\section{Recurrence States}
+Recurrence plots have been introduced in an attempt to understand near periodic in hydrodynamics. 
+On the one hand, and etended theory on dynamical systems was available, covering deterministic models. A fundamental concept is that at a certain time a system is in some state, and developing from this. Defining the proper state space is a critical step in modelling.
+
+The other toolkit ist that of stochastics processes, in particular Markov models. Classical time series assumes stationarity, and this is obviously not the way to go. A fundamental idea for Markov models is that  the system state is seen in a temporal context: you have a Markov process, if you can define a (non-anticpating) state that has sufficient information for prediction: given this state, the future is independent from the past.
+
+Recurrence, coming back to some state, is often a key to understand a near periodic system.
+
+Hydrodynamics is a challenging problem. Understanding planetary motion is a historical challenge, and may be useful as an illustration.
+
+As a simple illustration, let $x=(x_i)$ be a sequence, maybe near periodic. For now, think of $i$ as a time index.
+
+Recurrency plots have two steps. The first was a bold step by Floris Takens. If you do not know the state space of a system, for a choice of ``dimension''  $d$, take the sequence of $d$ tuples taken from your data to define the states.
+$$ u_i = (x_i,\ldots , x_{i+d})$$
+
+As a mere technical refinement: you may know that your data are a flattenened representation of $t$ dimensional data. So you take
+$$ u_i = (x_i,\ldots , x_{i+d*m}).$$
+We ignore this detail here and take $m=1$.
+
+Conceptually, you define states by observed histories. For classical Markov setup, the state is defined by the previous information $x_{i-1}$, but for more comles situations you may have to step back in the past. Finding the appropriate $d$ is the challenge. So it may be appropriate to view the Takens staes as a family, indexed by the time scope $d$. The rest is structural information how to arrange items.
+
+Of course it is possible to compress information here, sorting states and removing duplicates. Keeping the original definition as the advantage that we have the index $i$, so that $u_i$ is the state at index position $i$.
+
+But the states may have an inherent structure, which we may take into account or ignore. Since for this example, we are just in $4$-dimensional space, marginal scatterplots may give enough information.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<sintakens, fig=TRUE, include=FALSE>>=
+sintakens <- buildTakens( time.series=sin10(),embedding.dim=4, time.lag=1)
+statepairs(sintakens)
+@
+See \figref{fig:sintakens}.
+@
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-sintakens}
+\caption{Test case: sinus. Note that marginal views of 1-dimensional circles in $d$ space may appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:sintakens}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<uniftakens, fig=TRUE, include=FALSE>>=
+uniftakens <- buildTakens( time.series=xunif,embedding.dim=4,time.lag=1)
+statepairs(uniftakens)
+@
+See \figref{fig:uniftakens}.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-uniftakens}
+\caption{Test case: uniform random numbers. 
+Time used: \Sexpr{laptime()} sec.}
+\label{fig:uniftakens}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<chirptakens, fig=TRUE, include=FALSE>>=
+statepairs(chirptakens)
+@
+See \figref{fig:chirptakens}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-chirptakens}
+\caption{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:chirptakens}
+\end{center}
+\end{figure}
+
+
+@
+\section{Recurrence Plots}
+
+The next step, taken in \cite{eckmann1987recurrence} was to use a two dimensional display. Take a scatterplot with the Taken's staes a marginal. Take a sliding window of your process data, and for each $i$, find the ``distance'' of $u_i$ from and to any of the collected states. If the distance is below some chosen threshold, mark the point (i, j) for which u(j) is in the ball of radius r(i) centred at u(i).
+
+The original publication  \cite{eckmann1987recurrence} actually used a nearest neighbourhood evnironment to cover about 10 data points.
+
+The construction has considerable arbitrary choices. The critical radius may depend on the point $i$. In practical applications, using a constant radius is a common first step. Using a dichotomous marking was what presumably was necessary when the idea was introduced. With todays technology, we can allow a markup on a finer scale, as has been seen in Orion-1.
+
+We can gain additional freedom by using a correlation view: instead of looking from one axis, we can walk along the diagonal, using two reference axis. 
+
+\subsection{Sinus}
+
+%recurrencePlot(takens = NULL, time.series, embedding.dim,
+%    time.lag, radius)
+%<<sin10neighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+%system.time(sin10neighs<-nonlinearTseries:::findAllNeighbours(sintakens, radius=0.2))[3]
+%save(sin10neighs, file="sin10neighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<sin10rec, fig=TRUE, include=FALSE>>=
+load(file="sin10neighs.RData")
+nonlinearTseries:::recurrencePlotAux(sin10neighs)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-sin10rec}
+\caption{Recurrence Plot. Test case: sinus curves.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-sin10rec}
+\end{center}
+\end{figure}
+
+\subsection{Uniform random}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+%<<unifneighs>>=
+%system.time(unifneighs<-nonlinearTseries:::findAllNeighbours(uniftakens,radius=0.2))[3]
+%save(unifneighs, file="unifneighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<unifrec, fig=TRUE, include=FALSE >>=
+load(file="unifneighs.RData")
+nonlinearTseries:::recurrencePlotAux(unifneighs)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-unifrec}
+\caption{Recurrence Plot. Test case: uniform random numbers.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-unifrec}
+\end{center}
+\end{figure}
+
+\subsection{Chirp Signal}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<chirpneighs>>=
+chirpneighs<-nonlinearTseries:::findAllNeighbours(chirptakens,radius=0.6)#0.4
+save(chirpneighs, file="chirpneighs.RData")
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<chirprec, fig=TRUE, include=FALSE >>=
+load(file="chirpneighs.RData")
+nonlinearTseries:::recurrencePlotAux(chirpneighs)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-chirprec}
+\caption{Recurrence Plot. Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-chirprec}
+\end{center}
+\end{figure}
+
+\section{Case Study: Geyser data}
+\index{Geyser}
+
+This is a classical data set with a two dimensional structure, $waiting$ and $waiting$.
+\todo{extend to two-dimensional data}
+<<>>=
+library(MASS)
+data(faithful)
+@
+
+\subsection{Geyser Eruptions}
+<<eruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(faithful$eruptions)
+@
+See \figref{fig:recurrence-eruptions},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptions}
+\caption{Example case: Old Faithful Geyser eruptions. Signal and linear interpolation.}
+\label{fig:recurrence-eruptions}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionstakens4, fig=TRUE, include=FALSE>>=
+eruptionstakens4 <- buildTakens( time.series=faithful$eruptions, embedding.dim=4, time.lag=1)
+statepairs(eruptionstakens4)
+@
+See \figref{fig:eruptionstakens4}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens4}
+\caption{Example case: Old Faithful Geyser eruptions.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens4}
+\end{center}
+\end{figure}
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs4<-nonlinearTseries:::findAllNeighbours(eruptionstakens4, radius=0.8)
+save(eruptionsneighs, file="eruptionsneighs4.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec4, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs4.RData")
+nonlinearTseries:::recurrencePlotAux(eruptionsneighs4)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-eruptionsrec4}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-eruptionsrec4}
+\end{center}
+\end{figure}
+
+\subsubsection{Dim=2}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionstakens2, fig=TRUE, include=FALSE>>=
+eruptionstakens2 <- buildTakens(time.series=faithful$eruptions, embedding.dim=2, time.lag=1)
+statepairs(eruptionstakens2)
+@
+See \figref{fig:eruptionstakens2}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens2}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens2}
+\end{center}
+\end{figure}
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs2<-nonlinearTseries:::findAllNeighbours(eruptionstakens2, radius=0.8)
+save(eruptionsneighs2, file="eruptionsneighs2.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec2, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs2.RData")
+nonlinearTseries:::recurrencePlotAux(eruptionsneighs2)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-eruptionsrec2}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-eruptionsrec2}
+\end{center}
+\end{figure}
+
+
+
+\subsubsection{Dim=6}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionstakens6, fig=TRUE, include=FALSE>>=
+eruptionstakens6 <- buildTakens( time.series=faithful$eruptions,embedding.dim=6,time.lag=1)
+statepairs(eruptionstakens6)
+@
+See \figref{fig:eruptionstakens6}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens6}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=6.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens6}
+\end{center}
+\end{figure}
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs6<-nonlinearTseries:::findAllNeighbours(eruptionstakens6, radius=0.8)
+save(eruptionsneighs6, file="eruptionsneighs6.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec6, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs6.RData")
+nonlinearTseries:::recurrencePlotAux(eruptionsneighs6)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-eruptionsrec6}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=6.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-eruptionsrec6}
+\end{center}
+\end{figure}
+
+\subsubsection{Dim=8}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionstakens8, fig=TRUE, include=FALSE>>=
+eruptionstakens8 <- buildTakens( time.series=faithful$eruptions,embedding.dim=8,time.lag=1)
+statepairs(eruptionstakens8)
+@
+See \figref{fig:eruptionstakens8}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens8}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens8}
+\end{center}
+\end{figure}
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs8<-nonlinearTseries:::findAllNeighbours(eruptionstakens8, radius=0.8)
+save(eruptionsneighs8, file="eruptionsneighs8.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec8, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs8.RData")
+nonlinearTseries:::recurrencePlotAux(eruptionsneighs8)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-eruptionsrec8}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-eruptionsrec8}
+\end{center}
+\end{figure}
+
+\subsection{Geyser Eruptions: Comparison by Dimension}
+
+For comparison, recurrence plots for the Geyser data with varying dimension are in \figref{fig:recurrence-eruptionsreccomp}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec8}
+
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=2, 4, 6, 8.
+}
+\label{fig:recurrence-eruptionsreccomp}
+\end{center}
+\end{figure}
+
+
+\subsection{Geyser Waiting}
+<<waiting, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(faithful$waiting)
+@
+See \figref{fig:recurrence-waiting},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-waiting}
+\caption{Example case: Old Faithful Geyser waiting. Signal and linear interpolation.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-waiting}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<waitingtakens, fig=TRUE, include=FALSE>>=
+waitingtakens <- buildTakens( time.series=faithful$waiting,embedding.dim=4,time.lag=4)
+statepairs(waitingtakens)
+@
+See \figref{fig:waitingtakens}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-waitingtakens}
+\caption{Example case: Old Faithful Geyser waiting. 
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:waitingtakens}
+\end{center}
+\end{figure}
+%<<waitingneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+waitingneighs<-nonlinearTseries:::findAllNeighbours(waitingtakens, radius=16)
+save(waitingneighs, file="waitingneighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<waitingrec, fig=TRUE, include=FALSE>>=
+load(file="waitingneighs.RData")
+nonlinearTseries:::recurrencePlotAux(waitingneighs)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-waitingrec}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser waiting.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-waitingrec}
+\end{center}
+\end{figure}
+
+\section{Case Study: HRV data}
+\index{heart rate variation}
+
+<<>>=
+library(RHRV)
+load("/data/pulse/rhrv/pkg/data/HRVData.rda")
+load("/data/pulse/rhrv/pkg/data/HRVProcessedData.rda")
+
+###################################################
+### code chunk number 1: creation
+###################################################
+hrv.data  = CreateHRVData()
+hrv.data = SetVerbose(hrv.data, TRUE )
+
+###################################################
+### code chunk number 3: loading
+###################################################
+hrv.data = LoadBeatAscii(hrv.data, "example.beats",
+       RecordPath = "/data/pulse/rhrv/tutorial/beatsFolder")
+#       RecordPath = "beatsFolder")
+
+
+###################################################
+### code chunk number 4: derivating
+###################################################
+hrv.data = BuildNIHR(hrv.data)
+
+@
+<<hrvRR, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(hrv.data$Beat$RR)
+@
+See \figref{fig:recurrence-hrvRR},
+\todo{We have outlies at approximately 2*RR. Could this be an artefact of preprocessing, filtering too many impulses?}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRR}
+\caption{Example case: RHRV tutorial. Signal and linear interpolation.}
+\label{fig:recurrence-hrvRR}
+\end{center}
+\end{figure}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRtakens4, fig=TRUE, include=FALSE>>=
+hrvRRtakens4 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=4,time.lag=1)
+statepairs(hrvRRtakens4)
+@
+See \figref{fig:hrvRRtakens4}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRtakens4}
+\caption{Example case: RHRV tutorial. 
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrvRRtakens4}
+\end{center}
+\end{figure}
+
+<<hrvRRtakens4rk, fig=TRUE, include=FALSE>>=
+statepairs(hrvRRtakens4, rank=TRUE)
+@
+See \figref{fig:hrvRRtakens4rk}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRtakens4rk}
+\caption{Example case: RHRV tutorial. Ranked data.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrvRRtakens4rk}
+\end{center}
+\end{figure}
+%<<hrvRRneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+hrvRRneighs4 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens, radius=16)
+save(hrvRRneighs4, file="hrvRRneighs4.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec4, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs4.RData")
+nonlinearTseries:::recurrencePlotAux(hrvRRneighs4)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-hrvRRrec4}
+\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRrec4}
+\end{center}
+\end{figure}
+
+\subsection{RHRV: Comparison by Dimension}
+
+% dim 2
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRtakens2, fig=TRUE, include=FALSE>>=
+hrvRRtakens2 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRneighs2 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens2, radius=16)
+save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec2, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs2.RData")
+nonlinearTseries:::recurrencePlotAux(hrvRRneighs2)
+@
+Time used: \Sexpr{laptime()} sec.
+% dim 6
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRtakens6, fig=TRUE, include=FALSE>>=
+hrvRRtakens6 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=6,time.lag=1)
+hrvRRneighs6 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens6, radius=16)
+save(hrvRRneighs6, file="hrvRRneighs6.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec6, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs6.RData")
+nonlinearTseries:::recurrencePlotAux(hrvRRneighs6)
+@
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+% dim 8
+<<hrvRRtakens8, fig=TRUE, include=FALSE>>=
+hrvRRtakens8 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=8,time.lag=1)
+hrvRRneighs8 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens8, radius=16)
+save(hrvRRneighs8, file="hrvRRneighs8.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec8, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs8.RData")
+nonlinearTseries:::recurrencePlotAux(hrvRRneighs8)
+@
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec8}
+\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=2, 4, 6, 8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRreccomp}
+\end{center}
+\end{figure}
+
+%:Sweave examples
+%<<print=TRUE>>=
+%<<results=hide>>=
+%@
+%<<echo=TRUE,print=TRUE>>=
+%<<>>=
+%@
+%%\texttt{x} is 6.28318530717959, the
+%<<engine=R>>=
+%@ %def
+%\begin{figure}[htbp]
+%  \begin{center}
+%<<fig=TRUE>>=
+%@
+%    \caption{.}
+%  \end{center}
+%\end{figure}
+%<<engine=S4>>=
+%@
+%
+\clearpage
+%\bibliographystyle{alphadin}% bib/din1505/alphadin.bst
+\bibliographystyle{authordate3}% bib/din1505/alphadin.bst
+\bibliography{../../shared/bib/sda}
+%
+\clearpage
+
+\printindex
+
+%\clearpage
+%\renewcommand{\nomname}{Notation}
+%%cleardoublepage%see nomencl, p. 7
+%
+%\printnomenclature %Nomenclature, used for notation table
+
+\clearpage
+\R{} session info:
+
+<<echo=FALSE, print=FALSE>>=
+        SweaveTotal <- structure(proc.time() - system.time.start, class = "proc_time")       
+@
+Total Sweave time used: \Sexpr{round(SweaveTotal[3],3)} sec.
+<<echo=FALSE, print=FALSE>>=
+rm(SweaveTotal)
+@
+
+{\tiny
+<<echo=FALSE,  print = FALSE, results = tex>>=
+toLatex(sessionInfo())
+@
+}
+
+%\RequirePackage{layouts}
+\LaTeX{} information:
+{\tiny
+
+\currentpage 
+textwidth: \printinunitsof{in}\prntlen{\textwidth} \qquad 
+linewidth:\printinunitsof{in}\prntlen{\linewidth}\\
+textheight: \printinunitsof{in}\prntlen{\textheight}\\
+}
+@
+
+CVS/Svn repository information:
+
+{\tiny%
+%	<<echo = FALSE, print = FALSE, results = tex>>= 
+%	cat("Generated by Sweave from:\\\\")
+%	cat(chartr("$", " ", "\\verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\\\"))
+%	cat(chartr("$", " ", "\\verb+$Revision: 1.2 $+\\\\"))
+%	cat(chartr("$", " ", "\\verb+$Date: 2014/02/05 20:05:07 $+\\\\"))
+%	cat(chartr("$", " ", "\\verb+$name:  $+\\\\"))
+%	cat(chartr("$", " ", "\\verb+$Author: j40 $+\\\\"))
+%	@
+\noindent
+\verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
+\verb+$Revision: 1.2 $+\\
+\verb+$Date: 2014/02/05 20:05:07 $+\\
+\verb+$name:  $+\\
+\verb+$Author: j40 $+
+}
+\typeout{**** $Id: recurrence.Rnw,v 1.2 2014/02/05 20:05:07 j40 Exp $ done ****}
+\end{document}
+
+

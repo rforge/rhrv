@@ -1,0 +1,524 @@
+%$Header: /u/math/j40/cvsroot/lectures/src/shared/sty/gssda.sty,v 1.37 2013/12/09 18:27:53 j40 Exp $
+%macros for "Statistical Data Analysis"   %file: gssda.sty 20040607
+% These styles originated during the work on "Statistical Data Analysis". 
+% A private style collection, to be used with ams document classes
+%
+% For historical reasons the shorthand 
+%		gssda
+%  is still used
+% Private definition names have a prefix 
+%		priv.
+% If a name conflict might be possible,  a prefix 
+%		gspriv"
+% is used.
+%
+% installation:  
+%	sudo cp /Users/gs/Documents/lectures/src/shared/sty/gssda.sty /usr/local/gwTeX/texmf.local/tex/latex/gs/gssda.sty
+%	sudo texhash
+%! consider adding chref chwpref (with page) secref secwpref
+%:flags
+% copy and add to your source
+%\def\private{true}% comment out for public version
+\ProvidesPackage{gssda}[2013/06/07 08:20:34]
+\typeout{** gssda: $Source: /u/math/j40/cvsroot/lectures/src/shared/sty/gssda.sty,v $ ********}
+\typeout{** gssda: $Revision: 1.37 $ ********}
+\typeout{** gssda: $Date: 2013/12/09 18:27:53 $ ********}
+
+%! report input file
+
+\DeclareOption{forceChapter}{%allow chapter counter for article etc.
+\ifx\thechapter\undefined
+\newcounter{chapter}
+
+%\expandafter\let\csname ver@article.cls\endcsname\@undefined{blub}
+
+\typeout{******** gssda: "chapter" counter added ********}
+\fi
+}
+
+\ProcessOptions
+
+\RequirePackage{babel}
+\RequirePackage{color}
+\RequirePackage{verbatim}
+%\RequirePackage[mathscr]{eucal}
+\RequirePackage{mathrsfs}
+
+
+
+%\IfFileExists{makeidx.sty}{\RequirePackage{makeidx}}{\typeout{******** gssda: makeidx not found.  "printindex" may not work ********}}
+\ifx\printindex\undefined
+\RequirePackage{makeidx}
+\else
+\typeout{******** gssda: "printindex" found. makeidx not loaded. ********}
+\fi
+
+\iflanguage{ngerman}{
+\def\gsprivanygerman{true}
+}{\iflanguage{german}{
+\def\gsprivanygerman{true}
+}}
+
+\ifx\gsprivanygerman\undefined%
+\typeout{******** gssda: no german ********}
+\else
+\typeout{******** gssda: some german ********}
+\fi
+
+
+\RequirePackage{varioref}
+\ifx\gsprivanygerman\undefined%
+\labelformat{chapter}{chapter~#1}
+\labelformat{section}{section~#1}
+\labelformat{figure}{figure~#1}
+\labelformat{table}{table~#1}
+\labelformat{equation}{equation~#1}
+\else
+\labelformat{chapter}{Kapitel~#1}
+\labelformat{section}{Abschnitt~#1}
+\labelformat{figure}{Abbildung~#1}
+\labelformat{table}{Tabelle~#1}
+\labelformat{equation}{Gleichung~#1}
+\fi
+
+%allow chapter counter for article etc.
+\ifx\frontmatter\undefined
+\newcommand{\frontmatter}{}
+\fi
+%allow chapter counter for article etc.
+\ifx\mainmatter\undefined
+\newcommand{\mainmatter}{}
+\fi
+%allow chapter counter for article etc.
+\ifx\backmatter\undefined
+\newcommand{\backmatter}{}
+\fi
+
+
+%:local
+%: msc
+\newcommand{\msc}[1]{\mathscr{#1}}%script font
+\definecolor{red}{rgb}{1.0,0,0}
+
+%:index
+\newcommand{\iemph}[1]{\textbf{\emph{#1}}} %emphasis used for definitions
+%check for not-null argument from ltxguide.cls
+\newcommand{\itd}[2][]{%index definition. optional first: index entry
+\ifx\relax#1\relax{\iemph{#2}\index{#2|textbf}}%
+\else%- - not null - -
+{\iemph{#2}\index{#1|textbf}}%
+\fi
+}
+\newcommand{\itx}[2][]{%index usage. optional first: index entry
+\ifx\relax#1\relax{\iemph{#2}\index{#2}}%
+\else%- - not null - -
+{\textbf{\emph{#2}}\index{#1}}%
+\fi
+}
+
+%:index itdmarg
+\newcommand{\itdmarg}[3][]{%index definition special %#1: index #2 in text #3 margin
+%note: no default style for index. Add entry if appropriate
+\ifx\relax#1\relax{\textbf{\emph{#2}}\index{#2|emph}\marginpar{#3}}%
+\else%- - not null - -
+{\textbf{\emph{#2}}\index{#1|emph}\marginpar{#3}}%
+\fi
+}
+
+%:private stuff
+\ifx\private\undefined%
+\typeout{******** gssda: ommitting private info ********}
+\newcommand{\gspriv}[1]{}
+\newcommand{\gsnote}[1]{}
+\else
+\typeout{******** gssda: including private info ********}
+\newcommand{\gsprivstyle}{\textcolor{red}}
+\newcommand{\gspriv}[1]{\marginpar{\textcolor{red}{#1}}}%abstract base method
+
+\newcommand{\gsnotestyle}{\textcolor{green}}
+\newcommand{\gsnote}[1]{\marginpar{\textcolor{green}{#1}}}%abstract base method
+\fi
+
+%\newcommand{\gspriv}[1]{\marginpar{\textcolor{red}{#1}}}%abstract base method
+%\newcommand{\todo}[2][  ]{\gspriv{\underline{\bf{ToDo:}} \index{ #1\ ToDo!\thechapter.\thesection: #2}#2}}
+\newcommand{\todo}[2][  ]{\gspriv{\underline{\bf{ToDo:}} \index{ #1\ ToDo!\thesection: #2}#2}}
+%\newcommand{\todo}[2][  ]{\gspriv{\underline{\bf{ToDo:}} \index{ #1\ ToDo!\thepage: #2}#2}}
+\newcommand{\chck}[2][  ]{\gspriv{{\bf ToCheck:} \index{ #1\ ToCheck!\thesection: #2}#2}}%check is already defined
+\newcommand{\fix}[2][  ]{\gspriv{{\bf \underline FixMe:} \index{ #1\  FixMe!\thesection: #2}#2}}
+%: private references and citations
+%\newcommand{\refp}[1]{\errmessage{refp is obsolete. Use privref.}\gspriv{{\bf Priv. Ref.:} \index{' Private Ref'}#1}}
+%\newcommand{\citep}[2]{\errmessage{citep is obsolete. Use privcite.}\gspriv{#1} (\cite{#1}*{#2})}
+\newcommand{\privref}[1]{\gspriv{{\bf Priv. Ref.:} \index{' Private Ref'}#1}}
+\newcommand{\privcite}[2][ ]{\gspriv{#1} (\cite{#1}*{#2})}
+
+%: privnote
+\ifx\private\undefined%
+\typeout{******** gssda: ommitting private notes ********}
+\newenvironment{privnote}[1][]
+{\begin{comment}}{\end{comment}}
+\else% ******** gssda: including private info ********
+\newenvironment{privnote}[1][]
+{\begingroup \gsprivstyle \noindent\rule{\textwidth}{0.8pt}\\
+\noindent\rule{\textwidth}{0.3pt}\\
+private note > > > #1 \\
+ \noindent\rule{\textwidth}{0.1pt}\\
+}%
+%
+{ \\ \noindent\rule{\textwidth}{0.1pt}
+%{#1} < < < private note\\  %% #1 does not work in endgroup
+< < < private note\\
+\noindent\rule{\textwidth}{0.3pt}\\
+\noindent\rule{\textwidth}{0.8pt}
+\endgroup}
+\fi
+
+
+%:special operators
+\newcommand{\mult}{\cdot}
+\newcommand{\noop}{\:\cdot\:}
+\newcommand{\given}{\mid}
+\newcommand{\result}[1]{\underline{#1}}
+\newcommand{\norm}[1]{\lvert #1 \rvert}
+\newcommand{\Norm}[1]{\lVert #1 \rVert}
+\newcommand{\innerprod}[2]{\langle #1, #2 \rangle}
+
+\newcommand{\isum}[1]{{#1}_{\bullet}}% sum over indices
+\newcommand{\transp}[1]{{#1}^{\top}}%transposed
+\newcommand{\ave}[1]{\overline{#1}}% average
+\newcommand{\estim}[1]{\ensuremath{\widehat{#1}}}% estimation
+
+\newcommand{\ew}[2][]{E_{#1}\left(#2\right)}%Expected value -Erwartungswert
+\newcommand{\var}[2][]{Var_{#1}\left(#2\right)}%Variance
+\newcommand{\cov}[3][]{Cov_{#1}\left(#2, #3\right)}%Covariance
+\newcommand{\cor}[3][]{Cor_{#1}\left(#2, #3\right)}%Correlation
+\newcommand{\dist}[2][]{\ensuremath{\msc{L}_{#1}\left(#2\right)}}%Distribution
+
+\newcommand{\prob}[2][]{P_{#1}\left(#2\right)}%Probability
+\newcommand{\err}[1][{}]{\ensuremath{\varepsilon_#1}}%error term
+\newcommand{\model}[1]{\ensuremath{\mathscr{M}_{#1}}}
+\newcommand{\real}[1]{\mathbb{R}^{#1}}% Real number R^#1
+
+\newcommand{\distas}{\ensuremath{\sim}} %distributed as
+\newcommand{\deq}{:=} % defined equal to
+%\newcommand{\argmin}[1]{\ensuremath{\DeclareMathOperator{arg\:min}_{#1}}}
+%\newcommand{\argmax}[1]{\ensuremath{\DeclareMathOperator{arg\:max}_{#1}}}
+\newcommand{\argmin}[1]{\ensuremath{{arg\,min}_{#1}}}
+\newcommand{\argmax}[1]{\ensuremath{{arg\,max}_{#1}}}
+\newcommand{\rk}[1]{Rk(#1)}%rank
+\newcommand{\img}[1]{Img(#1)}%image \DeclareMathOperator{\img}{Img}
+
+
+%	%:ams extensions -for amsbook only
+%	\iflanguage{ngerman}{
+%	\theoremstyle{plain}
+%	\newtheorem{thm}{Theorem}
+%	\newtheorem{lem}[thm]{Lemma}
+%	\newtheorem{corol}[thm]{Korollar}
+%	\newtheorem{xca}[thm]{\"Ubung}
+%	%\newtheorem{xcb}[thm]{\"Ubung}
+%	\theoremstyle{definition}
+%	\newtheorem{dfn}[thm]{Definition}
+%	\newtheorem{sdfn}[thm]{Satz und Definition}
+%	\newtheorem{bez}[thm]{Bezeichnung}
+%	\theoremstyle{remark} %remark 
+%	\newtheorem{rem}[thm]{Bemerkung}
+%	\newtheorem{expl}[thm]{Beispiel}
+%	}{\iflanguage{german}{   %copy of ngerman. Should use "or" condition
+%	\theoremstyle{plain}
+%	\newtheorem{thm}{Theorem}
+%	\newtheorem{lem}[thm]{Lemma}
+%	\newtheorem{corol}[thm]{Korollar}
+%	\newtheorem{xca}[thm]{\"Ubung}
+%	%\newtheorem{xcb}[thm]{\"Ubung}
+%	\theoremstyle{definition}
+%	\newtheorem{dfn}[thm]{Definition}
+%	\newtheorem{sdfn}[thm]{Satz und Definition}
+%	\newtheorem{ntn}[thm]{Bezeichnung}
+%	\theoremstyle{remark} %remark 
+%	\newtheorem{rem}[thm]{Bemerkung}
+%	\newtheorem{expl}[thm]{Beispiel}
+%	}{%default: english
+%	\theoremstyle{plain}
+%	\newtheorem{thm}{Theorem}
+%	\newtheorem{lem}[thm]{Lemma}
+%	\newtheorem{corol}[thm]{Corollary}
+%	\newtheorem{xca}[thm]{Exercise}
+%	%\newtheorem{xcb}[thm]{Exercise}
+%	\theoremstyle{definition}
+%	\newtheorem{dfn}[thm]{Definition}
+%	\newtheorem{sdfn}[thm]{Theorem and Definition}
+%	\newtheorem{ntn}[thm]{Notation}
+%	\theoremstyle{remark} %remark 
+%	\newtheorem{rem}[thm]{Remark}
+%	\newtheorem{expl}[thm]{Example}
+%	}%not german
+%	}%not ngerman
+
+\ifx\thechapter\undefined
+%:ams extensions -section bases
+\ifx \gsprivanygerman\undefined
+%default: english
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\newtheorem{corol}{Corollary}
+\newtheorem{xca}{Exercise}
+%\newtheorem{xcb}{Exercise} %error: command already defined
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+\newtheorem{sdfn}{Theorem and Definition}
+\newtheorem{ntn}{Notation}
+\theoremstyle{remark} %remark 
+\newtheorem{rem}{Remark}
+\newtheorem{expl}{Example}
+%
+\else
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\newtheorem{corol}{Korollar}
+\newtheorem{xca}{\"Ubung}
+%\newtheorem{xcb}{\"Ubungen}
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+\newtheorem{sdfn}{Satz und Definition}
+\newtheorem{ntn}{Bezeichnung}
+\newtheorem{bez}{Bezeichnung}
+\theoremstyle{remark} %remark 
+\newtheorem{rem}{Bemerkung}
+\newtheorem{expl}{Beispiel}
+\fi%German
+
+
+\else
+%:ams extensions -for amsbook only
+\ifx \gsprivanygerman\undefined
+%default: english
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{corol}[thm]{Corollary}
+\newtheorem{xca}[thm]{Exercise}
+%\newtheorem{xcb}[thm]{Exercise} %error: command already defined
+\theoremstyle{definition}
+\newtheorem{dfn}[thm]{Definition}
+\newtheorem{sdfn}[thm]{Theorem and Definition}
+\newtheorem{ntn}[thm]{Notation}
+\theoremstyle{remark} %remark 
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{expl}[thm]{Example}
+%
+\else
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{corol}[thm]{Korollar}
+\newtheorem{xca}[thm]{\"Ubung}
+%\newtheorem{xcb}[thm]{\"Ubungen}
+\theoremstyle{definition}
+\newtheorem{dfn}[thm]{Definition}
+\newtheorem{sdfn}[thm]{Satz und Definition}
+\newtheorem{ntn}[thm]{Bezeichnung}
+\newtheorem{bez}[thm]{Bezeichnung}
+\theoremstyle{remark} %remark 
+\newtheorem{rem}[thm]{Bemerkung}
+\newtheorem{expl}[thm]{Beispiel}
+\fi%German
+
+
+\numberwithin{thm}{chapter}
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+\numberwithin{section}{chapter}
+\fi%chapter
+
+%: wrapped exercises
+%use \ \par to force a new line
+%! use @noskipsec boolean (LaTeX companion, p 875)
+
+\newenvironment{exca}[1][]%optional: comment, eg.  level of difficulty
+{\begin{minipage}\linewidth
+\rule{\linewidth}{1.0pt}\nopagebreak\par\nopagebreak
+\begin{xca}%
+\ifx\relax#1\relax{}%
+\else%- - not null - -
+{#1}%
+\fi}
+%\noindent\textbf{Aufgabe  \theaufgnr:}\\}
+{\end{xca}\par\noindent\nopagebreak\rule{\linewidth}{1.0pt}\end{minipage}}
+
+\newenvironment{excb}[1][]%optional: difficulty mark
+{\par\noindent \rule{\linewidth}{1.0pt}\par
+\begin{xcb}%
+\ifx\relax#1\relax{}%
+\else%- - not null - -
+{#1}%
+\fi}
+%\noindent\textbf{Aufgabe  \theaufgnr:}\\}
+{\end{xcb}\par\noindent \rule{\linewidth}{1.0pt}\par\smallskip}
+
+%!change to use gspriv..
+%:solution 
+% - used by beamer. Renamed to xcsolution
+\newenvironment{xcsolution}[1][]
+%! add flexible reference
+{\par\noindent \rule{\linewidth}{0.4pt}\par
+\ifx \gsprivanygerman\undefined
+%default: english
+\noindent\textbf{Solution}
+\ifx\relax#1\relax{}%
+\else%- - not null - -
+{for exercise #1}%
+\fi
+%german
+\else
+\noindent\textbf{Lsung}
+\ifx\relax#1\relax{}%
+\else%- - not null - -
+{zu Aufgabe #1}%
+\fi
+\fi
+%\iflanguage{ngerman}{
+%\noindent\textbf{Lsung}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{zu Aufgabe #1}%
+%\fi
+%}{\iflanguage{german}{   %copy of ngerman. Should use "or" condition
+%\noindent\textbf{Lsung}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{zu Aufgabe #1}%
+%\fi
+%}{%default: english
+%\noindent\textbf{Solution}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{for exercise #1}%
+%\fi
+%}%not german
+%}%not ngerman
+\\}
+{\par\noindent \rule{\linewidth}{0.4pt}\par\smallskip}
+
+%:-- defunct solution*
+\ifx\private\undefined%
+\typeout{******** gssda: ommitting private solutions -- obsolete ********}
+\newenvironment{xcsolution*}[1][]
+{\errmessage{gssda solution* is obsolete. Use privsolution.}
+\begin{comment}}{\end{comment}}
+\else
+\newenvironment{xcsolution*}[1][]
+{\errmessage{gssda solution* is obsolete. Use privsolution.}
+\begin{xcsolution}[#1]}{\end{xcsolution}}
+\fi
+
+%: privsolution
+\ifx\private\undefined%
+\typeout{******** gssda: ommitting private solutions ********}
+\newenvironment{privsolution}[1][]
+{\typeout{**** gssda privsolution cmt needs to be fixed.}\begin{comment}}{\typeout{privsolution done}\end{comment}}
+\else
+\newenvironment{privsolution}[1][]
+{\typeout{privsolution sol}\begin{xcsolution}[#1]}{\end{xcsolution}}
+\fi
+%{\begin{solution}[#1]\gspriv{$priv>$}}{\gspriv{$<priv$}\end{solution}}
+
+
+%\typeout{******** gssda: including private solution ********}
+%\newenvironment{solution*}[1][]
+%%! add flexible reference
+%{\par\noindent \rule{\linewidth}{0.4pt}\par
+%\iflanguage{ngerman}{
+%\noindent\textbf{Lsung}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{zu Aufgabe #1}%
+%\fi
+%}{\iflanguage{german}{   %copy of ngerman. Should use "or" condition
+%\noindent\textbf{Lsung}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{zu Aufgabe #1}%
+%\fi
+%}{%default: english
+%\noindent\textbf{Solution}
+%\ifx\relax#1\relax{}%
+%\else%- - not null - -
+%{for exercise #1}%
+%\fi
+%}%not german
+%}%not ngerman
+%\\}
+%{\par\noindent \rule{\linewidth}{0.4pt}\par\smallskip}
+%\fi
+
+%:changed
+\newenvironment{changed}[1][\today]
+{\marginpar{
+%\textcolor{blue} $>>>$ \\#1
+\index{ \changed\thesection:#1}%
+}}
+%}}%
+{\marginpar{\textcolor{blue} $<<<$ }}
+
+%:TeXexample
+\newwrite\example@out
+\newcounter{TeXexacnt}
+\setcounter{TeXexacnt}{1}
+%	\newlength{\savefboxrule}
+%	\newlength{\savefboxsep}
+%	\newlength{\outdent}
+%	\setlength{\outdent}{2cm}
+%\addtolength{\headwidth}{\outdent}
+\newenvironment{TeXexample}%[1][]%
+{\begingroup% Lets Keep the Changes Local
+  \@bsphack
+  \immediate\openout \example@out \jobname.exa
+  \let\do\@makeother\dospecials\catcode`\^^M\active
+  \def\verbatim@processline{%
+    \immediate\write\example@out{\the\verbatim@line}}%
+  \verbatim@start}%
+{\immediate\closeout\example@out\@esphack\endgroup%
+                                %
+                                % And here comes my part. :-
+                                %   
+  \stepcounter{TeXexacnt}%
+%	  \setlength{\parindent}{0pt}%
+%	  \par\addvspace{3.0ex plus 0.8ex minus 0.5ex}\vskip -\parskip
+\expandafter\ifx\csname r@exa\theTeXexacnt\endcsname\relax\else
+\fi
+%
+\par\noindent\rule{\textwidth}{4pt}
+
+
+%	\ifx\relax#1\relax
+%	%{\textbf{\emph{#2}}\index{#2|emph}\marginpar{#2}}%
+%	{\TeX{} Example Start: exa\theTeXexacnt\l \\}
+
+%	\else%- - not null - -
+%	%{\textbf{\emph{#2}}\index{#1|emph}\marginpar{#1}}%
+%	{#1}\\
+%	\TeX{} Example Start: exa\theTeXexacnt\l \\}
+
+%	\fi
+
+\noindent\TeX{} Example Start: exa\theTeXexacnt\\
+\noindent\rule{\textwidth}{0.5pt}
+\framebox{\TeX{} Example Input: exa\theTeXexacnt}
+\noindent
+\small\verbatiminput{\jobname.exa}
+%
+\noindent\rule{\textwidth}{0.5pt}
+\framebox{\TeX{} Example Output: exa\theTeXexacnt}\\
+\noindent\rule{\textwidth}{0.5pt}
+\noindent\small\input{\jobname.exa}
+\label{exa\theTeXexacnt}%
+%\par\noindent\rule{\textwidth}{0.5pt}
+\rule{\textwidth}{0.5pt}
+\TeX{} Example End: exa\theTeXexacnt\\ 
+\noindent\rule{\textwidth}{2pt}
+\par\addvspace{10ex plus 0.8ex minus 0.5ex}\vskip -\parskip
+}%end TeXexample
+
