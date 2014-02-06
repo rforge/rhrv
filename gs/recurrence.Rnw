@@ -152,6 +152,16 @@ statepairs <- function(states, rank=FALSE){
 	col=rgb(0,0,0,0.2))
 }
 @
+\subsection{Local Bottleneck}
+
+To allow experimental implementations, functions from nonlinearTseries are aliased here.
+<<>>=
+local.buildTakens <- buildTakens
+<<>>=
+local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
+<<>>=
+local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
+@
 \section{Test Cases}
 @
 We set up a small series of test signals.
@@ -281,7 +291,7 @@ chunk.time.start<- proc.time()
 @
 
 <<sintakens, fig=TRUE, include=FALSE>>=
-sintakens <- buildTakens( time.series=sin10(),embedding.dim=4, time.lag=1)
+sintakens <- local.buildTakens( time.series=sin10(),embedding.dim=4, time.lag=1)
 statepairs(sintakens)
 @
 See \figref{fig:sintakens}.
@@ -303,7 +313,7 @@ chunk.time.start<- proc.time()
 @
 
 <<uniftakens, fig=TRUE, include=FALSE>>=
-uniftakens <- buildTakens( time.series=xunif,embedding.dim=4,time.lag=1)
+uniftakens <- local.buildTakens( time.series=xunif,embedding.dim=4,time.lag=1)
 statepairs(uniftakens)
 @
 See \figref{fig:uniftakens}.
@@ -359,7 +369,7 @@ We can gain additional freedom by using a correlation view: instead of looking f
 chunk.time.start<- proc.time()
 @
 
-%system.time(sin10neighs<-nonlinearTseries:::findAllNeighbours(sintakens, radius=0.2))[3]
+%system.time(sin10neighs<-local.findAllNeighbours(sintakens, radius=0.2))[3]
 %save(sin10neighs, file="sin10neighs.Rdata")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -367,7 +377,7 @@ chunk.time.start<- proc.time()
 
 <<sin10rec, fig=TRUE, include=FALSE>>=
 load(file="sin10neighs.RData")
-nonlinearTseries:::recurrencePlotAux(sin10neighs)
+local.recurrencePlotAux(sin10neighs)
 
 @
 
@@ -388,7 +398,7 @@ chunk.time.start<- proc.time()
 @
 
 %<<unifneighs>>=
-%system.time(unifneighs<-nonlinearTseries:::findAllNeighbours(uniftakens,radius=0.2))[3]
+%system.time(unifneighs<-local.findAllNeighbours(uniftakens,radius=0.2))[3]
 %save(unifneighs, file="unifneighs.Rdata")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -396,7 +406,7 @@ chunk.time.start<- proc.time()
 
 <<unifrec, fig=TRUE, include=FALSE >>=
 load(file="unifneighs.RData")
-nonlinearTseries:::recurrencePlotAux(unifneighs)
+local.recurrencePlotAux(unifneighs)
 @
 
 \begin{figure}[htbp]
@@ -415,7 +425,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<chirpneighs>>=
-chirpneighs<-nonlinearTseries:::findAllNeighbours(chirptakens,radius=0.6)#0.4
+chirpneighs<-local.findAllNeighbours(chirptakens,radius=0.6)#0.4
 save(chirpneighs, file="chirpneighs.RData")
 
 <<print=FALSE, echo=FALSE>>=
@@ -423,7 +433,7 @@ chunk.time.start<- proc.time()
 @
 <<chirprec, fig=TRUE, include=FALSE >>=
 load(file="chirpneighs.RData")
-nonlinearTseries:::recurrencePlotAux(chirpneighs)
+local.recurrencePlotAux(chirpneighs)
 @
 
 \begin{figure}[htbp]
@@ -464,7 +474,7 @@ See \figref{fig:recurrence-eruptions},
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens4, fig=TRUE, include=FALSE>>=
-eruptionstakens4 <- buildTakens( time.series=faithful$eruptions, embedding.dim=4, time.lag=1)
+eruptionstakens4 <- local.buildTakens( time.series=faithful$eruptions, embedding.dim=4, time.lag=1)
 statepairs(eruptionstakens4)
 @
 See \figref{fig:eruptionstakens4}
@@ -484,7 +494,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs4<-nonlinearTseries:::findAllNeighbours(eruptionstakens4, radius=0.8)
+eruptionsneighs4<-local.findAllNeighbours(eruptionstakens4, radius=0.8)
 save(eruptionsneighs, file="eruptionsneighs4.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -492,7 +502,7 @@ chunk.time.start<- proc.time()
 
 <<eruptionsrec4, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs4.RData")
-nonlinearTseries:::recurrencePlotAux(eruptionsneighs4)
+local.recurrencePlotAux(eruptionsneighs4)
 @
 
 \begin{figure}[htbp]
@@ -511,7 +521,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens2, fig=TRUE, include=FALSE>>=
-eruptionstakens2 <- buildTakens(time.series=faithful$eruptions, embedding.dim=2, time.lag=1)
+eruptionstakens2 <- local.buildTakens(time.series=faithful$eruptions, embedding.dim=2, time.lag=1)
 statepairs(eruptionstakens2)
 @
 See \figref{fig:eruptionstakens2}
@@ -531,7 +541,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs2<-nonlinearTseries:::findAllNeighbours(eruptionstakens2, radius=0.8)
+eruptionsneighs2<-local.findAllNeighbours(eruptionstakens2, radius=0.8)
 save(eruptionsneighs2, file="eruptionsneighs2.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -539,7 +549,7 @@ chunk.time.start<- proc.time()
 
 <<eruptionsrec2, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs2.RData")
-nonlinearTseries:::recurrencePlotAux(eruptionsneighs2)
+local.recurrencePlotAux(eruptionsneighs2)
 
 @
 
@@ -561,7 +571,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens6, fig=TRUE, include=FALSE>>=
-eruptionstakens6 <- buildTakens( time.series=faithful$eruptions,embedding.dim=6,time.lag=1)
+eruptionstakens6 <- local.buildTakens( time.series=faithful$eruptions,embedding.dim=6,time.lag=1)
 statepairs(eruptionstakens6)
 @
 See \figref{fig:eruptionstakens6}
@@ -581,7 +591,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs6<-nonlinearTseries:::findAllNeighbours(eruptionstakens6, radius=0.8)
+eruptionsneighs6<-local.findAllNeighbours(eruptionstakens6, radius=0.8)
 save(eruptionsneighs6, file="eruptionsneighs6.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -589,7 +599,7 @@ chunk.time.start<- proc.time()
 
 <<eruptionsrec6, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs6.RData")
-nonlinearTseries:::recurrencePlotAux(eruptionsneighs6)
+local.recurrencePlotAux(eruptionsneighs6)
 
 @
 
@@ -609,7 +619,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens8, fig=TRUE, include=FALSE>>=
-eruptionstakens8 <- buildTakens( time.series=faithful$eruptions,embedding.dim=8,time.lag=1)
+eruptionstakens8 <- local.buildTakens( time.series=faithful$eruptions,embedding.dim=8,time.lag=1)
 statepairs(eruptionstakens8)
 @
 See \figref{fig:eruptionstakens8}
@@ -629,7 +639,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs8<-nonlinearTseries:::findAllNeighbours(eruptionstakens8, radius=0.8)
+eruptionsneighs8<-local.findAllNeighbours(eruptionstakens8, radius=0.8)
 save(eruptionsneighs8, file="eruptionsneighs8.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -637,7 +647,7 @@ chunk.time.start<- proc.time()
 
 <<eruptionsrec8, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs8.RData")
-nonlinearTseries:::recurrencePlotAux(eruptionsneighs8)
+local.recurrencePlotAux(eruptionsneighs8)
 
 @
 
@@ -689,7 +699,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<waitingtakens, fig=TRUE, include=FALSE>>=
-waitingtakens <- buildTakens( time.series=faithful$waiting,embedding.dim=4,time.lag=4)
+waitingtakens <- local.buildTakens( time.series=faithful$waiting,embedding.dim=4,time.lag=4)
 statepairs(waitingtakens)
 @
 See \figref{fig:waitingtakens}
@@ -709,7 +719,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-waitingneighs<-nonlinearTseries:::findAllNeighbours(waitingtakens, radius=16)
+waitingneighs<-local.findAllNeighbours(waitingtakens, radius=16)
 save(waitingneighs, file="waitingneighs.Rdata")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -717,7 +727,7 @@ chunk.time.start<- proc.time()
 
 <<waitingrec, fig=TRUE, include=FALSE>>=
 load(file="waitingneighs.RData")
-nonlinearTseries:::recurrencePlotAux(waitingneighs)
+local.recurrencePlotAux(waitingneighs)
 
 @
 
@@ -776,7 +786,7 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens4, fig=TRUE, include=FALSE>>=
-hrvRRtakens4 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=4,time.lag=1)
+hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=4,time.lag=1)
 statepairs(hrvRRtakens4)
 @
 See \figref{fig:hrvRRtakens4}
@@ -811,7 +821,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-hrvRRneighs4 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens, radius=16)
+hrvRRneighs4 <-local.findAllNeighbours(hrvRRtakens, radius=16)
 save(hrvRRneighs4, file="hrvRRneighs4.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -822,7 +832,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRrec4, fig=TRUE, include=FALSE>>=
 load(file="hrvRRneighs4.RData")
-nonlinearTseries:::recurrencePlotAux(hrvRRneighs4)
+local.recurrencePlotAux(hrvRRneighs4)
 @
 
 \begin{figure}[htbp]
@@ -844,8 +854,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens2, fig=TRUE, include=FALSE>>=
-hrvRRtakens2 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
-hrvRRneighs2 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens2, radius=16)
+hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRneighs2 <-local.findAllNeighbours(hrvRRtakens2, radius=16)
 save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -856,7 +866,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRrec2, fig=TRUE, include=FALSE>>=
 load(file="hrvRRneighs2.RData")
-nonlinearTseries:::recurrencePlotAux(hrvRRneighs2)
+local.recurrencePlotAux(hrvRRneighs2)
 @
 Time used: \Sexpr{laptime()} sec.
 % dim 6
@@ -866,8 +876,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens6, fig=TRUE, include=FALSE>>=
-hrvRRtakens6 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=6,time.lag=1)
-hrvRRneighs6 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens6, radius=16)
+hrvRRtakens6 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=6,time.lag=1)
+hrvRRneighs6 <-local.findAllNeighbours(hrvRRtakens6, radius=16)
 save(hrvRRneighs6, file="hrvRRneighs6.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -877,7 +887,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRrec6, fig=TRUE, include=FALSE>>=
 load(file="hrvRRneighs6.RData")
-nonlinearTseries:::recurrencePlotAux(hrvRRneighs6)
+local.recurrencePlotAux(hrvRRneighs6)
 @
 Dim=6. Time used: \Sexpr{laptime()} sec.
 
@@ -886,8 +896,8 @@ chunk.time.start<- proc.time()
 @
 % dim 8
 <<hrvRRtakens8, fig=TRUE, include=FALSE>>=
-hrvRRtakens8 <- buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=8,time.lag=1)
-hrvRRneighs8 <-nonlinearTseries:::findAllNeighbours(hrvRRtakens8, radius=16)
+hrvRRtakens8 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=8,time.lag=1)
+hrvRRneighs8 <-local.findAllNeighbours(hrvRRtakens8, radius=16)
 save(hrvRRneighs8, file="hrvRRneighs8.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -898,7 +908,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRrec8, fig=TRUE, include=FALSE>>=
 load(file="hrvRRneighs8.RData")
-nonlinearTseries:::recurrencePlotAux(hrvRRneighs8)
+local.recurrencePlotAux(hrvRRneighs8)
 @
 Dim=8. Time used: \Sexpr{laptime()} sec.
 
