@@ -160,7 +160,7 @@ local.buildTakens <- buildTakens
 <<>>=
 local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
 @
-\note{minor cosmetics added to recurrencePlotAux}
+\gsnote{minor cosmetics added to recurrencePlotAux}
 <<>>=
 #local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
 local.recurrencePlotAux=function(neighs){
@@ -788,7 +788,7 @@ hrv.data = BuildNIHR(hrv.data)
 plotsignal(hrv.data$Beat$RR)
 @
 See \figref{fig:recurrence-hrvRR},
-\todo{We have outlies at approximately 2*RR. Could this be an artefact of preprocessing, filtering too many impulses?}
+\todo{We have outlies at approximately 2*RR. Could this be an artefact of preprocessing, filtering out too many impulses?}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{recurrence-hrvRR}
@@ -932,8 +932,8 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 
 <<hrvRRtakens12, fig=TRUE, include=FALSE>>=
 hrvRRtakens12 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
-hrvRRneighs2 <-local.findAllNeighbours(hrvRRtakens2, radius=16)
-save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
+hrvRRneighs12 <-local.findAllNeighbours(hrvRRtakens12, radius=16)
+save(hrvRRneighs12, file="hrvRRneighs12.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
 
@@ -941,9 +941,9 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRrec2, fig=TRUE, include=FALSE>>=
-load(file="hrvRRneighs2.RData")
-local.recurrencePlotAux(hrvRRneighs2)
+<<hrvRRrec12, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs12.RData")
+local.recurrencePlotAux(hrvRRneighs12)
 @
 Time used: \Sexpr{laptime()} sec.
 
@@ -951,7 +951,7 @@ Time used: \Sexpr{laptime()} sec.
 
 <<hrvRRtakens16, fig=TRUE, include=FALSE>>=
 hrvRRtakens16 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=16,time.lag=1)
-hrvRRneighs16 <-local.findAllNeighbours(hrvRRtakens16, radius=16)
+hrvRRneighs16 <-local.findAllNeighbours(hrvRRtakens16, radius=32)
 save(hrvRRneighs16, file="hrvRRneighs16.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -976,7 +976,7 @@ Time used: \Sexpr{laptime()} sec.
 \newline
 \includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec12}\qquad
 \includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec16}
-\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=2, 4, 6, 8.
+\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=2, 4, 6, 8, 12, 16.
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:recurrence-hrvRRreccomp}
@@ -1029,6 +1029,7 @@ as
 <<>>=
 hrv.data <- BuildNIDHR(hrv.data)
 HRRV <- hrv.data$Beat$dRR/hrv.data$Beat$avRR
+hrv.data$Beat$HRRV <- HRRV
 @
 These are the displays we used before, now for HRV:
 %%%%%
@@ -1088,154 +1089,155 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
-	%<<>>=
-	%hrvRRVneighs4 <-local.findAllNeighbours(hrvRRVtakens4, radius=16)
-	%save(hrvRRVneighs4, file="hrvRRVneighs4.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec4, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs4.RData")
-	%local.recurrencePlotAux(hrvRRVneighs4)
-	%@
-	%
-	%\begin{figure}[htbp]
-	%\begin{center}
-	%\includegraphics[width=0.5\linewidth]{recurrence-hrvRRVrec4}
-	%\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=4.
-	%Time used: \Sexpr{laptime()} sec.
-	%}
-	%\label{fig:recurrence-hrvRRVrec4}
-	%\end{center}
-	%\end{figure}
-	%
-	%\subsection{RHRV: Comparison by Dimension}
-	%
-	%\gsnote{We should expect the breathing rythm, so a time lag in the order of 10 is to be expected.}
-	%% dim 2
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVtakens2, fig=TRUE, include=FALSE>>=
-	%hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=2,time.lag=1)
-	%hrvRRVneighs2 <-local.findAllNeighbours(hrvRRVtakens2, radius=16)
-	%save(hrvRRVneighs2, file="hrvRRVneighs2.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec2, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs2.RData")
-	%local.recurrencePlotAux(hrvRRVneighs2)
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%% dim 6
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVtakens6, fig=TRUE, include=FALSE>>=
-	%hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=6,time.lag=1)
-	%hrvRRVneighs6 <-local.findAllNeighbours(hrvRRVtakens6, radius=16)
-	%save(hrvRRVneighs6, file="hrvRRVneighs6.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec6, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs6.RData")
-	%local.recurrencePlotAux(hrvRRVneighs6)
-	%@
-	%Dim=6. Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%% dim 8
-	%<<hrvRRVtakens8, fig=TRUE, include=FALSE>>=
-	%hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=8,time.lag=1)
-	%hrvRRVneighs8 <-local.findAllNeighbours(hrvRRVtakens8, radius=32)
-	%save(hrvRRVneighs8, file="hrvRRVneighs8.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec8, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs8.RData")
-	%local.recurrencePlotAux(hrvRRVneighs8)
-	%@
-	%Dim=8. Time used: \Sexpr{laptime()} sec.
-	%
-	%% dim 12
-	%
-	%<<hrvRRVtakens12, fig=TRUE, include=FALSE>>=
-	%hrvRRVtakens12 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=2,time.lag=1)
-	%hrvRRVneighs2 <-local.findAllNeighbours(hrvRRVtakens2, radius=16)
-	%save(hrvRRVneighs2, file="hrvRRVneighs2.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec2, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs2.RData")
-	%local.recurrencePlotAux(hrvRRVneighs2)
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%% dim 16
-	%
-	%<<hrvRRVtakens16, fig=TRUE, include=FALSE>>=
-	%hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=16,time.lag=1)
-	%hrvRRVneighs16 <-local.findAllNeighbours(hrvRRVtakens16, radius=16)
-	%save(hrvRRVneighs16, file="hrvRRVneighs16.Rdata")
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%<<print=FALSE, echo=FALSE>>=
-	%chunk.time.start<- proc.time()
-	%@
-	%
-	%<<hrvRRVrec16, fig=TRUE, include=FALSE>>=
-	%load(file="hrvRRVneighs16.RData")
-	%local.recurrencePlotAux(hrvRRVneighs16)
-	%@
-	%Time used: \Sexpr{laptime()} sec.
-	%
-	%\begin{figure}[htbp]
-	%\begin{center}
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec2}\qquad
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec4}
-	%\newline
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec6}\qquad
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec8}
-	%\newline
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec12}\qquad
-	%\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec16}
-	%\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=2, 4, 6, 8.
-	%Time used: \Sexpr{laptime()} sec.
-	%}
-	%\label{fig:recurrence-hrvRRVreccomp}
-	%\end{center}
-	%\end{figure}
-	%
+\todo{findAllNeighbours does not handle NAs}
+<<>>=
+hrvRRVneighs4 <-local.findAllNeighbours(hrvRRVtakens4[-(1:2),],, radius=0.25)
+save(hrvRRVneighs4, file="hrvRRVneighs4.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec4, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs4.RData")
+local.recurrencePlotAux(hrvRRVneighs4)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-hrvRRVrec4}
+\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRVrec4}
+\end{center}
+\end{figure}
+
+\subsection{RHRV: Comparison by Dimension}
+
+\gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
+% dim 2
+\todo{fix default setting for radius. Eckmann uses NN=10}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVtakens2, fig=TRUE, include=FALSE>>=
+hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRVneighs2 <-local.findAllNeighbours(hrvRRVtakens2[-(1:2),], radius=0.25)
+save(hrvRRVneighs2, file="hrvRRVneighs2.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec2, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs2.RData")
+local.recurrencePlotAux(hrvRRVneighs2)
+@
+Time used: \Sexpr{laptime()} sec.
+% dim 6
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVtakens6, fig=TRUE, include=FALSE>>=
+hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=6,time.lag=1)
+hrvRRVneighs6 <-local.findAllNeighbours(hrvRRVtakens6[-(1:2),], radius=0.25)
+save(hrvRRVneighs6, file="hrvRRVneighs6.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec6, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs6.RData")
+local.recurrencePlotAux(hrvRRVneighs6)
+@
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+% dim 8
+<<hrvRRVtakens8, fig=TRUE, include=FALSE>>=
+hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=8,time.lag=1)
+hrvRRVneighs8 <-local.findAllNeighbours(hrvRRVtakens8[-(1:2),], radius=0.25)
+save(hrvRRVneighs8, file="hrvRRVneighs8.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec8, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs8.RData")
+local.recurrencePlotAux(hrvRRVneighs8)
+@
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+% dim 12
+
+<<hrvRRVtakens12, fig=TRUE, include=FALSE>>=
+hrvRRVtakens12 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRVneighs12 <-local.findAllNeighbours(hrvRRVtakens12[-(1:2),], radius=0.25)
+save(hrvRRVneighs12, file="hrvRRVneighs12.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec12, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs12.RData")
+local.recurrencePlotAux(hrvRRVneighs12)
+@
+Time used: \Sexpr{laptime()} sec.
+
+% dim 16
+
+<<hrvRRVtakens16, fig=TRUE, include=FALSE>>=
+hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=16,time.lag=1)
+hrvRRVneighs16 <-local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=0.25)
+save(hrvRRVneighs16, file="hrvRRVneighs16.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec16, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs16.RData")
+local.recurrencePlotAux(hrvRRVneighs16)
+@
+Time used: \Sexpr{laptime()} sec.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec8}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec12}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec16}
+\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=2, 4, 6, 8, 12, 16.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRVreccomp}
+\end{center}
+\end{figure}
+
 %%%%%
 
 
