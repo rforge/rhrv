@@ -758,6 +758,7 @@ Time used: \Sexpr{laptime()} sec.
 
 \section{Case Study: HRV data}
 \index{heart rate}
+\gsnote{Only \Sexpr{nsignal} data points used in this section}
 
 <<>>=
 library(RHRV)
@@ -985,8 +986,10 @@ Time used: \Sexpr{laptime()} sec.
 
 \subsection{Hart Rate Variation}
 
-Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use
-<<>>=
+\todo{Consider using differences}
+Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
+
+<<BuildNIDHR>>=
 # source('/data/pulse/rhrv/pkg/R/BuildNIHR2.R', chdir = TRUE)
 BuildNIDHR <-
 function(HRVData, verbose=NULL) {
@@ -1013,28 +1016,29 @@ function(HRVData, verbose=NULL) {
 		cat("   Number of beats:",NBeats,"\n");
 	}
 	
-
+  # addition gs 
    #using NA, not constant extrapolation as else in RHRV  
    #drr=c(NA,NA,1000.0*	diff(HRVData$Beat$Time, lag=1 , differences=2))
    HRVData$Beat$dRR=c(NA, NA, 
    	1000.0*diff(HRVData$Beat$Time, lag=1, differences=2))
 
    HRVData$Beat$avRR=(c(NA,HRVData$Beat$RR[-1])+HRVData$Beat$RR)/2
+   
+   HRVData$Beat$HRRV <- HRVData$Beat$dRR/HRVData$Beat$avRR
 
 	return(HRVData)
 }
 
-as
-
-<<>>=
-hrv.data <- BuildNIDHR(hrv.data)
-HRRV <- hrv.data$Beat$dRR/hrv.data$Beat$avRR
-hrv.data$Beat$HRRV <- HRRV
 @
-These are the displays we used before, now for HRV:
+
+\gsnote{differences for HRV}
+<<hrv.data.HRRV>>=
+hrv.data <- BuildNIDHR(hrv.data)
+HRRV <- hrv.data$Beat$HRRV
+@
+These are the displays we used before, now for HRRV:
 %%%%%
 \index{heart rate variation}
-
 
 
 @
@@ -1046,7 +1050,7 @@ See \figref{fig:recurrence-hrvRRV},
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{recurrence-hrvRRV}
-\caption{Example case: RHRV tutorial. Signal and linear interpolation.}
+\caption{Example case: RHRV tutorial. HRRV Signal and linear interpolation.}
 \label{fig:recurrence-hrvRRV}
 \end{center}
 \end{figure}
@@ -1054,6 +1058,8 @@ See \figref{fig:recurrence-hrvRRV},
 chunk.time.start<- proc.time()
 @
 
+\gsnote{Only \Sexpr{nsignal} data points used in this section}
+%:hrvRRVtakens4
 <<hrvRRVtakens4, fig=TRUE, include=FALSE>>=
 hrvRRVtakens4 <- local.buildTakens( time.series=HRRV[1:nsignal], embedding.dim=4,time.lag=1)
 statepairs(hrvRRVtakens4)
@@ -1063,7 +1069,7 @@ See \figref{fig:hrvRRVtakens4}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{recurrence-hrvRRVtakens4}
-\caption{Example case: RHRV tutorial. 
+\caption{Example case: RHRV tutorial. HRRV
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:hrvRRVtakens4}
@@ -1078,7 +1084,7 @@ See \figref{fig:hrvRRVtakens4rk}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{recurrence-hrvRRVtakens4rk}
-\caption{Example case: RHRV tutorial. Ranked data.
+\caption{Example case: RHRV tutorial. Ranked HRRV data.
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:hrvRRVtakens4rk}
@@ -1091,6 +1097,7 @@ chunk.time.start<- proc.time()
 @
 \todo{findAllNeighbours does not handle NAs}
 <<>>=
+#use hack: findAllNeighbours does not handle NAs}
 hrvRRVneighs4 <-local.findAllNeighbours(hrvRRVtakens4[-(1:2),],, radius=0.25)
 save(hrvRRVneighs4, file="hrvRRVneighs4.Rdata")
 @
@@ -1104,22 +1111,23 @@ chunk.time.start<- proc.time()
 load(file="hrvRRVneighs4.RData")
 local.recurrencePlotAux(hrvRRVneighs4)
 @
-
+\todo{check. There seem to be strange artefacts.}
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-hrvRRVrec4}
-\caption{Recurrence Plot. Example case:  RHRV tutorial. Dim=4.
+\caption{Recurrence Plot. Example case:  RHRV tutorial. HRRV Dim=4.
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:recurrence-hrvRRVrec4}
 \end{center}
 \end{figure}
 
-\subsection{RHRV: Comparison by Dimension}
+\subsection{RHRV: Variation :Comparison by Dimension}
 
 \gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
 % dim 2
 \todo{fix default setting for radius. Eckmann uses NN=10}
+
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -1284,7 +1292,7 @@ Time used: \Sexpr{laptime()} sec.
 <<echo=FALSE, print=FALSE>>=
         SweaveTotal <- structure(proc.time() - system.time.start, class = "proc_time")       
 @
-Total Sweave time used: \Sexpr{round(SweaveTotal[3],3)} sec.
+Total Sweave time used: \Sexpr{round(SweaveTotal[3],3)} sec. at \Sexpr{date()}.
 <<echo=FALSE, print=FALSE>>=
 rm(SweaveTotal)
 @
