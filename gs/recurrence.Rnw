@@ -161,20 +161,59 @@ local.buildTakens <- buildTakens
 local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
 @
 \gsnote{minor cosmetics added to recurrencePlotAux}
-<<>>=
+%<<>>=
+%#local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
+%local.recurrencePlotAux=function(neighs){
+%  ntakens=length(neighs)
+%  neighs.matrix = nonlinearTseries:::neighbourListSparseNeighbourMatrix(neighs,ntakens)
+%  # need a print because it is a trellis object!!
+%  print(
+%  	image(neighs.matrix,xlab="t", ylab="t", 
+%		main=paste("Recurrence Plot:", 
+%			deparse(substitute(neighs))
+%			)
+%		)
+%	)
+%}
+@
+<<ecurrencePlotAuxNonSparse>>=
+#non-sparse variant
 #local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
 local.recurrencePlotAux=function(neighs){
+	neighbourListNeighbourMatrix  = function(){
+	  #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+	 # return (neighs.matrix)
+	}
+
   ntakens=length(neighs)
-  neighs.matrix = nonlinearTseries:::neighbourListSparseNeighbourMatrix(neighs,ntakens)
-  # need a print because it is a trellis object!!
-  print(
+  neighs.matrix <- matrix(nrow=ntakens,ncol=ntakens)
+  #neighbourListNeighbourMatrix()
+    #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+	
+  # need no print because it is not a trellis object!!
+  #print(
   	image(neighs.matrix,xlab="t", ylab="t", 
 		main=paste("Recurrence Plot:", 
 			deparse(substitute(neighs))
 			)
 		)
-	)
+ #	)
 }
+
 @
 \section{Test Cases}
 @
@@ -275,7 +314,7 @@ See \figref{fig:recurrence-chirp},
 @
 \todo{include doppler {waveslim}}
 
-\section{Recurrence States}
+\section{Takens' Recurrence States}
 Recurrence plots have been introduced in an attempt to understand near periodic in hydrodynamics. 
 On the one hand, and etended theory on dynamical systems was available, covering deterministic models. A fundamental concept is that at a certain time a system is in some state, and developing from this. Defining the proper state space is a critical step in modelling.
 
@@ -292,7 +331,8 @@ $$ u_i = (x_i,\ldots , x_{i+d})$$
 
 As a mere technical refinement: you may know that your data are a flattenened representation of $t$ dimensional data. So you take
 $$ u_i = (x_i,\ldots , x_{i+d*m}).$$
-We ignore this detail here and take $m=1$.
+This may be a relict of FORTRAN times, where it was common to flatten two-dimensional strctures by case.  We ignore this detail here and take $m=1$.
+\todo{add support for higher dimensional signals}
 
 Conceptually, you define states by observed histories. For classical Markov setup, the state is defined by the previous information $x_{i-1}$, but for more comles situations you may have to step back in the past. Finding the appropriate $d$ is the challenge. So it may be appropriate to view the Takens staes as a family, indexed by the time scope $d$. The rest is structural information how to arrange items.
 
@@ -371,8 +411,11 @@ The next step, taken in \cite{eckmann1987recurrence} was to use a two dimensiona
 The original publication  \cite{eckmann1987recurrence} actually used a nearest neighbourhood evnironment to cover about 10 data points.
 
 The construction has considerable arbitrary choices. The critical radius may depend on the point $i$. In practical applications, using a constant radius is a common first step. Using a dichotomous marking was what presumably was necessary when the idea was introduced. With todays technology, we can allow a markup on a finer scale, as has been seen in Orion-1.
+\todo{support distance instead of 0/1 indicators}
 
 We can gain additional freedom by using a correlation view: instead of looking from one axis, we can walk along the diagonal, using two reference axis. 
+
+Helpful hints how to interpret recurrence plots are in ``Recurrence Plots At A Glance''  \url{<http://www.recurrence-plot.tk/glance.php>}.
 
 \subsection{Sinus}
 
@@ -465,7 +508,7 @@ Time used: \Sexpr{laptime()} sec.
 \index{Geyser}
 
 This is a classical data set with a two dimensional structure, $waiting$ and $waiting$.
-\todo{extend to two-dimensional data}
+\todo{Geyser: extend to two-dimensional data}
 <<>>=
 library(MASS)
 data(faithful)
