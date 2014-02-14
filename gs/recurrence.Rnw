@@ -532,17 +532,17 @@ Time used: \Sexpr{laptime()} sec.
 \clearpage
 \section{Case Study: Geyser data}
 \index{Geyser}
-
-This is a classical data set with a two dimensional structure, $waiting$ and $waiting$.
+\todo{double check: MASS:::geyser should be used, fot faithful}
+This is a classical data set with a two dimensional structure, $duration$ and $waiting$.
 \todo{Geyser: extend to two-dimensional data}
 <<>>=
 library(MASS)
-data(faithful)
+data(geyser)
 @
 
 \subsection{Geyser Eruptions}
 <<eruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
-plotsignal(faithful$eruptions)
+plotsignal(geyser$duration)
 @
 See \figref{fig:recurrence-eruptions},
 
@@ -558,7 +558,7 @@ See \figref{fig:recurrence-eruptions},
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens4, fig=TRUE, include=FALSE>>=
-eruptionstakens4 <- local.buildTakens( time.series=faithful$eruptions, embedding.dim=4, time.lag=1)
+eruptionstakens4 <- local.buildTakens( time.series=geyser$duration, embedding.dim=4, time.lag=1)
 statepairs(eruptionstakens4)
 @
 See \figref{fig:eruptionstakens4}
@@ -605,7 +605,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens2, fig=TRUE, include=FALSE>>=
-eruptionstakens2 <- local.buildTakens(time.series=faithful$eruptions, embedding.dim=2, time.lag=1)
+eruptionstakens2 <- local.buildTakens(time.series=geyser$duration, embedding.dim=2, time.lag=1)
 statepairs(eruptionstakens2)
 @
 See \figref{fig:eruptionstakens2}
@@ -640,7 +640,7 @@ local.recurrencePlotAux(eruptionsneighs2)
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-eruptionsrec2}
-\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=2.
+\caption{Recurrence Plot. Example case:  Old geyser Geyser eruptions. Dim=2.
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:recurrence-eruptionsrec2}
@@ -655,7 +655,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens6, fig=TRUE, include=FALSE>>=
-eruptionstakens6 <- local.buildTakens( time.series=faithful$eruptions,embedding.dim=6,time.lag=1)
+eruptionstakens6 <- local.buildTakens( time.series=geyser$duration,embedding.dim=6,time.lag=1)
 statepairs(eruptionstakens6)
 @
 See \figref{fig:eruptionstakens6}
@@ -703,7 +703,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens8, fig=TRUE, include=FALSE>>=
-eruptionstakens8 <- local.buildTakens( time.series=faithful$eruptions,embedding.dim=8,time.lag=1)
+eruptionstakens8 <- local.buildTakens( time.series=geyser$duration,embedding.dim=8,time.lag=1)
 statepairs(eruptionstakens8)
 @
 See \figref{fig:eruptionstakens8}
@@ -765,7 +765,7 @@ For comparison, recurrence plots for the Geyser data with varying dimension are 
 
 \subsection{Geyser Waiting}
 <<waiting, fig=TRUE, include=FALSE, width=10, height=5 >>=
-plotsignal(faithful$waiting)
+plotsignal(geyser$waiting)
 @
 See \figref{fig:recurrence-waiting},
 
@@ -783,7 +783,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<waitingtakens, fig=TRUE, include=FALSE>>=
-waitingtakens <- local.buildTakens( time.series=faithful$waiting,embedding.dim=4,time.lag=4)
+waitingtakens <- local.buildTakens( time.series=geyser$waiting,embedding.dim=4,time.lag=4)
 statepairs(waitingtakens)
 @
 See \figref{fig:waitingtakens}
@@ -822,6 +822,225 @@ local.recurrencePlotAux(waitingneighs)
 Time used: \Sexpr{laptime()} sec.
 }
 \label{fig:recurrence-waitingrec}
+\end{center}
+\end{figure}
+
+\subsection{Geyser - linearized}
+So far, nonlinearTseries only handles multivariate data by FORTRAN conventions, using a lag parameter.
+
+As a hack, we transform the data to FORTRAN conventions.
+<<>>=
+geyserlin <- t(geyser)
+dim(geyserlin)<-NULL
+dimnames(geyserlin)<-NULL
+@
+Now duration and waiting are mixed. A $lag=2$ separates the dimension again. The Taken states iterate over the index, giving alternating a duration and waiting state.
+\subsection{Geyser Eruptions linearized}
+<<gleruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(geyserlin)
+@
+See \figref{fig:recurrence-gleruptions},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-gleruptions}
+\caption{Example case: Old Faithful Geyser eruptions. Signal and linear interpolation.}
+\label{fig:recurrence-gleruptions}
+\end{center}
+\end{figure}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gleruptionstakens4, fig=TRUE, include=FALSE>>=
+gleruptionstakens4 <- local.buildTakens( time.series=geyserlin, embedding.dim=4, time.lag=2)
+statepairs(gleruptionstakens4)
+@
+See \figref{fig:gleruptionstakens4}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-gleruptionstakens4}
+\caption{Example case: Old Faithful Geyser eruptions.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:gleruptionstakens4}
+\end{center}
+\end{figure}
+%<<gleruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gl01>>=
+eruptionsneighs4<-local.findAllNeighbours(gleruptionstakens4, radius=0.8)
+save(eruptionsneighs4, file="eruptionsneighs4.RData")
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<gleruptionsrec4, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs4.RData")
+local.recurrencePlotAux(eruptionsneighs4)
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-gleruptionsrec4}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-gleruptionsrec4}
+\end{center}
+\end{figure}
+
+abc 
+
+\subsubsection{Geyser eruptions - linearized. Dim=2}
+
+def
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gleruptionstakens2, fig=TRUE, include=FALSE>>=
+gleruptionstakens2 <- local.buildTakens(time.series=geyserlin, embedding.dim=2, time.lag=2)
+statepairs(gleruptionstakens2)
+@
+See \figref{fig:gleruptionstakens2}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-gleruptionstakens2}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:gleruptionstakens2}
+\end{center}
+\end{figure}
+%<<gleruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gl02>>=
+eruptionsneighs2<-local.findAllNeighbours(gleruptionstakens2, radius=0.8)
+save(eruptionsneighs2, file="eruptionsneighs2.RData")
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<gleruptionsrec2, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs2.RData")
+local.recurrencePlotAux(eruptionsneighs2)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-gleruptionsrec2}
+\caption{Recurrence Plot. Example case:  Old geyserlin Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-gleruptionsrec2}
+\end{center}
+\end{figure}
+
+
+
+\subsubsection{Geyser eruptions - linearized. Dim=6}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gleruptionstakens6, fig=TRUE, include=FALSE>>=
+gleruptionstakens6 <- local.buildTakens( time.series=geyserlin,embedding.dim=6,time.lag=2)
+statepairs(gleruptionstakens6)
+@
+See \figref{fig:gleruptionstakens6}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-gleruptionstakens6}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=6.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:gleruptionstakens6}
+\end{center}
+\end{figure}
+%<<gleruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gl03>>=
+eruptionsneighs6<-local.findAllNeighbours(gleruptionstakens6, radius=0.8)
+save(eruptionsneighs6, file="eruptionsneighs6.RData")
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<gleruptionsrec6, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs6.RData")
+local.recurrencePlotAux(eruptionsneighs6)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-gleruptionsrec6}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=6.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-gleruptionsrec6}
+\end{center}
+\end{figure}
+
+\subsubsection{Geyser eruptions - linearized. Dim=8}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gleruptionstakens8, fig=TRUE, include=FALSE>>=
+gleruptionstakens8 <- local.buildTakens( time.series=geyserlin,embedding.dim=8,time.lag=2)
+statepairs(gleruptionstakens8)
+@
+See \figref{fig:gleruptionstakens8}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-gleruptionstakens8}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:gleruptionstakens8}
+\end{center}
+\end{figure}
+%<<gleruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gl04>>=
+eruptionsneighs8<-local.findAllNeighbours(gleruptionstakens8, radius=0.8)
+save(eruptionsneighs8, file="eruptionsneighs8.RData")
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<gleruptionsrec8, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs8.RData")
+local.recurrencePlotAux(eruptionsneighs8)
+
+@
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.5\linewidth]{recurrence-gleruptionsrec8}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-gleruptionsrec8}
 \end{center}
 \end{figure}
 
