@@ -144,7 +144,7 @@ library(nonlinearTseries)
 @
 %:statepairs: Takens states
 To display the Takens state space, we us a variant of pairs().
-\todo{the takens satata plot may be critically affected by outliers. Find a good rescaling.}
+\todo{the takens state plot may be critically affected by outliers. Find a good rescaling.}
 <<>>=
 statepairs <- function(states, rank=FALSE){
 	main <- paste("Takens states:",deparse(substitute(states)), "\n",
@@ -249,7 +249,7 @@ For convenience, some source code from other libraries is included to make this 
 As a global constant, we set up the length of the series to be used.
 
 <<>>=
-nsignal <- 128
+nsignal <- 256
 system.time.start <- proc.time()
 
 @
@@ -481,19 +481,29 @@ See Table \vref{tab:rqa}.
 This is a hack to report RQA information. $dim=NULL$ is added to align calling with other functions.
 
 <<showrqa>>=
-showrqa <- function(takens, dim=NULL, radius)
+showrqa <- function(takens, dim=NULL, radius, do.hist = TRUE)
 {
 	xxrqa <- rqa(takens=takens,radius=radius)
 	cat(paste(deparse(substitute(takens)), " n=", dim(takens)[1], " Dim:", dim(takens)[2], "\n"))
 	cat(paste("Radius:", radius, " Recurrence coverage REC:", round(xxrqa[1]$REC, 3), "\n"))
-	str(xxrqa[2:12])
+	cat(paste("Determinism:", round(xxrqa$DET,3), " Laminarity:",round(xxrqa$LAM,3), "\n"))
+	cat(paste("DIV:", round(xxrqa$DIV,3), "\n"))
+	cat(paste("Trend:", round(xxrqa$TREND,3), " Entropy:",round(xxrqa$ENTR,3), "\n"))
+	cat(paste("Diagonal lines max:", round(xxrqa$Lmax,3),
+		 " Mean:",round(xxrqa$Lmean,3), 
+		" Mean off main:",round(xxrqa$LmeanWithoutMain,3), "\n"))
+	cat(paste("Vertical lines max:", round(xxrqa$Vmax,3), " Mean:",round(xxrqa$Vmean,3), "\n"))
+		# str(xxrqa[4:12])
+  
 	oldpar <- par(mfrow=c(2,1))
+	if (do.hist){
 	barplot(xxrqa$diagonalHistogram, 
 		main=paste(deparse(substitute(takens)), "Diagonal",
 			"\n n=", dim(takens)[1], " Dim:", dim(takens)[2], " Radius: ",radius))
 	barplot(xxrqa$recurrenceRate, 
 		main=paste(deparse(substitute(takens)),"Recurrence Rate",
 			"\n n=", dim(takens)[1], " Dim:", dim(takens)[2], " Radius: ",radius))
+		}
 	par(oldpar)
 	invisible(xxrqa)
 }
@@ -510,7 +520,7 @@ showrqa <- function(takens, dim=NULL, radius)
 chunk.time.start<- proc.time()
 @
 <<>>=
-system.time(sin10neighs<-local.findAllNeighbours(sintakens, radius=0.2))[3]
+sin10neighs<-local.findAllNeighbours(sintakens, radius=0.2)
 save(sin10neighs, file="sin10neighs.Rdata")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -520,6 +530,7 @@ chunk.time.start<- proc.time()
 load(file="sin10neighs.RData")
 local.recurrencePlotAux(sin10neighs, dim=2, radius=0.2)
 @
+See \figref{fig:recurrence-sin10rec}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -538,6 +549,8 @@ chunk.time.start<- proc.time()
 <<sin10rqa, fig=TRUE, include=FALSE>>=
 showrqa(sintakens, radius=0.2)
 @
+See \figref{fig:recurrence-sin10rqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-sin10rqa}
@@ -554,17 +567,11 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-%<<unifneighs>>=
-%system.time(unifneighs<-local.findAllNeighbours(uniftakens,radius=0.2))[3]
-%save(unifneighs, file="unifneighs.Rdata")
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
-
 <<unifrec, fig=TRUE, include=FALSE >>=
 load(file="unifneighs.RData")
 local.recurrencePlotAux(unifneighs, radius=0.2)
 @
+See \figref{fig:recurrence-unifrec}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -592,6 +599,7 @@ chunk.time.start<- proc.time()
 load(file="chirpneighs.RData")
 local.recurrencePlotAux(chirpneighs)
 @
+See \figref{fig:recurrence-chirprec}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -605,6 +613,8 @@ Time used: \Sexpr{laptime()} sec.
 <<chirprqa, fig=TRUE, include=FALSE>>=
 showrqa(chirptakens, radius=0.6)
 @
+See \figref{fig:recurrence-chirprqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-chirprqa}
@@ -675,6 +685,7 @@ chunk.time.start<- proc.time()
 load(file="eruptionsneighs4.RData")
 local.recurrencePlotAux(eruptionsneighs4)
 @
+See \figref{fig:recurrence-eruptionsrec4}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -689,6 +700,8 @@ Time used: \Sexpr{laptime()} sec.
 <<eruptionstakens4rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens4, radius=0.8)
 @
+See \figref{fig:recurrence-eruptionstakens4rqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-eruptionstakens4rqa}
@@ -738,6 +751,7 @@ load(file="eruptionsneighs2.RData")
 local.recurrencePlotAux(eruptionsneighs2)
 
 @
+See \figref{fig:recurrence-eruptionsrec2}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -752,6 +766,8 @@ Time used: \Sexpr{laptime()} sec.
 <<eruptionstakens2rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens2, radius=0.8)
 @
+See \figref{fig:recurrence-eruptionstakens2rqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-eruptionstakens2rqa}
@@ -772,7 +788,7 @@ chunk.time.start<- proc.time()
 eruptionstakens6 <- local.buildTakens( time.series=geyser$duration,embedding.dim=6,time.lag=1)
 statepairs(eruptionstakens6)
 @
-See \figref{fig:eruptionstakens6}
+See \figref{fig:eruptionstakens6}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -798,8 +814,8 @@ chunk.time.start<- proc.time()
 <<eruptionsrec6, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs6.RData")
 local.recurrencePlotAux(eruptionsneighs6)
-
 @
+See \figref{fig:recurrence-eruptionsrec6}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -814,6 +830,8 @@ Time used: \Sexpr{laptime()} sec.
 <<eruptionstakens6rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens6, radius=0.8)
 @
+See \figref{fig:recurrence-eruptionstakens6rqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-eruptionstakens6rqa}
@@ -833,7 +851,7 @@ chunk.time.start<- proc.time()
 eruptionstakens8 <- local.buildTakens( time.series=geyser$duration,embedding.dim=8,time.lag=1)
 statepairs(eruptionstakens8)
 @
-See \figref{fig:eruptionstakens8}
+See \figref{fig:eruptionstakens8}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -859,8 +877,8 @@ chunk.time.start<- proc.time()
 <<eruptionsrec8, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs8.RData")
 local.recurrencePlotAux(eruptionsneighs8)
-
 @
+See \figref{fig:recurrence-eruptionsrec8}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -875,6 +893,8 @@ Time used: \Sexpr{laptime()} sec.
 <<eruptionstakens8rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens8, radius=0.8)
 @
+See \figref{fig:recurrence-eruptionstakens8rqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-eruptionstakens8rqa}
@@ -906,7 +926,7 @@ For comparison, recurrence plots for the Geyser data with varying dimension are 
 <<waiting, fig=TRUE, include=FALSE, width=10, height=5 >>=
 plotsignal(geyser$waiting)
 @
-See \figref{fig:recurrence-waiting},
+See \figref{fig:recurrence-waiting}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -926,7 +946,7 @@ waitingtakens <-
 	local.buildTakens( time.series=geyser$waiting, embedding.dim=4, time.lag=4)
 statepairs(waitingtakens)
 @
-See \figref{fig:waitingtakens}
+See \figref{fig:waitingtakens}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -951,6 +971,8 @@ chunk.time.start<- proc.time()
 <<waitingneighsrqa, fig=TRUE, include=FALSE>>=
 showrqa(waitingtakens, radius=16)
 @
+See \figref{fig:waitingneighsrqa}.
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-waitingneighsrqa}
@@ -964,8 +986,8 @@ Time used: \Sexpr{laptime()} sec.
 <<waitingrec, fig=TRUE, include=FALSE>>=
 load(file="waitingneighs.RData")
 local.recurrencePlotAux(waitingneighs)
-
 @
+See \figref{fig:waitingrec}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -991,7 +1013,7 @@ Now duration and waiting are mixed. A $lag=2$ separates the dimension again. The
 <<gleruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
 plotsignal(geyserlin)
 @
-See \figref{fig:recurrence-gleruptions},
+See \figref{fig:recurrence-gleruptions}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1009,7 +1031,7 @@ gleruptionstakens4 <-
 	local.buildTakens( time.series=geyserlin, embedding.dim=4, time.lag=2)
 statepairs(gleruptionstakens4)
 @
-See \figref{fig:gleruptionstakens4}
+See \figref{fig:gleruptionstakens4}.
 @
 \begin{figure}[htbp]
 \begin{center}
@@ -1035,7 +1057,7 @@ chunk.time.start<- proc.time()
 showrqa(gleruptionstakens4, radius=0.8)
 @
 
-See Figure \vref{fig:gleruptionstakens4rqa}.
+See  \figref{fig:gleruptionstakens4rqa}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1052,13 +1074,12 @@ Time used: \Sexpr{laptime()} sec.
 load(file="eruptionsneighs4.RData")
 local.recurrencePlotAux(eruptionsneighs4)
 @
-
+See  \figref{fig:recurrence-gleruptionsrec4}.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.5\linewidth]{recurrence-gleruptionsrec4}
 \caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=4.
-Time used: \Sexpr{laptime()} sec.
-}
+Time used: \Sexpr{laptime()} sec.}
 \label{fig:recurrence-gleruptionsrec4}
 \end{center}
 \end{figure}
@@ -1077,7 +1098,7 @@ gleruptionstakens2 <-
 	local.buildTakens(time.series=geyserlin, embedding.dim=2, time.lag=2)
 statepairs(gleruptionstakens2)
 @
-See \figref{fig:gleruptionstakens2}
+See \figref{fig:gleruptionstakens2}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1103,8 +1124,8 @@ chunk.time.start<- proc.time()
 <<gleruptionsrec2, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs2.RData")
 local.recurrencePlotAux(eruptionsneighs2)
-
 @
+See \figref{fig:recurrence-gleruptionsrec2}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1153,8 +1174,8 @@ chunk.time.start<- proc.time()
 <<gleruptionsrec6, fig=TRUE, include=FALSE>>=
 load(file="eruptionsneighs6.RData")
 local.recurrencePlotAux(eruptionsneighs6)
-
 @
+See \figref{fig:recurrence-gleruptionsrec6}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1203,6 +1224,7 @@ load(file="eruptionsneighs8.RData")
 local.recurrencePlotAux(eruptionsneighs8)
 
 @
+See \figref{fig:recurrence-gleruptionsrec8}
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1249,7 +1271,7 @@ hrv.data = BuildNIHR(hrv.data)
 <<hrvRR, fig=TRUE, include=FALSE, width=10, height=5 >>=
 plotsignal(hrv.data$Beat$RR)
 @
-See \figref{fig:recurrence-hrvRR},
+See \figref{fig:recurrence-hrvRR}.
 \todo{We have outliers at approximately 2*RR. 
 Could this be an artefact of preprocessing, filtering out too many impulses?}
 \begin{figure}[htbp]
@@ -1267,7 +1289,7 @@ chunk.time.start<- proc.time()
 hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=4,time.lag=1)
 statepairs(hrvRRtakens4)
 @
-See \figref{fig:hrvRRtakens4}
+See \figref{fig:hrvRRtakens4}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1312,6 +1334,7 @@ chunk.time.start<- proc.time()
 load(file="hrvRRneighs4.RData")
 local.recurrencePlotAux(hrvRRneighs4)
 @
+See \figref{fig:recurrence-hrvRRrec4}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1332,11 +1355,12 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRtakens2, fig=TRUE, include=FALSE>>=
+<<hrvRRtakens2, fig=FALSE, include=FALSE>>=
 hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
 hrvRRneighs2 <-local.findAllNeighbours(hrvRRtakens2, radius=16)
 save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
 @
+
 Time used: \Sexpr{laptime()} sec.
 
 <<print=FALSE, echo=FALSE>>=
@@ -1347,6 +1371,7 @@ chunk.time.start<- proc.time()
 load(file="hrvRRneighs2.RData")
 local.recurrencePlotAux(hrvRRneighs2)
 @
+See \figref{fig:recurrence-hrvRRreccomp}.
 Time used: \Sexpr{laptime()} sec.
 % dim 6
 
@@ -1609,7 +1634,9 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
-
+<<>>=
+showrqa(hrvRRVtakens2[-(1:2),], radius=0.125, do.hist=FALSE)
+@
 <<hrvRRVrec2, fig=TRUE, include=FALSE>>=
 load(file="hrvRRVneighs2.RData")
 local.recurrencePlotAux(hrvRRVneighs2, dim=2,  radius=0.125)
@@ -1627,6 +1654,10 @@ hrvRRVneighs6 <-local.findAllNeighbours(hrvRRVtakens6[-(1:2),], radius=0.125)
 save(hrvRRVneighs6, file="hrvRRVneighs6.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
+<<>>=
+showrqa(hrvRRVtakens6[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -1647,6 +1678,9 @@ hrvRRVneighs8 <-local.findAllNeighbours(hrvRRVtakens8[-(1:2),], radius=0.125)
 save(hrvRRVneighs8, file="hrvRRVneighs8.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
+<<>>=
+showrqa(hrvRRVtakens8[-(1:2),], radius=0.125, do.hist=FALSE)
+@
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1664,10 +1698,13 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 hrvRRVtakens12 <- 
 	local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=12,time.lag=1)
 hrvRRVneighs12 <- 
-	local.findAllNeighbours(hrvRRVtakens12[-(1:2),], radius=0.125)
+	local.findAllNeighbours(hrvRRVtakens12[-(1:2),], radius=3/16)
 save(hrvRRVneighs12, file="hrvRRVneighs12.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
+<<>>=
+showrqa(hrvRRVtakens12[-(1:2),], radius=3/16, do.hist=FALSE)
+@
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1675,7 +1712,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRVrec12, fig=TRUE, include=FALSE>>=
 load(file="hrvRRVneighs12.RData")
-local.recurrencePlotAux(hrvRRVneighs12, dim=12,  radius=0.125)
+local.recurrencePlotAux(hrvRRVneighs12, dim=12,  radius=3/16)
 @
 Time used: \Sexpr{laptime()} sec.
 
@@ -1683,10 +1720,13 @@ Time used: \Sexpr{laptime()} sec.
 
 <<hrvRRVtakens16, fig=TRUE, include=FALSE>>=
 hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=16,time.lag=1)
-hrvRRVneighs16 <-local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=0.125)
+hrvRRVneighs16 <-local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=3/16)
 save(hrvRRVneighs16, file="hrvRRVneighs16.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
+<<>>=
+showrqa(hrvRRVtakens16[-(1:2),], radius=3/16, do.hist=FALSE)
+@
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1694,7 +1734,7 @@ chunk.time.start<- proc.time()
 
 <<hrvRRVrec16, fig=TRUE, include=FALSE>>=
 load(file="hrvRRVneighs16.RData")
-local.recurrencePlotAux(hrvRRVneighs16, dim=16, radius=0.125)
+local.recurrencePlotAux(hrvRRVneighs16, dim=16, radius=3/16)
 @
 Time used: \Sexpr{laptime()} sec.
 
