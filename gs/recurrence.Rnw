@@ -355,6 +355,10 @@ As a simple illustration, let $x=(x_i)$ be a sequence, maybe near periodic. For 
 
 Recurrence plots have two steps. The first was a bold step by Floris Takens. If you do not know the state space of a system, for a choice of ``dimension''  $d$, take the sequence of $d$ tuples taken from your data to define the states.
 $$ u_i = (x_i,\ldots , x_{i+d})$$
+This is Takens' delay embedding state (re)construction \cite{takens1981detecting}.
+\index{Takens state}
+\index{recurrence plot}
+\index{delay embredding}
 
 As a mere technical refinement: you may know that your data are a flattened representation of $t$ dimensional data. So you take
 $$ u_i = (x_i,\ldots , x_{i+d*m}).$$
