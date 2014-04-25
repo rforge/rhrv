@@ -18,7 +18,7 @@ function(HRVData, size, shift, sizesp=NULL, freqRange =NULL, scale="linear", ver
 	
 	specgr=CalculateSpectrogram(HRVData,size,shift,sizesp)
   
-	if(scale=="logaritmic"){
+	if(scale=="logarithmic"){
     specgr=log(specgr)
 	}
 	
