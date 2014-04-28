@@ -40,36 +40,19 @@ function(HRVData, long=50, last=13, minbpm=25, maxbpm=200, mini=NULL, maxi=NULL,
 		cat("   Number of original beats:",length(HRVData$Beat$niHR),"\n")
 	}
 		
-	# threshold initialization
-	ulast=last
-	umean=1.5*ulast
-   	hr=HRVData$Beat$niHR
-	beat=HRVData$Beat$Time
-	rr=HRVData$Beat$RR
-
-   	index=2
-
-   	while (index<length(hr)) {
-      	v = hr[max(index-long,1):index-1]
-      	M = sum(v)/length(v)
-
-		if((100*abs((hr[index]-hr[index-1])/hr[index-1]) < ulast | 100*abs((hr[index]-hr[index+1])/hr[index+1]) < ulast | 100*abs((hr[index]-M)/M) < umean) & hr[index]>=minbpm & hr[index]<=maxbpm) {
-        	index=index+1
-			tmp=10+sd(hr[max(index-long,1):index-1])
-			if(tmp<12)
-          		tmp=12;
-       		if(tmp>20)
-           		tmp=20;
-       		ulast=tmp;
-       		umean=1.5*tmp; 
-      	} 
-
-      	else {
-         	hr=hr[-index]
-         	beat=beat[-index]
-         	rr=rr[-index]
-      	}
-   	}
+	n=length(HRVData$Beat$niHR)
+	lon=50
+	last=13
+	ind=seq(from=0,to=0,length.out=n)
+	minbpm=25
+	maxbpm=200
+	#chamada a función para cargar os resultados en out
+	out <-.C("filterhr",hr=as.double(HRVData$Beat$niHR),as.integer(n),as.integer(lon),as.integer(last),as.integer(minbpm),as.integer(maxbpm),ind=as.integer(ind))
+	#copiei a maneira que implmentou Leandro para actualizar a estructura HRVData$Beat
+	hr=HRVData$Beat$niHR[out$ind==1]
+	beat=HRVData$Beat$Time[out$ind==1]
+	rr=HRVData$Beat$RR[out$ind==1]
+	
 
 	if (HRVData$Verbose) {
 		cat("   Number of accepted beats:",length(hr),"\n")
