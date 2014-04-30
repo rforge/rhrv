@@ -31,3 +31,5 @@ import(
   waveslim,
   nonlinearTseries
 )
+
+useDynLib(filterhr)
