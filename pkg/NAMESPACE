@@ -32,4 +32,3 @@ import(
   nonlinearTseries
 )
 
-useDynLib(filterhr)
