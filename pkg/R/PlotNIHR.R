@@ -1,5 +1,32 @@
+#' PlotNIHR
+#' @title Simple plot of non-interpolated heart rate
+#' @description Plots in a simple way the non-interpolated instantaneous heart
+#' rate signal
+#' @param HRVData Data structure that stores the beats register and information
+#' related to it
+#' @param Tag List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. Tag="all" plots all episodes present
+#' in the data. 
+#' @param verbose Deprecated argument maintained for compatibility, 
+#' use SetVerbose() instead.
+#' @param main A main title for the plot.
+#' @param xlab A label for the x axis.
+#' @param ylab a label for the y axis
+#' @param type 1-character string giving the type of plot desired. See 
+#' \code{\link[graphics]{plot.default}}.
+#' @param ylim The y limits of the plot.
+#' @param ... Other graphical parameters. See 
+#' \code{\link[graphics]{plot.default}}.
+#' @references  L. Rodriguez-Linares, L., A.J. Mendez, M.J. Lado, D.N. Olivieri,
+#' X.A. Vila, and I. Gomez-Conde, "An open source tool for heart rate
+#' variability spectral analysis", Computer Methods and Programs in Biomedicine 
+#' 103(1):39-50, july 2011.
+#' @author  M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila, C.A. Garcia
+#' @keywords aplot 
 PlotNIHR <-
-function(HRVData,Tag=NULL, verbose=NULL) {
+function(HRVData,Tag=NULL, verbose=NULL, 
+         main = "Non-interpolated instantaneous heart rate",
+         xlab="time (sec.)", ylab="HR (beats/min.)", type="l", ylim=NULL, ... ){
 #------------------------------------------------
 # Plots non-interpolated instantaneous heart rate
 #------------------------------------------------
@@ -47,7 +74,11 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 		}
 	}
 
-	plot(HRVData$Beat$Time,HRVData$Beat$niHR,type="l",xlab="time (sec.)",ylab="HR (beats/min.)",ylim=c(HRMin-0.1*HRDiff,HRMax))
+  if (is.null(ylim)){
+    ylim <- c(HRMin-0.1*HRDiff,HRMax)
+  }
+	plot(HRVData$Beat$Time,HRVData$Beat$niHR,type=type,
+       xlab = xlab, ylab = ylab, ylim = ylim, ...)
 
 	grid()
 	
@@ -77,7 +108,7 @@ function(HRVData,Tag=NULL, verbose=NULL) {
 		legend("topright",inset=0.01,legend=Tag,fill=Pal,cex=0.6,horiz=FALSE,bg='white')
 	}
 
-	title(main="Non-interpolated instantaneous heart rate")
+	title(main = main)
 
 
 }

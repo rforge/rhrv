@@ -1,0 +1,87 @@
+\name{OverplotEpisodes}
+\alias{OverplotEpisodes}
+\title{OverplotEpisodes}
+\usage{
+OverplotEpisodes(HRVData, Tag = "all", epColorPalette = NULL, eplim,
+  lty = 2, markEpisodes = T, ymark, showEpLegend = T,
+  epLegendCoords = NULL, ...)
+}
+\arguments{
+  \item{HRVData}{Data structure that stores the beats
+  register and information related to it.}
+
+  \item{Tag}{List of tags to specify which episodes, as
+  apnoea or oxygen desaturation, are included in the plot.
+  Tag="all" plots all episodes present in the data.}
+
+  \item{epColorPalette}{Vector specifying the color of each
+  of the episodes that will be plotted. The length of
+  epColorPalette should be equal or greater than the number
+  of different episodes to be plotted.}
+
+  \item{eplim}{Two-component vector specifying the y-range
+  (min,max) for the vertical lines limiting each episode.}
+
+  \item{lty}{The line type for the vertical lines limiting
+  each episode.}
+
+  \item{markEpisodes}{Boolean specyfing if a horizontal
+  mark should be included for each of the episodes.}
+
+  \item{ymark}{Two-component vector specifying the y-range
+  (min,max) for the horizontal marks. Only used if
+  markEpisodes = TRUE.}
+
+  \item{showEpLegend}{Boolean argument. If TRUE, a legend
+  of the episodes is included.}
+
+  \item{epLegendCoords}{Two-component vector specifiying
+  the coordinates where the legend should be placed. By
+  defaul, the legend is placed on top of the plot.}
+
+  \item{...}{Other graphical parameters for the vertical
+  lines limiting each episode. See
+  \code{\link[graphics]{plot.default}}.}
+}
+\description{
+Add episodic information to the current plot
+}
+\examples{
+\dontrun{
+# Read file "a03" from the physionet apnea-ecg database
+library(RHRV)
+HRVData <- CreateHRVData()
+HRVData <- LoadBeatWFDB(HRVData,RecordName="test_files/WFDB/a03")
+HRVData <- LoadApneaWFDB(HRVData,RecordName="test_files/WFDB/a03")
+# Add other type of episode for a more complete example (this episode does
+# not have any physiological meaning)
+HRVData <- AddEpisodes(HRVData,InitTimes=c(4500),Durations=c(1000),
+                       Tags="Other", Values = 1)
+HRVData <- BuildNIHR(HRVData)
+HRVData <- FilterNIHR(HRVData)
+HRVData <- InterpolateNIHR(HRVData)
+
+
+PlotHR(HRVData)
+OverplotEpisodes(HRVData,ymark=c(150,151),eplim=c(20,150))
+
+# Change some default parameters
+PlotHR(HRVData)
+OverplotEpisodes(HRVData,ymark=c(150,151),eplim=c(20,150),
+                 epLegendCoords=c(25000,150), lty=5,
+                 epColorPalette=c("blue","green"))
+
+# Use episodic information with the spectrogram... In order to obtain a proper
+# representation of the episodes we need to avoid the use of the spectrogram
+# legend
+sp <- PlotSpectrogram(HRVData, size=600, shift=60, freqRange=c(0,0.05),
+                      showLegend=F);
+OverplotEpisodes(HRVData, markEpisodes=T, ymark=c(0.04,0.0401),
+                 eplim=c(0,0.04), Tag="APNEA",
+                 epColorPalette = c("white"), lwd=3)
+}
+}
+\author{
+C.A. Garcia
+}
+

@@ -19,7 +19,7 @@ functions included in RHRV, we may execute:
 <<loadFile,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
 library(RHRV)
 hrv.data = CreateHRVData()
-hrv.data = LoadBeatAscii(hrv.data, RecordName="nonlinearHB.beats",
+hrv.data = LoadBeatAscii(hrv.data, RecordName="nonlinearHB2.beats",
                          RecordPath="beatsFolder")
 
 hrv.data = BuildNIHR(hrv.data)

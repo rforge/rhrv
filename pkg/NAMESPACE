@@ -1,8 +1,5 @@
 useDynLib(RHRV)
-
-# Export all names
-#exportPattern(".")
-
+ 
 export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "AvgIntegralCorrelation", "BuildNIHR", "BuildTakensVector", "CalculateApEn", 
        "CalculateFracDim", "CalculatePowerBand","CalculateSpectrogram", 
@@ -12,7 +9,8 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "LoadApneaWFDB", "LoadBeatAscii", "LoadBeatEDFPlus", "LoadBeatPolar", 
        "LoadBeat", "LoadBeatRR", "LoadBeatSuunto", "LoadBeatWFDB", 
        "LoadEpisodesAscii", "LoadHeaderWFDB", "PlotHR", "PlotNIHR", 
-       "PlotPowerBand","PlotSpectrogram", "ReadFromFile", "SetVerbose",
+       "PlotPowerBand","PlotSinglePowerBand",
+       "PlotSpectrogram", "ReadFromFile", "SetVerbose",
        "SplitHRbyEpisodes", "SplitPowerBandByEpisodes", "WriteToFile",
        "CalculateEmbeddingDim","CalculateTimeLag",
        "CalculateCorrDim","EstimateCorrDim","PlotCorrDim","PoincarePlot",
@@ -21,7 +19,7 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "CalculateDFA","EstimateDFA","PlotDFA",
        "CalculateInfDim","EstimateInfDim","PlotInfDim",
        "RQA","RecurrencePlot","NonLinearNoiseReduction",
-       "NonlinearityTests","SurrogateTest"
+       "NonlinearityTests","SurrogateTest","OverplotEpisodes"
 )
 
 # Import all packages listed as Imports or Depends
