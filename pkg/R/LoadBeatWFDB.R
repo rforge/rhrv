@@ -98,6 +98,8 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 		}
 	}
 
+	beats = unique(beats)
+
 	HRVData$Beat = data.frame(Time = beats)
 
        	HRVData = LoadHeaderWFDB(HRVData, RecordName, RecordPath=".")
