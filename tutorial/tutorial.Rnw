@@ -9,8 +9,7 @@
 %\subtitle{Version \tutorialVersion}
 \submitted{\today}  
 \copyrightyear{2013}  
-\author{Constantino A. Garc\'{i}a$^*$, Abraham Otero, Xos\'{e} Vila,  Arturo M\'{e}ndez,
-Leandro Rodr\'{i}guez-Li\~{n}ares and  Mar\'{i}a Jos\'{e} Lado} 
+\author{} 
     % General parameters, for ALL pages:
     \renewcommand{\topfraction}{0.85}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.6}	% max fraction of floats at bottom
