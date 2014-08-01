@@ -2,6 +2,7 @@
 %$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %
+% This is copied to RHRV. The master file is in lectures/src/dataanalysis.
 %  Adjust the path names below and run the R command to process this file
 %
 % oldoptions<-options(width=72,prompt="  ", continue="  "); setwd("/Users/gs/Documents/lectures/src/dataanalysis/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); options(oldoptions)
@@ -54,7 +55,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
 \keywords{data analysis, distribution diagnostics, recurrence plot}
 \thanks{\emph{This waste book is a companion to   ``G. Sawitzki: Statistical Data Analysis''}\\
-\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision: 135 $\\
+\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision: 1.9 $\\
 \indent \url{gs@statlab.uni-heidelberg.de}
 }%\\
 
@@ -143,17 +144,28 @@ We use
 library(nonlinearTseries)
 @
 %:statepairs: Takens states
+\subsubsection{Taken states}
+
 To display the Takens state space, we us a variant of pairs().
 \todo{the takens state plot may be critically affected by outliers. Find a good rescaling.}
+
+By convention, the states are defined using overlapping sliding windows. This imposes considerable dependence between the states: one state is the shifted previous states, with only the end sub-state replaced. As an option, the states can be subsampled, using only non-overlapping ranges.
 <<>>=
-statepairs <- function(states, rank=FALSE){
+<<statepairs, echo=TRUE, print=FALSE>>=
+statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE){
+	n <- dim(states)[1]; dim <-  dim(states)[2]
+	if (missing(main)) {
 	main <- paste("Takens states:",deparse(substitute(states)), "\n",
-		"n=", dim(states)[1]," dim=", dim(states)[2])
-	if (rank) {states <- apply(uniftakens,2,rank,ties.method="random")
+		"n=", n," dim=", dim) }
+		
+	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
+	main <- paste(main," no overlap")}
+	
+	if (rank) {states <- apply(states, 2, rank, ties.method="random")
 	main <- paste(main," ranked")}
-	pairs(states, 
-	main=main, 
-	col=rgb(0,0,0,0.2))
+	pairs(states, main=main,
+	col=rgb(0,0,0,0.1))
+	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
 }
 @
 \subsection{Local Bottleneck}
@@ -247,9 +259,10 @@ We set up a small series of test signals.
 For convenience, some source code from other libraries is included to make this self-contained.
 
 As a global constant, we set up the length of the series to be used.
-
-<<>>=
-nsignal <- 256
+%:  nsignal
+<<nsignal>>=
+#nsignal <- 256
+nsignal <- 1024
 system.time.start <- proc.time()
 
 @
@@ -374,7 +387,7 @@ But the states may have an inherent structure, which we may take into account or
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
-
+%
 <<sintakens, fig=TRUE, include=FALSE>>=
 sintakens <- local.buildTakens( time.series=sin10(),embedding.dim=4, time.lag=1)
 statepairs(sintakens)
@@ -392,11 +405,31 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:sintakens}
 \end{center}
 \end{figure}
+%
+%
+<<sintakensno, fig=TRUE, include=FALSE>>=
+statepairs(sintakens, nooverlap=TRUE)
+@
+See \figref{fig:sintakensno}.
+@
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.6\linewidth]{recurrence-sintakensno}
+\caption{Test case: sinus. Note that marginal views of 1-dimensional circles in $d$ space may appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:sintakensno}
+\end{center}
+\end{figure}
+%
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
 
+%
 <<uniftakens, fig=TRUE, include=FALSE>>=
 uniftakens <- local.buildTakens( time.series=xunif,embedding.dim=4,time.lag=1)
 statepairs(uniftakens)
@@ -412,11 +445,29 @@ Time used: \Sexpr{laptime()} sec.}
 \label{fig:uniftakens}
 \end{center}
 \end{figure}
+%
+%
+<<uniftakensno, fig=TRUE, include=FALSE>>=
+statepairs(uniftakens, nooverlap=TRUE)
+@
+See \figref{fig:uniftakensno}.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.6\linewidth]{recurrence-uniftakensno}
+\caption{Test case: uniform random numbers. 
+Time used: \Sexpr{laptime()} sec.}
+\label{fig:uniftakensno}
+\end{center}
+\end{figure}
+%
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
 
+%
 <<chirptakens, fig=TRUE, include=FALSE>>=
 chirptakens <- local.buildTakens( time.series=chirp(),embedding.dim=4,time.lag=1)
 statepairs(chirptakens)
@@ -432,7 +483,23 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:chirptakens}
 \end{center}
 \end{figure}
+%
+%
+<<chirptakensno, fig=TRUE, include=FALSE>>=
+statepairs(chirptakens, nooverlap=TRUE)
+@
+See \figref{fig:chirptakensno}
 
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.6\linewidth]{recurrence-chirptakensno}
+\caption{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:chirptakensno}
+\end{center}
+\end{figure}
+%
 
 @
 \clearpage
@@ -657,6 +724,7 @@ See \figref{fig:recurrence-eruptions},
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
+%
 <<eruptionstakens4, fig=TRUE, include=FALSE>>=
 eruptionstakens4 <- 
 	local.buildTakens( time.series=geyser$duration, embedding.dim=4, time.lag=1)
@@ -673,6 +741,24 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:eruptionstakens4}
 \end{center}
 \end{figure}
+%
+%
+<<eruptionstakens4no, fig=TRUE, include=FALSE>>=
+	statepairs(eruptionstakens4, nooverlap=TRUE)
+@
+See \figref{fig:eruptionstakens4no}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens4no}
+\caption{Example case: Old Faithful Geyser eruptions.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens4no}
+\end{center}
+\end{figure}
+%
+
 %<<eruptionsneighs>>=
 %
 <<print=FALSE, echo=FALSE>>=
@@ -721,6 +807,7 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
+%
 <<eruptionstakens2, fig=TRUE, include=FALSE>>=
 eruptionstakens2 <- 
 	local.buildTakens(time.series=geyser$duration, embedding.dim=2, time.lag=1)
@@ -737,6 +824,24 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:eruptionstakens2}
 \end{center}
 \end{figure}
+%
+%
+<<eruptionstakens2no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens2, nooverlap=TRUE)
+@
+See \figref{fig:eruptionstakens2no}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens2no}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens2no}
+\end{center}
+\end{figure}
+%
+
 %<<eruptionsneighs>>=
 %
 <<print=FALSE, echo=FALSE>>=
@@ -788,6 +893,7 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
+%
 <<eruptionstakens6, fig=TRUE, include=FALSE>>=
 eruptionstakens6 <- local.buildTakens( time.series=geyser$duration,embedding.dim=6,time.lag=1)
 statepairs(eruptionstakens6)
@@ -803,6 +909,24 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:eruptionstakens6}
 \end{center}
 \end{figure}
+%
+%
+<<eruptionstakens6no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens6, nooverlap=TRUE)
+@
+See \figref{fig:eruptionstakens6no}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens6no}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=6.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens6no}
+\end{center}
+\end{figure}
+%
+
 %<<eruptionsneighs>>=
 %
 <<print=FALSE, echo=FALSE>>=
@@ -848,6 +972,7 @@ Time used: \Sexpr{laptime()} sec.
 
 \subsubsection{Geyser eruptions. Dim=8}
 
+%
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -866,6 +991,25 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:eruptionstakens8}
 \end{center}
 \end{figure}
+%
+%
+@
+<<eruptionstakens8no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens8, nooverlap=TRUE)
+@
+See \figref{fig:eruptionstakens8no}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens8no}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens8no}
+\end{center}
+\end{figure}
+%
+
 %<<eruptionsneighs>>=
 %
 <<print=FALSE, echo=FALSE>>=
@@ -975,7 +1119,7 @@ chunk.time.start<- proc.time()
 <<waitingneighsrqa, fig=TRUE, include=FALSE>>=
 showrqa(waitingtakens, radius=16)
 @
-See \figref{fig:waitingneighsrqa}.
+See \figref{fig:recurrence-waitingneighsrqa}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -1249,8 +1393,8 @@ Time used: \Sexpr{laptime()} sec.
 
 <<>>=
 library(RHRV)
-load("/data/pulse/rhrv/pkg/data/HRVData.rda")
-load("/data/pulse/rhrv/pkg/data/HRVProcessedData.rda")
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVData.rda")
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVProcessedData.rda")
 
 ###################################################
 ### code chunk number 1: creation
@@ -1262,7 +1406,7 @@ hrv.data = SetVerbose(hrv.data, TRUE )
 ### code chunk number 3: loading
 ###################################################
 hrv.data = LoadBeatAscii(hrv.data, "example.beats",
-       RecordPath = "/data/pulse/rhrv/tutorial/beatsFolder")
+       RecordPath = "/users/gs/projects/rforge/rhrv/tutorial/beatsFolder")
 #       RecordPath = "beatsFolder")
 
 
@@ -1484,7 +1628,7 @@ Time used: \Sexpr{laptime()} sec.
 Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
 
 <<BuildNIDHR>>=
-# source('/data/pulse/rhrv/pkg/R/BuildNIHR2.R', chdir = TRUE)
+# source('/users/gs/projects/rforge/rhrv/pkg/R/BuildNIHR2.R', chdir = TRUE)
 BuildNIDHR <-
 function(HRVData, verbose=NULL) {
 #------------------------------------------------------ 
@@ -1761,7 +1905,7 @@ Time used: \Sexpr{laptime()} sec.
 
 %%%%%
 
-
+%:backmatter
 
 @
 %:Sweave examples
@@ -1844,13 +1988,13 @@ CVS/Svn repository information:
 {\tiny%
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
-\verb+$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $+\\
-\verb+$Revision: 135 $+\\
-\verb+$Date: 2014-02-20 12:16:47 +0100 (Thu, 20 Feb 2014) $+\\
+\verb*$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $*\\
+\verb+$Revision: 1.9 $+\\
+\verb+$Date: 2014/02/20 10:14:58 $+\\
 \verb+$name:  $+\\
-\verb+$Author: gsawitzki $+
+\verb+$Author: j40 $+
 }
-\typeout{**** $Id: recurrence.Rnw 135 2014-02-20 11:16:47Z gsawitzki $ done ****}
+\typeout{**** $Id: recurrence.Rnw,v 1.9 2014/02/20 10:14:58 j40 Exp $ done ****}
 \end{document}
 
 

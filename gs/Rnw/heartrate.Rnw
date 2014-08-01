@@ -1,7 +1,7 @@
 %!TEX root = ../Rnw_out/heartrate.tex
 %$Header: /u/math/j40/cvsroot/data/0template/Rnw/template.Rnw.tex,v 1.1 2011/10/23 13:06:30 j40 Exp $
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
-%options(width=72);setwd( "/Users/gs/projects/rforge/rhrv/gs/Rnw_out");Sweave(file= "../heartrate.Rnw", output="heartrate.tex",debug=TRUE,eps=FALSE,pdf=TRUE)
+%options(width=72);setwd( "/Users/gs/projects/rforge/rhrv/gs/Rnw_out");Sweave(file= "../Rnw/heartrate.Rnw", output="heartrate.tex", debug=TRUE, eps=FALSE, pdf=TRUE,  figs.only=FALSE)
 %
 %  Adjust the path names below and run the R command to process this file
 %
@@ -30,7 +30,7 @@
 \usepackage{gssda}
 \usepackage{SIntro}
 \usepackage[bookmarks, pdftex, 
-pdftitle={Heart Rate}, 
+pdftitle={Heart Rate Variability}, 
 pdfauthor={G. Sawitzki},
 colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=UseOC]{hyperref}
 %pdfpagemode= UseNone UseOutlines UseThumbs FullScreen UseOC UseAttachments
@@ -48,7 +48,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 
 \newcommand{\figref}[1]{Figure\ \vref{#1}}
 
-\title{Estimating Heart Rate}
+\title{Estimating Heart Rate Variability}
 \author[G. Sawitzki]{G\"unther Sawitzki}
 \date{\today}
 \email{\url{gs@statlab.uni-heidelberg.de}}
@@ -82,8 +82,8 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 %page layout for Sweave 6in plots
 \addtolength{\textheight}{12mm}
 \addtolength{\topmargin}{-9mm}   % still fits on US paper
-\addtolength{\textwidth}{26mm}   % still fits on US paper - 6.00612 in on A4
-\setlength{\oddsidemargin}{10mm}
+%\addtolength{\textwidth}{26mm}   % still fits on US paper - 6.00612 in on A4
+\setlength{\oddsidemargin}{20mm}
 \setlength{\evensidemargin}{\oddsidemargin}
 
 %  ****************************************
@@ -128,7 +128,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 \tableofcontents
 }
 \bigskip
-\emph{For personal use only. 
+\emph{A waste book, for personal use only. 
 This note is taken from a private collection of course material. 
 This is just my style to work:  
 I collect material in this form, and generate actual course material on the fly when needed. 
@@ -452,7 +452,7 @@ See \figref{fig:recurrence-hrvRR2} for the unfiltered and \figref{fig:recurrence
 \begin{center}
 \includegraphics[width=0.8\linewidth]{heartrate-hrvRR2filt}
 \caption{RHRV tutorial example2.beats filtered. Signal and linear interpolation.}
-\label{fig:recurrence-hrvRRfilt}
+\label{fig:recurrence-hrvRR2filt}
 \end{center}
 \end{figure}
 
@@ -495,7 +495,8 @@ Can you modify the displays to focus on this range?
 \end{exca}
 
 %@
-%\pagebreak
+%:backmatter
+\pagebreak
 \nocite{*}
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible

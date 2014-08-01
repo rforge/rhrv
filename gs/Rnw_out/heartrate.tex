@@ -1,7 +1,7 @@
 %!TEX root = ../Rnw_out/heartrate.tex
 %$Header: /u/math/j40/cvsroot/data/0template/Rnw/template.Rnw.tex,v 1.1 2011/10/23 13:06:30 j40 Exp $
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
-%options(width=72);setwd( "/Users/gs/projects/rforge/rhrv/gs/Rnw_out");Sweave(file= "../heartrate.Rnw", output="heartrate.tex",debug=TRUE,eps=FALSE,pdf=TRUE)
+%options(width=72);setwd( "/Users/gs/projects/rforge/rhrv/gs/Rnw_out");Sweave(file= "../Rnw/heartrate.Rnw", output="heartrate.tex", debug=TRUE, eps=FALSE, pdf=TRUE,  figs.only=FALSE)
 %
 %  Adjust the path names below and run the R command to process this file
 %
@@ -82,8 +82,8 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 %page layout for Sweave 6in plots
 \addtolength{\textheight}{12mm}
 \addtolength{\topmargin}{-9mm}   % still fits on US paper
-\addtolength{\textwidth}{26mm}   % still fits on US paper - 6.00612 in on A4
-\setlength{\oddsidemargin}{10mm}
+%\addtolength{\textwidth}{26mm}   % still fits on US paper - 6.00612 in on A4
+\setlength{\oddsidemargin}{20mm}
 \setlength{\evensidemargin}{\oddsidemargin}
 
 %  ****************************************
@@ -128,7 +128,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 \tableofcontents
 }
 \bigskip
-\emph{For personal use only. 
+\emph{A waste book, for personal use only. 
 This note is taken from a private collection of course material. 
 This is just my style to work:  
 I collect material in this form, and generate actual course material on the fly when needed. 
@@ -208,10 +208,10 @@ are a vector of  beat times [s], stored as a data frame (one variable) in compon
 
 \begin{Schunk}
 \begin{Sinput}
-  hrv.data  = CreateHRVData()
-  hrv.data = SetVerbose(hrv.data, TRUE )
-  hrv.data = LoadBeatAscii(hrv.data, "../beatsFolder/example.beats",
-         RecordPath = "../beatsFolder")
+> hrv.data  = CreateHRVData()
+> hrv.data = SetVerbose(hrv.data, TRUE )
+> hrv.data = LoadBeatAscii(hrv.data, "../beatsFolder/example.beats",
++        RecordPath = "../beatsFolder")
 \end{Sinput}
 \begin{Soutput}
 ** Loading beats positions for record: ../beatsFolder/example.beats **
@@ -226,7 +226,7 @@ are a vector of  beat times [s], stored as a data frame (one variable) in compon
 The data structure is augmented by derived information in a second step (see Section 4.1.2 ``Calculating HR and filtering'' of \cite{Garcia:2014aaTutorial}).
 \begin{Schunk}
 \begin{Sinput}
-  hrv.data = BuildNIHR(hrv.data)
+> hrv.data = BuildNIHR(hrv.data)
 \end{Sinput}
 \begin{Soutput}
 ** Calculating non-interpolated heart rate **
@@ -279,7 +279,7 @@ RR&beat duration&[ms]  (??? rounded?)\\
 
 \begin{Schunk}
 \begin{Sinput}
-  hrvfilt.data = FilterNIHR(hrv.data)
+> hrvfilt.data = FilterNIHR(hrv.data)
 \end{Sinput}
 \begin{Soutput}
 ** Filtering non-interpolated Heart Rate **
@@ -292,9 +292,9 @@ As a convenience, an interpolated version of the data can be provided to allow f
 
 \begin{Schunk}
 \begin{Sinput}
-  # Note that it is not necessary to specify freqhr since it matches with
-  # the default value: 4 Hz
-  hrvipl.data = InterpolateNIHR (hrvfilt.data, freqhr = 4)
+> # Note that it is not necessary to specify freqhr since it matches with
+> # the default value: 4 Hz
+> hrvipl.data = InterpolateNIHR (hrvfilt.data, freqhr = 4)
 \end{Sinput}
 \begin{Soutput}
 ** Interpolating instantaneous heart rate **
@@ -323,17 +323,17 @@ For signal representation, we use a common layout.
 \todo{handle Beat not avail in plot}
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal <- function (signal) {
-  #! alpha level should depend on expected number of overlaps
-  par(mfrow=c(1,2))
-  plot(signal, col=rgb(0,0,1,0.4), pch=20, xlab="t" )
-  
-  plot(signal, type="l", 
-  	 xlab="t", col=rgb(0,0,0,0.4))
-  points(signal, col=rgb(0,0,1,0.4), pch=20 )
-  main=deparse(substitute(signal))
-  title(main=main, outer=TRUE, line=-2, cex.main=0.8)
-  }
+> plotsignal <- function (signal) {
++ #! alpha level should depend on expected number of overlaps
++ par(mfrow=c(1,2))
++ plot(signal, col=rgb(0,0,1,0.4), pch=20, xlab="t" )
++ 
++ plot(signal, type="l", 
++ 	 xlab="t", col=rgb(0,0,0,0.4))
++ points(signal, col=rgb(0,0,1,0.4), pch=20 )
++ main=deparse(substitute(signal))
++ title(main=main, outer=TRUE, line=-2, cex.main=0.8)
++ }
 \end{Sinput}
 \end{Schunk}
 \subsection{BuildNIDHR}
@@ -342,46 +342,46 @@ Since we are not interested in heart rate (or pulse), but in heart rate variatio
 
 \begin{Schunk}
 \begin{Sinput}
-  # source('../../pkg/R/BuildNIHR2.R', chdir = TRUE)
-  BuildNIDHR <-
-  function(HRVData, verbose=NULL) {
-  #------------------------------------------------------ 
-  # Obtains instantaneous heart rate variation from beats positions
-  # D for difference
-  #------------------------------------------------------ 
-  	if (!is.null(verbose)) {
-  		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-  		SetVerbose(HRVData,verbose)
-  	}
-  	
-  	if (HRVData$Verbose) {
-  		cat("** Calculating non-interpolated heart rate differences **\n")
-  	}
-  
-  	if (is.null(HRVData$Beat$Time)) {
-  		cat("   --- ERROR: Beats positions not present... Impossible to calculate Heart Rate!! ---\n")
-  		return(HRVData)
-  	}
-  	
-  	NBeats=length(HRVData$Beat$Time)
-  	if (HRVData$Verbose) {
-  		cat("   Number of beats:",NBeats,"\n");
-  	}
-  	
-    # addition gs 
-     #using NA, not constant extrapolation as else in RHRV  
-     #drr=c(NA,NA,1000.0*	diff(HRVData$Beat$Time, lag=1 , differences=2))
-     HRVData$Beat$dRR=c(NA, NA, 
-     	1000.0*diff(HRVData$Beat$Time, lag=1, differences=2))
-  
-     HRVData$Beat$avRR=(c(NA,HRVData$Beat$RR[-1])+HRVData$Beat$RR)/2
-     
-     HRVData$Beat$HRRV <- HRVData$Beat$dRR/HRVData$Beat$avRR
-  
-  	return(HRVData)
-  }
-  
-  
+> # source('../../pkg/R/BuildNIHR2.R', chdir = TRUE)
+> BuildNIDHR <-
++ function(HRVData, verbose=NULL) {
++ #------------------------------------------------------ 
++ # Obtains instantaneous heart rate variation from beats positions
++ # D for difference
++ #------------------------------------------------------ 
++ 	if (!is.null(verbose)) {
++ 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
++ 		SetVerbose(HRVData,verbose)
++ 	}
++ 	
++ 	if (HRVData$Verbose) {
++ 		cat("** Calculating non-interpolated heart rate differences **\n")
++ 	}
++ 
++ 	if (is.null(HRVData$Beat$Time)) {
++ 		cat("   --- ERROR: Beats positions not present... Impossible to calculate Heart Rate!! ---\n")
++ 		return(HRVData)
++ 	}
++ 	
++ 	NBeats=length(HRVData$Beat$Time)
++ 	if (HRVData$Verbose) {
++ 		cat("   Number of beats:",NBeats,"\n");
++ 	}
++ 	
++   # addition gs 
++    #using NA, not constant extrapolation as else in RHRV  
++    #drr=c(NA,NA,1000.0*	diff(HRVData$Beat$Time, lag=1 , differences=2))
++    HRVData$Beat$dRR=c(NA, NA, 
++    	1000.0*diff(HRVData$Beat$Time, lag=1, differences=2))
++ 
++    HRVData$Beat$avRR=(c(NA,HRVData$Beat$RR[-1])+HRVData$Beat$RR)/2
++    
++    HRVData$Beat$HRRV <- HRVData$Beat$dRR/HRVData$Beat$avRR
++ 
++ 	return(HRVData)
++ }
+> 
+> 
 \end{Sinput}
 \end{Schunk}
 \clearpage
@@ -391,12 +391,12 @@ Since we are not interested in heart rate (or pulse), but in heart rate variatio
 
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(hrv.data$Beat$RR)
+> plotsignal(hrv.data$Beat$RR)
 \end{Sinput}
 \end{Schunk}
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(hrvfilt.data$Beat$RR)
+> plotsignal(hrvfilt.data$Beat$RR)
 \end{Sinput}
 \end{Schunk}
 
@@ -428,14 +428,14 @@ Could this be an artefact of preprocessing, filtering out too many impulses?}
 \gsnote{differences for HRV}
 \begin{Schunk}
 \begin{Sinput}
-  hrv.data <- BuildNIDHR(hrv.data)
+> hrv.data <- BuildNIDHR(hrv.data)
 \end{Sinput}
 \begin{Soutput}
 ** Calculating non-interpolated heart rate differences **
    Number of beats: 17360 
 \end{Soutput}
 \begin{Sinput}
-  HRRV <- hrv.data$Beat$HRRV
+> HRRV <- hrv.data$Beat$HRRV
 \end{Sinput}
 \end{Schunk}
 \index{heart rate variation}
@@ -443,7 +443,7 @@ Could this be an artefact of preprocessing, filtering out too many impulses?}
 
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(HRRV)
+> plotsignal(HRRV)
 \end{Sinput}
 \end{Schunk}
 See \figref{fig:recurrence-hrvRRV},
@@ -459,10 +459,10 @@ See \figref{fig:recurrence-hrvRRV},
 \section{First Inspection: example2.beats}
 \begin{Schunk}
 \begin{Sinput}
-  hrv2.data  = CreateHRVData()
-  hrv2.data = SetVerbose(hrv2.data, TRUE )
-  hrv2.data = LoadBeatAscii(hrv2.data, "example2.beats",
-         RecordPath = "../beatsFolder")
+> hrv2.data  = CreateHRVData()
+> hrv2.data = SetVerbose(hrv2.data, TRUE )
+> hrv2.data = LoadBeatAscii(hrv2.data, "example2.beats",
++        RecordPath = "../beatsFolder")
 \end{Sinput}
 \begin{Soutput}
 ** Loading beats positions for record: example2.beats **
@@ -474,14 +474,14 @@ See \figref{fig:recurrence-hrvRRV},
    Number of beats: 2437 
 \end{Soutput}
 \begin{Sinput}
-  hrv2.data = BuildNIHR(hrv2.data)
+> hrv2.data = BuildNIHR(hrv2.data)
 \end{Sinput}
 \begin{Soutput}
 ** Calculating non-interpolated heart rate **
    Number of beats: 2437 
 \end{Soutput}
 \begin{Sinput}
-  hrv2filt.data = FilterNIHR(hrv2.data)
+> hrv2filt.data = FilterNIHR(hrv2.data)
 \end{Sinput}
 \begin{Soutput}
 ** Filtering non-interpolated Heart Rate **
@@ -493,12 +493,12 @@ See \figref{fig:recurrence-hrvRRV},
 \subsection{Hart Rate example 2}
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(hrv2.data$Beat$RR)
+> plotsignal(hrv2.data$Beat$RR)
 \end{Sinput}
 \end{Schunk}
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(hrv2filt.data$Beat$RR)
+> plotsignal(hrv2filt.data$Beat$RR)
 \end{Sinput}
 \end{Schunk}
 See \figref{fig:recurrence-hrvRR2} for the unfiltered and \figref{fig:recurrence-hrvRR2filt} for the filtered version.
@@ -516,7 +516,7 @@ See \figref{fig:recurrence-hrvRR2} for the unfiltered and \figref{fig:recurrence
 \begin{center}
 \includegraphics[width=0.8\linewidth]{heartrate-hrvRR2filt}
 \caption{RHRV tutorial example2.beats filtered. Signal and linear interpolation.}
-\label{fig:recurrence-hrvRRfilt}
+\label{fig:recurrence-hrvRR2filt}
 \end{center}
 \end{figure}
 
@@ -527,14 +527,14 @@ See \figref{fig:recurrence-hrvRR2} for the unfiltered and \figref{fig:recurrence
 
 \begin{Schunk}
 \begin{Sinput}
-  hrv2.data <- BuildNIDHR(hrv2.data)
+> hrv2.data <- BuildNIDHR(hrv2.data)
 \end{Sinput}
 \begin{Soutput}
 ** Calculating non-interpolated heart rate differences **
    Number of beats: 2437 
 \end{Soutput}
 \begin{Sinput}
-  HRRV2 <- hrv2.data$Beat$HRRV
+> HRRV2 <- hrv2.data$Beat$HRRV
 \end{Sinput}
 \end{Schunk}
 \index{heart rate variation}
@@ -542,7 +542,7 @@ See \figref{fig:recurrence-hrvRR2} for the unfiltered and \figref{fig:recurrence
 
 \begin{Schunk}
 \begin{Sinput}
-  plotsignal(HRRV2)
+> plotsignal(HRRV2)
 \end{Sinput}
 \end{Schunk}
 See \figref{fig:recurrence-hrvRRV2},
@@ -567,7 +567,7 @@ Can you modify the displays to focus on this range?
 \end{exca}
 
 %@
-%\pagebreak
+\pagebreak
 \nocite{*}
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible
@@ -588,7 +588,7 @@ Can you modify the displays to focus on this range?
 \clearpage
 \R{} session info:
 
-Total Sweave time used: 5.32 sec. at Fri Aug  1 20:05:15 2014.
+Total Sweave time used: 9.075 sec. at Fri Aug  1 20:47:24 2014.
 
 {\tiny
 \begin{itemize}\raggedright
@@ -596,11 +596,10 @@ Total Sweave time used: 5.32 sec. at Fri Aug  1 20:05:15 2014.
   \item Locale: \verb|en_GB.UTF-8/en_GB.UTF-8/en_GB.UTF-8/C/en_GB.UTF-8/en_GB.UTF-8|
   \item Base packages: base, datasets, graphics, grDevices,
     methods, stats, tcltk, utils
-  \item Other packages: leaps~2.9, locfit~1.5-9.1, MASS~7.3-33,
+  \item Other packages: leaps~2.9, locfit~1.5-9.1,
     Matrix~1.1-4, mgcv~1.8-1, nlme~3.1-117,
     nonlinearTseries~0.2.1, rgl~0.93.1098, RHRV~4.0,
-    sintro~0.1-3, tkrplot~0.0-23, TSA~1.01, tseries~0.10-32,
-    waveslim~1.7.3
+    tkrplot~0.0-23, TSA~1.01, tseries~0.10-32, waveslim~1.7.3
   \item Loaded via a namespace (and not attached): grid~3.1.1,
     lattice~0.20-29, quadprog~1.5-5, tools~3.1.1, zoo~1.7-11
 \end{itemize}}
