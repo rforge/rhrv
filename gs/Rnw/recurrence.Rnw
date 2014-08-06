@@ -1,5 +1,5 @@
 %!TEX root = /Users/gs/Documents/lectures/src/dataanalysis/Rnw_out/recurrence.tex
-%$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $
+%$HeadURL$
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %
 % This is copied to RHRV. The master file is in lectures/src/dataanalysis.
@@ -55,7 +55,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
 \keywords{data analysis, distribution diagnostics, recurrence plot}
 \thanks{\emph{This waste book is a companion to   ``G. Sawitzki: Statistical Data Analysis''}\\
-\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision: 1.9 $\\
+\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision$\\
 \indent \url{gs@statlab.uni-heidelberg.de}
 }%\\
 
@@ -1988,13 +1988,13 @@ CVS/Svn repository information:
 {\tiny%
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
-\verb*$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $*\\
-\verb+$Revision: 1.9 $+\\
-\verb+$Date: 2014/02/20 10:14:58 $+\\
+\verb*$HeadURL$*\\
+\verb+$Revision$+\\
+\verb+$Date$+\\
 \verb+$name:  $+\\
-\verb+$Author: j40 $+
+\verb+$Author$+
 }
-\typeout{**** $Id: recurrence.Rnw,v 1.9 2014/02/20 10:14:58 j40 Exp $ done ****}
+\typeout{**** $Id$ done ****}
 \end{document}
 
 

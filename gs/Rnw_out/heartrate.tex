@@ -1,5 +1,11 @@
 %!TEX root = ../Rnw_out/heartrate.tex
 %$Header: /u/math/j40/cvsroot/data/0template/Rnw/template.Rnw.tex,v 1.1 2011/10/23 13:06:30 j40 Exp $
+
+%$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $
+%$Revision: 135 $
+%$Date: 2014-02-20 12:16:47 +0100 (Thu, 20 Feb 2014) $
+%svn propset svn:keywords "Date Author Id Revision HeadURL  Name" *.R
+
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %options(width=72);setwd( "/Users/gs/projects/rforge/rhrv/gs/Rnw_out");Sweave(file= "../Rnw/heartrate.Rnw", output="heartrate.tex", debug=TRUE, eps=FALSE, pdf=TRUE,  figs.only=FALSE)
 %
@@ -50,15 +56,15 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 
 \title{Estimating Heart Rate Variability}
 \author[G. Sawitzki]{G\"unther Sawitzki}
-\date{\today}
+\date{2014-02-20 (recovered)}
 \email{\url{gs@statlab.uni-heidelberg.de}}
 \address{\noindent G\"unther Sawitzki\newline
 \indent StatLab Heidelberg\newline
 \indent Im Neuenheimer Feld 294\newline
 \indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
 %\keywords{data analysis, distribution diagnostics, recurrence plot}
-\thanks{\emph{These notes are internal RFC for the R project RHRV, available from R-Forge. Material from RHRV may be used without explicit quotation.}\\
-\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision: 135 $\\
+\thanks{\emph{A waist book. These notes are internal RFC for the R project RHRV, available from R-Forge. Material from RHRV may be used without explicit quotation.}\\
+\indent \emph{Typeset}, with minor revisions: \today\  from svn $Revision: 135 $\\
 \indent \url{gs@statlab.uni-heidelberg.de}
 }%\\
 
@@ -151,7 +157,7 @@ assess the heart rate, depends on the quality of the original data and
 the preprocessing steps.
 
 The classical means is to register some form of pulse. In all of these,
-classical mehtods the basic information is some local blood pressure, and the pulse
+classical methods the basic information is some local blood pressure, and the pulse
 is derived from it. Typically this information is collected as an average
 over a small number of beats ($\approx 15$ beats) or a small time interval (e.g. 15 s).
 
@@ -316,7 +322,9 @@ The data may be imbedded in a \code{RHRVData} structure as outlined in \figref{f
 \end{figure}
 
 
-\section{Functions}
+\section{Support Functions}
+
+These functions could go to RHRV.
 
 \subsection{Plotsignal}
 For signal representation, we use a common layout.
@@ -332,13 +340,23 @@ For signal representation, we use a common layout.
 + 	 xlab="t", col=rgb(0,0,0,0.4))
 + points(signal, col=rgb(0,0,1,0.4), pch=20 )
 + main=deparse(substitute(signal))
-+ title(main=main, outer=TRUE, line=-2, cex.main=0.8)
++ title(main=main, outer=TRUE, line=-2, cex.main=1.2)
 + }
 \end{Sinput}
 \end{Schunk}
 \subsection{BuildNIDHR}
 
-Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
+
+Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences
+$$
+HRRV_i = \frac{RR_i - RR_{i-1}}{(RR_i + RR_{i-1})/2}
+$$
+where $RR_i$ is the $i^{th}$ RR interval length. Taking these differences removes the mere pulse effects which otherwise may dominate the variation. There is no information loss, since the original RR sequence can be reconstructed, given initial conditions.
+
+The residuals form this construct isolate structural influence from heart rate variation.
+
+Note: if we think of online monitoring, statistics should be non-anticipating. We can take information from the past, as above, and should avoid assumptions about future data.
+
 
 \begin{Schunk}
 \begin{Sinput}
@@ -349,25 +367,27 @@ Since we are not interested in heart rate (or pulse), but in heart rate variatio
 + # Obtains instantaneous heart rate variation from beats positions
 + # D for difference
 + #------------------------------------------------------ 
-+ 	if (!is.null(verbose)) {
-+ 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-+ 		SetVerbose(HRVData,verbose)
-+ 	}
-+ 	
-+ 	if (HRVData$Verbose) {
-+ 		cat("** Calculating non-interpolated heart rate differences **\n")
-+ 	}
++ if (!is.null(verbose)) {
++ 	cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n",
++ 	    "--- See help for more information!! ---\n")
++ 	SetVerbose(HRVData,verbose)
++ }
 + 
-+ 	if (is.null(HRVData$Beat$Time)) {
-+ 		cat("   --- ERROR: Beats positions not present... Impossible to calculate Heart Rate!! ---\n")
-+ 		return(HRVData)
-+ 	}
-+ 	
-+ 	NBeats=length(HRVData$Beat$Time)
-+ 	if (HRVData$Verbose) {
-+ 		cat("   Number of beats:",NBeats,"\n");
-+ 	}
-+ 	
++ if (HRVData$Verbose) {
++ 	cat("** Calculating non-interpolated heart rate differences **\n")
++ }
++ 
++ if (is.null(HRVData$Beat$Time)) {
++ 	cat("   --- ERROR: Beats positions not present... ",
++ 	"Impossible to calculate Heart Rate!! ---\n")
++ 	return(HRVData)
++ }
++ 
++ NBeats=length(HRVData$Beat$Time)
++ if (HRVData$Verbose) {
++ 	cat("   Number of beats:",NBeats,"\n");
++ }
++ 
 +   # addition gs 
 +    #using NA, not constant extrapolation as else in RHRV  
 +    #drr=c(NA,NA,1000.0*	diff(HRVData$Beat$Time, lag=1 , differences=2))
@@ -385,6 +405,7 @@ Since we are not interested in heart rate (or pulse), but in heart rate variatio
 \end{Sinput}
 \end{Schunk}
 \clearpage
+
 \section{First Inspection: example.beats}
 
 \subsection{Hart Rate: example.beats}
@@ -421,8 +442,9 @@ Could this be an artefact of preprocessing, filtering out too many impulses?}
 \end{figure}
 
 
-\subsection{Hart Rate Variation. example beats}
+\subsection{Hart Rate Variation: example beats}
 
+If we are interested in heart rate variation, we may prefer starting with (scaled) differences.
 \todo{Consider using differences}
 
 \gsnote{differences for HRV}
@@ -451,10 +473,43 @@ See \figref{fig:recurrence-hrvRRV},
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{heartrate-hrvRRV}
-\caption{RHRV tutorial example.beats. HRRV Signal and linear interpolation.}
+\caption{RHRV tutorial example.beats. HRRV Signal (differences) and linear interpolation.}
 \label{fig:recurrence-hrvRRV}
 \end{center}
 \end{figure}
+
+%
+\begin{Schunk}
+\begin{Sinput}
+> hrvfilt.data <- BuildNIDHR(hrvfilt.data)
+\end{Sinput}
+\begin{Soutput}
+** Calculating non-interpolated heart rate differences **
+   Number of beats: 17259 
+\end{Soutput}
+\begin{Sinput}
+> HRRVfilt <- hrvfilt.data$Beat$HRRV
+\end{Sinput}
+\end{Schunk}
+\index{heart rate variation}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> plotsignal(HRRVfilt)
+\end{Sinput}
+\end{Schunk}
+See \figref{fig:recurrence-hrvRRVfilt},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{heartrate-hrvRRV}
+\caption{RHRV tutorial example.beats, filtered.  HRRV Signal (differences) and linear interpolation.}
+\label{fig:recurrence-hrvRRVfilt}
+\end{center}
+\end{figure}
+
+
 
 \section{First Inspection: example2.beats}
 \begin{Schunk}
@@ -550,8 +605,39 @@ See \figref{fig:recurrence-hrvRRV2},
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=0.8\linewidth]{heartrate-hrvRRV2}
-\caption{RHRV tutorial example2.beats. HRRV2 Signal and linear interpolation.}
+\caption{RHRV tutorial example2.beats. HRRV Signal (differences) and linear interpolation.}
 \label{fig:recurrence-hrvRRV2}
+\end{center}
+\end{figure}
+
+%
+\begin{Schunk}
+\begin{Sinput}
+> hrv2filt.data <- BuildNIDHR(hrv2filt.data)
+\end{Sinput}
+\begin{Soutput}
+** Calculating non-interpolated heart rate differences **
+   Number of beats: 2434 
+\end{Soutput}
+\begin{Sinput}
+> HRRV2filt <- hrv2filt.data$Beat$HRRV
+\end{Sinput}
+\end{Schunk}
+\index{heart rate variation}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> plotsignal(HRRV2filt)
+\end{Sinput}
+\end{Schunk}
+See \figref{fig:recurrence-hrvRRV2filt},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{heartrate-hrvRRV2filt}
+\caption{RHRV tutorial example2.beats, filtered. HRRV2 Signal (differences) and linear interpolation.}
+\label{fig:recurrence-hrvRRV2filt}
 \end{center}
 \end{figure}
 
@@ -566,8 +652,15 @@ For analysis of heart rate variability, we are interested in effect in the range
 Can you modify the displays to focus on this range?
 \end{exca}
 
+\begin{exca}
+For analysis of recovery effects, we are interested in effect in the range of less about 5 min (??).
+
+Can you modify the displays to focus on this range?
+\end{exca}
+
 %@
-\pagebreak
+%:backmatter
+\clearpage
 \nocite{*}
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible
@@ -588,7 +681,7 @@ Can you modify the displays to focus on this range?
 \clearpage
 \R{} session info:
 
-Total Sweave time used: 9.075 sec. at Fri Aug  1 20:47:24 2014.
+Total Sweave time used: 12.511 sec. at Wed Aug  6 21:46:14 2014.
 
 {\tiny
 \begin{itemize}\raggedright
@@ -621,13 +714,14 @@ CVS/Svn repository information:
 {\tiny%
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
-\verb+$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $+\\
+\verb*$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/recurrence.Rnw $*\\
 \verb+$Revision: 135 $+\\
-\verb+$Date: 2014-02-20 12:16:47 +0100 (Thu, 20 Feb 2014) $+\\
+\verb*$Date: 2014-02-20 12:16:47 +0100 (Thu, 20 Feb 2014) $*\\
 \verb+$name:  $+\\
 \verb+$Author: gsawitzki $+
 }
 \typeout{**** $Id: recurrence.Rnw 135 2014-02-20 11:16:47Z gsawitzki $ done ****}
+\typeout{**** $HeadURL: recurrence.Rnw 135 2014-02-20 11:16:47Z gsawitzki $ done ****}
 \end{document}
 
 
