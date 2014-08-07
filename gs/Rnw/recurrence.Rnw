@@ -27,6 +27,66 @@
 
 %\usepackage{gssda}
 \usepackage{SIntro}
+
+%\usepackage{Rd}
+\newlength{\ldescriptionwidth}
+\newcommand{\ldescriptionlabel}[1]{%
+  \settowidth{\ldescriptionwidth}{{#1}}%
+  \ifdim\ldescriptionwidth>\labelwidth
+    {\parbox[b]{\labelwidth}%
+      {\makebox[0pt][l]{#1}\\[1pt]\makebox{}}}%
+  \else
+    \makebox[\labelwidth][l]{{#1}}%
+  \fi
+  \hfil\relax}
+\newenvironment{ldescription}[1][1in]%
+  {\begin{list}{}%
+    {\setlength{\labelwidth}{#1}%
+      \setlength{\leftmargin}{\labelwidth}%
+      \addtolength{\leftmargin}{\labelsep}%
+      \renewcommand{\makelabel}{\ldescriptionlabel}}}%
+  {\end{list}}
+
+\newenvironment{Rdsection}[1]{%
+  \ifx\@empty#1\else\subsubsection*{#1}\fi
+  \begin{list}{}{\setlength{\leftmargin}{0.25in}}\item}
+  {\end{list}}
+
+\newenvironment{Arguments}{%
+  \begin{Rdsection}{Arguments}}{\end{Rdsection}}
+\newenvironment{Description}{%
+  \begin{Rdsection}{Description}}{\end{Rdsection}}
+\newenvironment{Details}{%
+  \begin{Rdsection}{Details}}{\end{Rdsection}}
+\newenvironment{Value}{%
+  \begin{Rdsection}{Value}}{\end{Rdsection}}
+
+\newcommand{\HeaderA}[3]{%
+%  \vneed{1ex}
+%  \markboth{#1}{#1}
+%  \noindent
+%  \nopagebreak
+  \begin{center}
+%  \ifthenelse{\boolean{Rd@use@hyper}}%
+%    {\def\@currentHref{page.\thepage}
+%    \hypertarget{Rfn.#3}{\index{#1@\texttt{#1}}}%
+%    \myaddcontentsline{toc}{subsection}{#1}%
+%    \pdfbookmark[1]{#1}{Rfn.#3}}
+%    {\addcontentsline{toc}{subsection}{#1}
+%      \index{#1@\texttt{#1}|textbf}}
+    \hrule
+    \parbox{0.95\textwidth}{%
+      \begin{ldescription}[1.5in]
+       \item[\texttt{#1}] \emph{#2}
+      \end{ldescription}}
+    \hrule
+  \end{center}
+  \nopagebreak
+  }
+  
+\newenvironment{Usage}{%
+  \begin{Rdsection}{Usage}}{\end{Rdsection}}
+  
 %\usepackage{Sweave}%magic to avoid Sweave
 \usepackage[bookmarks, pdftex,
 pdftitle={recurrence plot},
@@ -55,7 +115,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
 \keywords{data analysis, distribution diagnostics, recurrence plot}
 \thanks{\emph{This waste book is a companion to   ``G. Sawitzki: Statistical Data Analysis''}\\
-\indent \emph{Typeset}, with minor revisions: \today\  from cvs $Revision$\\
+\indent \emph{Typeset}, with minor revisions: \today\  from svn/cvs $Revision$\\
 \indent \url{gs@statlab.uni-heidelberg.de}
 }%\\
 
@@ -150,24 +210,62 @@ To display the Takens state space, we us a variant of pairs().
 \todo{the takens state plot may be critically affected by outliers. Find a good rescaling.}
 
 By convention, the states are defined using overlapping sliding windows. This imposes considerable dependence between the states: one state is the shifted previous states, with only the end sub-state replaced. As an option, the states can be subsampled, using only non-overlapping ranges.
-<<>>=
+
+\todo{improve choice of alpha}
+
+% R CMD Rdconv -t latex statepairs.Rd -o statepairs.tex
+\HeaderA{statepairs}{}{statepairs}
+%\keyword{\textbackslash{}textasciitilde{}kwd1}{statepairs}
+%\keyword{\textbackslash{}textasciitilde{}kwd2}{statepairs}
+%
+\begin{Usage}
+\begin{verbatim}
+statepairs(states, main, rank = FALSE, nooverlap = FALSE, alpha)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{states}] A matrix: states by dimension.
+
+
+\item[\code{main}] Optional: the main header.
+
+
+\item[\code{rank}] An experimental variant. If \code{rank}, the values are rank transformed.
+
+
+\item[\code{nooverlap}] An experimental variant. If \code{nooverlap}, the cases are subsampled by dimension.
+
+\item[\code{alpha}] The alpha value used for plotting. The current choice is $sqrt{frac{1}{nr states}}$.
+
+
+\end{ldescription}
+\end{Arguments}
+
+
 <<statepairs, echo=TRUE, print=FALSE>>=
-statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE){
+statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
 	if (missing(main)) {
 	main <- paste("Takens states:",deparse(substitute(states)), "\n",
 		"n=", n," dim=", dim) }
 		
 	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
+	
 	main <- paste(main," no overlap")}
+	
+	if (missing(alpha)) {alpha <- 1/sqrt(dim(states)[1])}
+	#cat("alpha=",alpha)
 	
 	if (rank) {states <- apply(states, 2, rank, ties.method="random")
 	main <- paste(main," ranked")}
 	pairs(states, main=main,
-	col=rgb(0,0,0,0.1))
+	col=rgb(0,0,0, alpha), pch=19)
 	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
 }
 @
+
 \subsection{Local Bottleneck}
 
 To allow experimental implementations, functions from \code{nonlinearTseries} are aliased here.
@@ -196,7 +294,7 @@ local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
 <<ecurrencePlotAuxNonSparse>>=
 #non-sparse variant
 #local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
-local.recurrencePlotAux=function(neighs, dim=NULL, lag=NULL, radius=NULL){
+local.recurrencePlotAux = function(neighs, dim=NULL, lag=NULL, radius=NULL){
 
 	# just for reference. This function is inlined
 	neighbourListNeighbourMatrix  = function(){
@@ -258,7 +356,7 @@ We set up a small series of test signals.
 
 For convenience, some source code from other libraries is included to make this self-contained.
 
-As a global constant, we set up the length of the series to be used.
+As a global constant, we set up the length of the series to be used for test signals.
 %:  nsignal
 <<nsignal>>=
 #nsignal <- 256
@@ -267,14 +365,21 @@ system.time.start <- proc.time()
 
 @
 For signal representation, we use a common layout.
+
 <<>>=
 plotsignal <- function (signal) {
+#! alpha level should depend on expected number of overlaps
+
 par(mfrow=c(1,2))
-plot(signal, col=rgb(0,0,1,0.4), pch=20, xlab="t" )
+plot(signal, 
+	main="",col=rgb(0,0,1,0.3), pch=20, xlab="index" )
 
 plot(signal, type="l", 
-	main=deparse(substitute(signal)), xlab="t", col=rgb(0,0,0,0.4))
-points(signal, col=rgb(0,0,1,0.4), pch=20 )
+	main="", xlab="index", col=rgb(0,0,0,0.4))
+points(signal, col=rgb(0,0,1,0.3), pch=20 )
+main=deparse(substitute(signal))
+title(main=main, outer=TRUE, line=-2, cex.main=1.2)
+
 }
 
 <<sin10, fig=TRUE, include=FALSE, width=10, height=5 >>=
@@ -389,7 +494,8 @@ chunk.time.start<- proc.time()
 @
 %
 <<sintakens, fig=TRUE, include=FALSE>>=
-sintakens <- local.buildTakens( time.series=sin10(),embedding.dim=4, time.lag=1)
+sintakens <- local.buildTakens(time.series=sin10(), 
+	embedding.dim=4, time.lag=1)
 statepairs(sintakens)
 @
 See \figref{fig:sintakens}.
@@ -431,7 +537,8 @@ chunk.time.start<- proc.time()
 
 %
 <<uniftakens, fig=TRUE, include=FALSE>>=
-uniftakens <- local.buildTakens( time.series=xunif,embedding.dim=4,time.lag=1)
+uniftakens <- local.buildTakens( time.series=xunif,
+	embedding.dim=4, time.lag=1)
 statepairs(uniftakens)
 @
 See \figref{fig:uniftakens}.
@@ -469,7 +576,8 @@ chunk.time.start<- proc.time()
 
 %
 <<chirptakens, fig=TRUE, include=FALSE>>=
-chirptakens <- local.buildTakens( time.series=chirp(),embedding.dim=4,time.lag=1)
+chirptakens <- local.buildTakens( time.series=chirp(),
+	embedding.dim=4,time.lag=1)
 statepairs(chirptakens)
 @
 See \figref{fig:chirptakens}
@@ -555,25 +663,32 @@ This is a hack to report RQA information. $dim=NULL$ is added to align calling w
 showrqa <- function(takens, dim=NULL, radius, do.hist = TRUE)
 {
 	xxrqa <- rqa(takens=takens,radius=radius)
-	cat(paste(deparse(substitute(takens)), " n=", dim(takens)[1], " Dim:", dim(takens)[2], "\n"))
-	cat(paste("Radius:", radius, " Recurrence coverage REC:", round(xxrqa[1]$REC, 3), "\n"))
-	cat(paste("Determinism:", round(xxrqa$DET,3), " Laminarity:",round(xxrqa$LAM,3), "\n"))
+	cat(paste(deparse(substitute(takens)), " n=", dim(takens)[1], 
+		" Dim:", dim(takens)[2], "\n"))
+	cat(paste("Radius:", radius, 
+		" Recurrence coverage REC:", round(xxrqa[1]$REC, 3), "\n"))
+	cat(paste("Determinism:", round(xxrqa$DET,3), 
+		" Laminarity:",round(xxrqa$LAM,3), "\n"))
 	cat(paste("DIV:", round(xxrqa$DIV,3), "\n"))
-	cat(paste("Trend:", round(xxrqa$TREND,3), " Entropy:",round(xxrqa$ENTR,3), "\n"))
+	cat(paste("Trend:", round(xxrqa$TREND,3), 
+		" Entropy:",round(xxrqa$ENTR,3), "\n"))
 	cat(paste("Diagonal lines max:", round(xxrqa$Lmax,3),
 		 " Mean:",round(xxrqa$Lmean,3), 
 		" Mean off main:",round(xxrqa$LmeanWithoutMain,3), "\n"))
-	cat(paste("Vertical lines max:", round(xxrqa$Vmax,3), " Mean:",round(xxrqa$Vmean,3), "\n"))
+	cat(paste("Vertical lines max:", round(xxrqa$Vmax,3), 
+		" Mean:",round(xxrqa$Vmean,3), "\n"))
 		# str(xxrqa[4:12])
   
 	oldpar <- par(mfrow=c(2,1))
 	if (do.hist){
 	barplot(xxrqa$diagonalHistogram, 
 		main=paste(deparse(substitute(takens)), "Diagonal",
-			"\n n=", dim(takens)[1], " Dim:", dim(takens)[2], " Radius: ",radius))
+			"\n n=", dim(takens)[1], " Dim:", 
+			dim(takens)[2], " Radius: ",radius))
 	barplot(xxrqa$recurrenceRate, 
 		main=paste(deparse(substitute(takens)),"Recurrence Rate",
-			"\n n=", dim(takens)[1], " Dim:", dim(takens)[2], " Radius: ",radius))
+			"\n n=", dim(takens)[1], " Dim:", 
+			dim(takens)[2], " Radius: ",radius))
 		}
 	par(oldpar)
 	invisible(xxrqa)
@@ -727,7 +842,8 @@ chunk.time.start<- proc.time()
 %
 <<eruptionstakens4, fig=TRUE, include=FALSE>>=
 eruptionstakens4 <- 
-	local.buildTakens( time.series=geyser$duration, embedding.dim=4, time.lag=1)
+	local.buildTakens( time.series=geyser$duration, 
+		embedding.dim=4, time.lag=1)
 	statepairs(eruptionstakens4)
 @
 See \figref{fig:eruptionstakens4}
@@ -810,7 +926,8 @@ chunk.time.start<- proc.time()
 %
 <<eruptionstakens2, fig=TRUE, include=FALSE>>=
 eruptionstakens2 <- 
-	local.buildTakens(time.series=geyser$duration, embedding.dim=2, time.lag=1)
+	local.buildTakens(time.series=geyser$duration, 
+		embedding.dim=2, time.lag=1)
 statepairs(eruptionstakens2)
 @
 See \figref{fig:eruptionstakens2}
@@ -849,7 +966,8 @@ chunk.time.start<- proc.time()
 @
 
 <<>>=
-eruptionsneighs2<-local.findAllNeighbours(eruptionstakens2, radius=0.8)
+eruptionsneighs2<-local.findAllNeighbours(eruptionstakens2, 
+	radius=0.8)
 save(eruptionsneighs2, file="eruptionsneighs2.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -895,7 +1013,8 @@ chunk.time.start<- proc.time()
 @
 %
 <<eruptionstakens6, fig=TRUE, include=FALSE>>=
-eruptionstakens6 <- local.buildTakens( time.series=geyser$duration,embedding.dim=6,time.lag=1)
+eruptionstakens6 <- local.buildTakens( time.series=geyser$duration,
+	embedding.dim=6,time.lag=1)
 statepairs(eruptionstakens6)
 @
 See \figref{fig:eruptionstakens6}.
@@ -933,7 +1052,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs6<-local.findAllNeighbours(eruptionstakens6, radius=0.8)
+eruptionsneighs6<-local.findAllNeighbours(eruptionstakens6, 
+	radius=0.8)
 save(eruptionsneighs6, file="eruptionsneighs6.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -977,7 +1097,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<eruptionstakens8, fig=TRUE, include=FALSE>>=
-eruptionstakens8 <- local.buildTakens( time.series=geyser$duration,embedding.dim=8,time.lag=1)
+eruptionstakens8 <- local.buildTakens( time.series=geyser$duration,
+	embedding.dim=8,time.lag=1)
 statepairs(eruptionstakens8)
 @
 See \figref{fig:eruptionstakens8}.
@@ -1016,7 +1137,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<>>=
-eruptionsneighs8<-local.findAllNeighbours(eruptionstakens8, radius=0.8)
+eruptionsneighs8<-local.findAllNeighbours(eruptionstakens8, 
+	radius=0.8)
 save(eruptionsneighs8, file="eruptionsneighs8.RData")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1091,7 +1213,8 @@ chunk.time.start<- proc.time()
 @
 <<waitingtakens, fig=TRUE, include=FALSE>>=
 waitingtakens <- 
-	local.buildTakens( time.series=geyser$waiting, embedding.dim=4, time.lag=4)
+	local.buildTakens( time.series=geyser$waiting, 
+		embedding.dim=4, time.lag=4)
 statepairs(waitingtakens)
 @
 See \figref{fig:waitingtakens}.
@@ -1176,7 +1299,8 @@ chunk.time.start<- proc.time()
 @
 <<gleruptionstakens4, fig=TRUE, include=FALSE>>=
 gleruptionstakens4 <- 
-	local.buildTakens( time.series=geyserlin, embedding.dim=4, time.lag=2)
+	local.buildTakens( time.series=geyserlin, 
+		embedding.dim=4, time.lag=2)
 statepairs(gleruptionstakens4)
 @
 See \figref{fig:gleruptionstakens4}.
@@ -1243,7 +1367,8 @@ chunk.time.start<- proc.time()
 @
 <<gleruptionstakens2, fig=TRUE, include=FALSE>>=
 gleruptionstakens2 <- 
-	local.buildTakens(time.series=geyserlin, embedding.dim=2, time.lag=2)
+	local.buildTakens(time.series=geyserlin, 
+		embedding.dim=2, time.lag=2)
 statepairs(gleruptionstakens2)
 @
 See \figref{fig:gleruptionstakens2}.
@@ -1293,7 +1418,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<gleruptionstakens6, fig=TRUE, include=FALSE>>=
-gleruptionstakens6 <- local.buildTakens( time.series=geyserlin,embedding.dim=6,time.lag=2)
+gleruptionstakens6 <- local.buildTakens( time.series=geyserlin,
+	embedding.dim=6,time.lag=2)
 statepairs(gleruptionstakens6)
 @
 See \figref{fig:gleruptionstakens6}
@@ -1341,7 +1467,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<gleruptionstakens8, fig=TRUE, include=FALSE>>=
-gleruptionstakens8 <- local.buildTakens( time.series=geyserlin,embedding.dim=8,time.lag=2)
+gleruptionstakens8 <- local.buildTakens( time.series=geyserlin,
+	embedding.dim=8,time.lag=2)
 statepairs(gleruptionstakens8)
 @
 See \figref{fig:gleruptionstakens8}
@@ -1361,7 +1488,8 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 <<gl04>>=
-eruptionsneighs8<-local.findAllNeighbours(gleruptionstakens8, radius=0.8)
+eruptionsneighs8<-local.findAllNeighbours(gleruptionstakens8, 
+	radius=0.8)
 save(eruptionsneighs8, file="eruptionsneighs8.RData")
 <<glprint=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1434,7 +1562,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens4, fig=TRUE, include=FALSE>>=
-hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=4,time.lag=1)
+hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=4,time.lag=1)
 statepairs(hrvRRtakens4)
 @
 See \figref{fig:hrvRRtakens4}.
@@ -1504,7 +1633,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens2, fig=FALSE, include=FALSE>>=
-hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=2,time.lag=1)
 hrvRRneighs2 <-local.findAllNeighbours(hrvRRtakens2, radius=16)
 save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
 @
@@ -1528,7 +1658,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRtakens6, fig=TRUE, include=FALSE>>=
-hrvRRtakens6 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=6,time.lag=1)
+hrvRRtakens6 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=6,time.lag=1)
 hrvRRneighs6 <-local.findAllNeighbours(hrvRRtakens6, radius=16)
 save(hrvRRneighs6, file="hrvRRneighs6.Rdata")
 @
@@ -1548,7 +1679,8 @@ chunk.time.start<- proc.time()
 @
 % dim 8
 <<hrvRRtakens8, fig=TRUE, include=FALSE>>=
-hrvRRtakens8 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=8,time.lag=1)
+hrvRRtakens8 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=8,time.lag=1)
 hrvRRneighs8 <-local.findAllNeighbours(hrvRRtakens8, radius=32)
 save(hrvRRneighs8, file="hrvRRneighs8.Rdata")
 @
@@ -1567,7 +1699,8 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 % dim 12
 
 <<hrvRRtakens12, fig=TRUE, include=FALSE>>=
-hrvRRtakens12 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],embedding.dim=2,time.lag=1)
+hrvRRtakens12 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=2,time.lag=1)
 hrvRRneighs12 <-local.findAllNeighbours(hrvRRtakens12, radius=16)
 save(hrvRRneighs12, file="hrvRRneighs12.Rdata")
 @
@@ -1636,7 +1769,8 @@ function(HRVData, verbose=NULL) {
 # D for difference
 #------------------------------------------------------ 
 	if (!is.null(verbose)) {
-		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
+		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n ",
+			"   --- See help for more information!! ---\n")
 		SetVerbose(HRVData,verbose)
 	}
 	
@@ -1701,7 +1835,8 @@ chunk.time.start<- proc.time()
 %:hrvRRVtakens4
 <<hrvRRVtakens4, fig=TRUE, include=FALSE>>=
 hrvRRVtakens4 <- 
-	local.buildTakens( time.series=HRRV[1:nsignal], embedding.dim=4,time.lag=1)
+	local.buildTakens( time.series=HRRV[1:nsignal], 
+		embedding.dim=4,time.lag=1)
 statepairs(hrvRRVtakens4)
 @
 See \figref{fig:hrvRRVtakens4}
@@ -1773,8 +1908,10 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRVtakens2, fig=TRUE, include=FALSE>>=
-hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], embedding.dim=2, time.lag=1)
-hrvRRVneighs2 <-local.findAllNeighbours(hrvRRVtakens2[-(1:2),], radius=0.125)
+hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], 
+	embedding.dim=2, time.lag=1)
+hrvRRVneighs2 <-local.findAllNeighbours(hrvRRVtakens2[-(1:2),], 
+	radius=0.125)
 save(hrvRRVneighs2, file="hrvRRVneighs2.Rdata")
 @
 Time used: \Sexpr{laptime()} sec.
@@ -1797,7 +1934,8 @@ chunk.time.start<- proc.time()
 @
 
 <<hrvRRVtakens6, fig=TRUE, include=FALSE>>=
-hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=6,time.lag=1)
+hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=6,time.lag=1)
 hrvRRVneighs6 <-local.findAllNeighbours(hrvRRVtakens6[-(1:2),], radius=0.125)
 save(hrvRRVneighs6, file="hrvRRVneighs6.Rdata")
 @
@@ -1821,7 +1959,8 @@ chunk.time.start<- proc.time()
 @
 % dim 8
 <<hrvRRVtakens8, fig=TRUE, include=FALSE>>=
-hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=8,time.lag=1)
+hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=8,time.lag=1)
 hrvRRVneighs8 <-local.findAllNeighbours(hrvRRVtakens8[-(1:2),], radius=0.125)
 save(hrvRRVneighs8, file="hrvRRVneighs8.Rdata")
 @
@@ -1844,7 +1983,8 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 
 <<hrvRRVtakens12, fig=TRUE, include=FALSE>>=
 hrvRRVtakens12 <- 
-	local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=12,time.lag=1)
+	local.buildTakens( time.series=HRRV[1:nsignal],
+		embedding.dim=12,time.lag=1)
 hrvRRVneighs12 <- 
 	local.findAllNeighbours(hrvRRVtakens12[-(1:2),], radius=3/16)
 save(hrvRRVneighs12, file="hrvRRVneighs12.Rdata")
@@ -1867,7 +2007,8 @@ Time used: \Sexpr{laptime()} sec.
 % dim 16
 
 <<hrvRRVtakens16, fig=TRUE, include=FALSE>>=
-hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],embedding.dim=16,time.lag=1)
+hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=16,time.lag=1)
 hrvRRVneighs16 <-local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=3/16)
 save(hrvRRVneighs16, file="hrvRRVneighs16.Rdata")
 @
@@ -1988,10 +2129,11 @@ CVS/Svn repository information:
 {\tiny%
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
+copied to r-forge\\
 \verb*$HeadURL$*\\
 \verb+$Revision$+\\
-\verb+$Date$+\\
-\verb+$name:  $+\\
+\verb*$Date$*\\
+\verb+$Name:  $+\\
 \verb+$Author$+
 }
 \typeout{**** $Id$ done ****}
