@@ -2,10 +2,10 @@
 %$HeadURL$
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %
-%% Defunct. Master is in RHRV now. This is copied to RHRV. The master file is in lectures/src/dataanalysis.
+%% Defunct. Master is in RHRV now. This is copied to  lectures/src/dataanalysis.
+%
 %  Adjust the path names below and run the R command to process this file
 %
-% oldoptions<-options(width=72,prompt="  ", continue="  "); options(oldoptions)
 % setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
 %  cp <- tools::compactPDF("recurrence.pdf", gs_quality = "ebook")
 %
@@ -431,7 +431,16 @@ statecoplot <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
 
 To allow experimental implementations, functions from \code{nonlinearTseries} are aliased here.
 <<>>=
-local.buildTakens <- buildTakens
+local.buildTakens <- function (time.series, 
+	embedding.dim, time.lag=1, 
+	id=deparse(substitute(time.series))) 
+{
+	takens <- nonlinearTseries:::buildTakens(time.series, embedding.dim, time.lag)
+	attr(takens,"time.lag") <- time.lag
+	attr(takens,"id") <- id
+	return(takens)
+}
+@
 <<>>=
 local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
 @
@@ -574,38 +583,48 @@ This is a hack to report RQA information. $dim=NULL$ is added to align calling w
 \todo{improve to a full \code{show} method}
 %:   function showrqa
 <<showrqa>>=
-showrqa <- function(takens, dim=NULL, radius, do.hist = TRUE)
+showrqa <- function(takens, dim=NULL, radius, 
+		digits=3,
+		do.hist = TRUE, log = "" )
 {
 	xxrqa <- rqa(takens=takens,radius=radius)
 	cat(paste(deparse(substitute(takens)), " n=", dim(takens)[1], 
 		" Dim:", dim(takens)[2], "\n"))
 	cat(paste("Radius:", radius, 
-		" Recurrence coverage REC:", round(xxrqa[1]$REC, 3), 
-		" log(REC)/log(R):", round(log(xxrqa[1]$REC)/log(radius),3), "\n"))
-	cat(paste("Determinism:", round(xxrqa$DET,3), 
-		" Laminarity:",round(xxrqa$LAM,3), "\n"))
-	cat(paste("DIV:", round(xxrqa$DIV,3), "\n"))
-	cat(paste("Trend:", round(xxrqa$TREND,3), 
-		" Entropy:",round(xxrqa$ENTR,3), "\n"))
-	cat(paste("Diagonal lines max:", round(xxrqa$Lmax,3),
-		 " Mean:",round(xxrqa$Lmean,3), 
-		" Mean off main:",round(xxrqa$LmeanWithoutMain,3), "\n"))
-	cat(paste("Vertical lines max:", round(xxrqa$Vmax,3), 
-		" Mean:",round(xxrqa$Vmean,3), "\n"))
+		" Recurrence coverage REC:", round(xxrqa[1]$REC, digits), 
+		" log(REC)/log(R):", round(log(xxrqa[1]$REC)/log(radius), digits), "\n"))
+	cat(paste("Determinism:", round(xxrqa$DET, digits), 
+		" Laminarity:",round(xxrqa$LAM, digits), "\n"))
+	cat(paste("DIV:", round(xxrqa$DIV, digits), "\n"))
+	cat(paste("Trend:", round(xxrqa$TREND, digits), 
+		" Entropy:",round(xxrqa$ENTR, digits), "\n"))
+	cat(paste("Diagonal lines max:", round(xxrqa$Lmax, digits),
+		 " Mean:",round(xxrqa$Lmean, digits), 
+		" Mean off main:",round(xxrqa$LmeanWithoutMain, digits), "\n"))
+	cat(paste("Vertical lines max:", round(xxrqa$Vmax, digits), 
+		" Mean:",round(xxrqa$Vmean, digits), "\n"))
 		# str(xxrqa[4:12])
   
-	oldpar <- par(mfrow=c(2,1))
 	if (do.hist){
-	barplot(xxrqa$diagonalHistogram, 
+	if (log==TRUE) log<-"y"
+	oldpar <- par(mfrow=c(2,1))
+	xxrqa$diagonalHistogram[xxrqa$diagonalHistogram==0] <- NA # hack for zero counts
+		barplot(xxrqa$diagonalHistogram, 
 		main=paste(deparse(substitute(takens)), "Diagonal",
 			"\n n=", dim(takens)[1], " Dim:", 
-			dim(takens)[2], " Radius: ",radius))
+			dim(takens)[2], " Radius: ",radius),
+			xlab="length of diagonals",
+			log = log)
+			
+			xxrqa$diagonalHistogram[xxrqa$diagonalHistogram==0] <- NA # hack for zero counts
 	barplot(xxrqa$recurrenceRate, 
 		main=paste(deparse(substitute(takens)),"Recurrence Rate",
 			"\n n=", dim(takens)[1], " Dim:", 
-			dim(takens)[2], " Radius: ",radius))
-		}
+			dim(takens)[2], " Radius: ",radius),
+			xlab="distance to diagonal",
+			log = log)
 	par(oldpar)
+		}
 	invisible(xxrqa)
 }
 
@@ -615,7 +634,7 @@ showrqa <- function(takens, dim=NULL, radius, do.hist = TRUE)
 \section{Test Cases}
 @
 We set up a small series of test signals. Some synthetic test signals are introduced here.
-More test cases used later are the Geyser data set (\vref{sec:geyser}) and two examples of heart rate data sets (\vref{sec:hrv} and \vref{sec:hrv2}).
+More test cases used later are the Geyser data set (\Vref{sec:geyser}) and two examples of heart rate data sets (\Vref{sec:hrv} and \Vref{sec:hrv2}) from \code{library(rhrv)}.
 
 For convenience, some source code from other libraries is included to make this self-contained.
 
