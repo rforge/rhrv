@@ -221,12 +221,12 @@ See \figref{fig:recurrence-#2}.
 \subsubsection{Takens' Recurrence States}
 \index{Takens state}
 
-Recurrence plots have been introduced in an attempt to understand near periodic in hydrodynamics. 
+Recurrence plots have been introduced in an attempt to understand near periodic behaviour in hydrodynamics, in particular the transition to turbulence. 
 On the one hand, and extended theory on dynamical systems was available, covering deterministic models. A fundamental concept is that at a certain time a system is in some state, and developing from this. Defining the proper state space is a critical step in modelling.
 
 The other toolkit is that of stochastics processes, in particular Markov models. Classical time series assumes stationarity, and this is obviously not the way to go. A fundamental idea for Markov models is that  the system state is seen in a temporal context: you have a Markov process, if you can define a (non-anticipating) state that has sufficient information for prediction: given this state, the future is independent from the past.
 
-Recurrence, coming back to some state, is often a key to understand a near periodic system.
+Recurrence, coming back to some state, is often a key to understand a near periodic system. A classical field is the movement of celestial bodies.
 
 Hydrodynamics is a challenging problem. Understanding planetary motion is a historical challenge, and may be useful as an illustration.
 
@@ -379,11 +379,17 @@ as a default.
 \todo{colour by time}
 %:  function statepairs
 <<statepairs, echo=TRUE, print=FALSE>>=
-statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
+statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha, ...){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
+	time.lag <- attr(states,"time.lag")
+	if (is.null(time.lag)) time.lag <- 1
 	if (missing(main)) {
-	main <- paste("Takens states:",deparse(substitute(states)), "\n",
-		"n=", n," dim=", dim) }
+	stateid <- attr(states, "id")
+	if (is.null(stateid)) stateid <- deparse(substitute(states))
+	main <- paste("Takens states:", stateid, "\n",
+		"n=", n," dim=", dim) 
+	if (time.lag != 1) main <- paste(main, " time lag=", time.lag)
+		}
 		
 	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
 	
@@ -395,7 +401,7 @@ statepairs <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
 	if (rank) {states <- apply(states, 2, rank, ties.method="random")
 	main <- paste(main," ranked")}
 	pairs(states, main=main,
-	col=rgb(0,0,0, alpha), pch=19)
+	col=rgb(0,0,0, alpha), pch=19, ...)
 	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
 }
 @
@@ -405,11 +411,17 @@ Assuming the index is time, the \code{stateplot()} is layed out to show the high
 
 \todo{extend for low dimensions, extend parameters}
 <<statecoplot, echo=TRUE, print=FALSE>>=
-statecoplot <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
+statecoplot <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha, ...){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
+	time.lag <- attr(states,"time.lag")
+	if (is.null(time.lag)) time.lag <- 1
 	if (missing(main)) {
-	main <- paste("Takens states:",deparse(substitute(states)), "\n",
-		"n=", n," dim=", dim) }
+	stateid <- attr(states, "id")
+	if (is.null(stateid)) stateid <- deparse(substitute(states))
+	main <- paste("Takens states:", stateid, "\n",
+		"n=", n," dim=", dim) 
+	if (time.lag != 1) main <- paste(main, " time lag=", time.lag)
+		}
 		
 	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
 	
@@ -422,7 +434,7 @@ statecoplot <- function(states, main, rank=FALSE, nooverlap= FALSE, alpha){
 	main <- paste(main," ranked")}
 	
 	coplot((states[,4]~states[,3]|states[,1]+ states[,2]), main=main,
-	col=rgb(0,0,0, alpha), pch=19)
+	col=rgb(0,0,0, alpha), pch=19, ...)
 	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
 }
 @
@@ -743,12 +755,34 @@ See \figref{fig:recurrence-chirp},
 \label{fig:recurrence-chirp}
 \end{center}
 \end{figure}
-
+\clearpage
+\subsection{Doppler signal}
 @
-\todo{include doppler {waveslim}}
+%\todo{include doppler {waveslim}}
+<<>>=
+doppler <- function(n=nsignal) {
+
+dopplersignal  <- function(x) { sqrt(x*(1-x))* sin((2.1*pi)/(x+0.05))}
+dopplersignal((1:nsignal)/nsignal)
+}
+@
+<<doppler, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(doppler())
+@
+See \figref{fig:recurrence-doppler},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-doppler}
+\caption{Test case: Doppler signal. Signal and linear interpolation.}
+\label{fig:recurrence-doppler}
+\end{center}
+\end{figure}
+
 \clearpage
 \section{Takens' Recurrence States}
 
+%: sin
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -761,6 +795,23 @@ statepairs(sintakens) #4
 \plotpairs{sintakens}{Test case: sinus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
+
+The states only catch the local behaviour, where ``local'' depends on the sampling rate and the variation of the signal. For the sinus signal, we get a better picture if we subsample the signal.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<sintakenslag16, fig=TRUE, include=FALSE>>=
+sintakenslag16 <- local.buildTakens(time.series=sin10(), 
+	embedding.dim=4, time.lag=16)
+statepairs(sintakenslag16) #4
+@
+\plotpairs{sintakenslag16}{Test case: sinus at time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+
 %See \figref{fig:sintakens}.
 %@
 %
@@ -796,8 +847,19 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
-
 %
+<<sintakenslag16co, fig=TRUE, include=FALSE>>=
+statecoplot(sintakenslag16) #4
+@
+\plotco{sintakenslag16co}{Test case: sinus, time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+%: unif
 <<uniftakens, fig=TRUE, include=FALSE>>=
 uniftakens <- local.buildTakens( time.series=xunif,
 	embedding.dim=4, time.lag=1)
@@ -828,7 +890,7 @@ Time used: \Sexpr{laptime()} sec.}
 chunk.time.start<- proc.time()
 @
 
-%
+%: chirp
 <<chirptakens, fig=TRUE, include=FALSE>>=
 chirptakens <- local.buildTakens( time.series=chirp(),
 	embedding.dim=4,time.lag=1)
@@ -853,6 +915,82 @@ statepairs(chirptakens, nooverlap=TRUE) #dim=4
 \plotpairs{chirptakensno}{Test case: chirp signal.
 Time used: \Sexpr{laptime()} sec-}
 %
+%: doppler
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakens, fig=TRUE, include=FALSE>>=
+dopplertakens <- local.buildTakens(time.series=doppler(), 
+	embedding.dim=4, time.lag=1)
+statepairs(dopplertakens) #4
+@
+\plotpairs{dopplertakens}{Test case: Doppler. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+The states only catch the local behaviour, where ``local'' depends on the sampling rate and the variation of the signal. For the doppler signal, we get a better picture if we subsample the signal.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakenslag16, fig=TRUE, include=FALSE>>=
+dopplertakenslag16 <- local.buildTakens(time.series=doppler(), 
+	embedding.dim=4, time.lag=16)
+statepairs(dopplertakenslag16) #4
+@
+\plotpairs{dopplertakenslag16}{Test case: doppler at time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+
+%See \figref{fig:dopplertakens}.
+%@
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.8\linewidth]{recurrence-dopplertakens}
+%\caption{Test case: dopplerus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+%Time used: \Sexpr{laptime()} sec.
+%}
+%\label{fig:dopplertakens}
+%\end{center}
+%\end{figure}
+%
+%
+<<dopplertakensno, fig=TRUE, include=FALSE>>=
+statepairs(dopplertakens, nooverlap=TRUE) #dim=4
+@
+\plotpairs{dopplertakensno}{Test case: doppler, no overlap. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}%
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakensco, fig=TRUE, include=FALSE>>=
+statecoplot(dopplertakens) #4
+@
+\plotco{dopplertakensco}{Test case: Doppler. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakenslag16co, fig=TRUE, include=FALSE>>=
+statecoplot(dopplertakenslag16) #4
+@
+\plotco{dopplertakenslag16co}{Test case: Doppler, time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
 
 @
 \clearpage
@@ -894,6 +1032,38 @@ showrqa(sintakens, radius=0.2)
 Time used: \Sexpr{laptime()} sec.
 }
 
+%: sin lag 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+sin10lag16neighs<-local.findAllNeighbours(sintakenslag16, radius=0.2)
+save(sin10lag16neighs, file="sin10lag16neighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<sin10lag16rec, fig=TRUE, include=FALSE>>=
+load(file="sin10lag16neighs.RData")
+local.recurrencePlotAux(sin10lag16neighs, dim=2, radius=0.2)
+@
+
+\plotrecurrence{sin10lag16rec}{Recurrence Plot. Test case: sinus curves, time lag 16.
+Time used: \Sexpr{laptime()} sec.}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<sin10lag16rqa, fig=TRUE, include=FALSE>>=
+showrqa(sintakenslag16, radius=0.2)
+@
+\plotrecurrence{sin10lag16rqa}{RQA. Test case: sinus curves.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
 \subsection{Uniform random}
 
 <<print=FALSE, echo=FALSE>>=
@@ -907,6 +1077,9 @@ local.recurrencePlotAux(unifneighs, radius=0.2)
 \plotrecurrence{unifrec}{Recurrence Plot. Test case: uniform random numbers.
 Time used: \Sexpr{laptime()} sec.
 }
+
+\clearpage
+
 
 \subsection{Chirp Signal}
 
@@ -944,6 +1117,75 @@ Time used: \Sexpr{laptime()} sec.
 \end{figure}
 
 \clearpage
+\subsection{Doppler}
+
+%doppler  <- function(x) { sqrt{x(1-x)} sin((2.1*pi)/(x+0.05))}
+
+%recurrencePlot(takens = NULL, time.series, embedding.dim,
+%    time.lag, radius)
+%<<sin10neighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+dopplerneighs<-local.findAllNeighbours(dopplertakens, radius=0.2)
+save(dopplerneighs, file="dopplerneighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerrec, fig=TRUE, include=FALSE>>=
+load(file="dopplerneighs.RData")
+local.recurrencePlotAux(dopplerneighs, dim=2, radius=0.2)
+@
+
+\plotrecurrence{dopplerrec}{Recurrence Plot. Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerrqa, fig=TRUE, include=FALSE>>=
+showrqa(dopplertakens, radius=0.2)
+@
+\plotrecurrence{dopplerrqa}{RQA. Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.
+}
+
+%: doppler lag 16
+<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+dopplerlag16neighs<-local.findAllNeighbours(dopplertakenslag16, radius=0.2)
+save(dopplerlag16neighs, file="dopplerlag16neighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerlag16rec, fig=TRUE, include=FALSE>>=
+load(file="dopplerlag16neighs.RData")
+local.recurrencePlotAux(dopplerlag16neighs, dim=2, radius=0.2)
+@
+
+\plotrecurrence{dopplerlag16rec}{Recurrence Plot. Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerlag16rqa, fig=TRUE, include=FALSE>>=
+showrqa(dopplertakenslag16, radius=0.2)
+@
+\plotrecurrence{dopplerlag16rqa}{RQA. Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
 \section{Case Study: Geyser data}
 \label{sec:geyser}
 \index{Geyser}
