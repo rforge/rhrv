@@ -395,14 +395,14 @@ statepairs <- function(states, main,
 		rank=FALSE, nooverlap= FALSE, range=NULL, 
 		alpha, ...){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
-	time.lag <- attr(states,"time.lag")
-	if (is.null(time.lag)) time.lag <- 1
+	time.lag <- attr(states,"time.lag"); if (is.null(time.lag)) time.lag <- 1
+	
 	if (missing(main)) {
         		stateid <- attr(states, "id")
         		if (is.null(stateid)) stateid <- deparse(substitute(states))
         		main <- paste("Takens states:", stateid, "\n",
-        			"n=", n," dim=", dim) 
-        		if (time.lag != 1) main <- paste(main, " time lag=", time.lag)
+        			"n:", n," dim:", dim) 
+        		if (time.lag != 1) main <- paste(main, " time lag:", time.lag)
 		}
 		
 	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
@@ -571,10 +571,11 @@ local.recurrencePlotAux = function(neighs, dim=NULL, lag=NULL, radius=NULL){
 	    }
 	  }
 
+#! clean up. only one main id should be presentes
 	main <- paste("Recurrence Plot: ", 
 			deparse(substitute(neighs))
 			)
-	id <-  attr(neighs, "id"); if (!is.null(id)) main <- paste(main," id attr:",id)
+	id <-  attr(neighs, "id"); if (!is.null(id)) main <- paste(main," id:",id)
 
 	more <- NULL
 	
@@ -677,18 +678,23 @@ local.recurrencePlotAuxXXX = function(neighs, dim=NULL, lag=NULL, radius=NULL, m
 
 This is a hack to report RQA information. $dim=NULL$ is added to align calling with other functions.
 
+Needs improvement.
+
 \todo{improve to a full \code{show} method for class \code{rqa}.}
 
 %:   function showrqa
 <<showrqa>>=
 showrqa <- function(takens, dim=NULL, radius, 
 		digits=3,
-		do.hist = TRUE, log = TRUE ,...)
+		do.hist = TRUE, rm.hist = TRUE, log = TRUE ,...)
 {
 	xxrqa <- rqa(takens=takens,radius=radius)
 	xxrqa$radius <- radius
-	cat(paste(deparse(substitute(takens)), " n:", dim(takens)[1], 
-		" Dim:", dim(takens)[2], "\n"))
+	id <- attr(takens,"id") 
+	if (is.null(id)) id <- deparse(substitute(takens))
+	xxrqa$id<- id
+	xxrqa$time.lag <- attr(takens,"time.lag") 
+	cat(id, " n:", dim(takens)[1], " Dim:", dim(takens)[2], "\n")
 	xxrqa$n <- dim(takens)[1]
 	xxrqa$dim <- dim(takens)[2]
 	cat(paste("Radius:", radius, 
@@ -742,6 +748,8 @@ showrqa <- function(takens, dim=NULL, radius,
 			log = log, ...)
 	par(oldpar)
 		}
+		
+	if (rm.hist) { xxrqa$recurrenceRate <- NULL; xxrqa$diagonalHistogram <- NULL }
 	invisible(xxrqa)
 }
 
@@ -902,7 +910,7 @@ See \figref{fig:recurrence-doppler},
 \end{figure}
 
 \clearpage
-\section{Takens' States  for Test Sinals}
+\section{Takens' States  for Test Signals}
 
 %: sin
 <<print=FALSE, echo=FALSE>>=
@@ -1119,9 +1127,9 @@ chunk.time.start<- proc.time()
 @
 \clearpage
 @
-\section{Recurrence Plots for Test Sinals}
+\section{Recurrence Plots for Test Signals}
 
-\subsection{Sinus}
+\subsubsection{Sinus  Recurrence Plots}
 
 %recurrencePlot(takens = NULL, time.series, embedding.dim,
 %    time.lag, radius)
@@ -1144,7 +1152,7 @@ chunk.time.start<- proc.time()
 @
 
 <<sin10rqa, fig=TRUE, include=FALSE>>=
-showrqa(sintakens, radius=0.8, log=TRUE)
+sin10rqa <- showrqa(sintakens, radius=0.8, log=TRUE)
 @
 \plotrqa{sin10rqa}{Test case: sinus curve.
 Time used: \Sexpr{laptime()} sec.
@@ -1162,7 +1170,7 @@ local.recurrencePlotAux(sin10lag16neighs, dim=4, radius=0.2)
 Time used: \Sexpr{laptime()} sec.}
 
 <<sin10lag16rqa, fig=TRUE, include=FALSE>>=
-showrqa(sintakenslag16, radius=0.2)
+sin10lag16rqa <- showrqa(sintakenslag16, radius=0.2)
 @
 \plotrqa{sin10lag16rqa}{Test case: sinus curve, time lag 16.
 Time used: \Sexpr{laptime()} sec.
@@ -1170,7 +1178,7 @@ Time used: \Sexpr{laptime()} sec.
 
 \clearpage
 
-\subsection{Uniform random}
+\subsubsection{Uniform Random Numbers  Recurrence Plots}
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1195,7 +1203,7 @@ Time used: \Sexpr{laptime()} sec.
 \clearpage
 
 
-\subsection{Chirp Signal}
+\subsubsection{Chirp Signal  Recurrence Plots}
 
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
@@ -1217,7 +1225,7 @@ showrqa(chirptakens, radius=0.6)
 Time used: \Sexpr{laptime()} sec.}
 
 \clearpage
-\subsection{Doppler}
+\subsubsection{Doppler Recurrence Plots}
 
 %doppler  <- function(x) { sqrt{x(1-x)} sin((2.1*pi)/(x+0.05))}
 
@@ -1527,7 +1535,7 @@ Time used: \Sexpr{laptime()} sec.
 }
 
 \clearpage
-\subsection{Geyser eruption durations: Comparison by Dimension}
+\subsubsection{Geyser eruption durations: Comparison by Dimension}
 
 For comparison, recurrence plots for the Geyser data with varying dimension are in \figref{fig:recurrence-eruptionsreccomp}
 \begin{figure}[htbp]
@@ -1607,6 +1615,10 @@ Time used: \Sexpr{laptime()} sec.
 }
 
 \subsection{Geyser - linearized}
+
+The Geyser data is a bivariate series and asks for bivariate Takens states and recurrence plots.
+This is a first crude attempt and need improvement.
+
 So far, \code{nonlinearTseries} only handles multivariate data by FORTRAN conventions, using a lag parameter.
 
 As a hack, we transform the data to FORTRAN conventions.
@@ -1616,7 +1628,8 @@ dim(geyserlin)<-NULL
 dimnames(geyserlin)<-NULL
 @
 Now duration and waiting are mixed. A $lag=2$ separates the dimension again. The Taken states iterate over the index, giving alternating a duration and waiting state.
-\subsection{Geyser Eruptions linearized}
+
+
 <<glineruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
 plotsignal(geyserlin)
 @
@@ -1913,7 +1926,7 @@ Time used: \Sexpr{laptime()} sec.
 }
 
 \clearpage
-\subsection{RHRV: example.beats - Comparison by Dimension}
+\subsubsection{RHRV: example.beats - Comparison by Dimension}
 
 \gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
 % dim 2
@@ -2018,13 +2031,14 @@ Time used: \Sexpr{laptime()} sec.
 \todo{This is an experimental proposal}
 Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
 
+%:   function BuildNIDHR
 <<BuildNIDHR>>=
 # source('/users/gs/projects/rforge/rhrv/pkg/R/BuildNIHR2.R', chdir = TRUE)
 BuildNIDHR <-
 function(HRVData, verbose=NULL) {
 #------------------------------------------------------ 
 # Obtains instantaneous heart rate variation from beats positions
-# D for difference
+# D for difference. The scaled difference is recorded as variation HRRV
 #------------------------------------------------------ 
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n ",
@@ -2037,7 +2051,8 @@ function(HRVData, verbose=NULL) {
 	}
 
 	if (is.null(HRVData$Beat$Time)) {
-		cat("   --- ERROR: Beats positions not present... Impossible to calculate Heart Rate!! ---\n")
+		cat("   --- ERROR: Beats positions not present...",
+		" Impossible to calculate Heart Rate!! ---\n")
 		return(HRVData)
 	}
 	
@@ -2055,7 +2070,7 @@ function(HRVData, verbose=NULL) {
    HRVData$Beat$avRR=(c(NA,HRVData$Beat$RR[-1])+HRVData$Beat$RR)/2
    
    HRVData$Beat$HRRV <- HRVData$Beat$dRR/HRVData$Beat$avRR
-
+	# end addition gs
 	return(HRVData)
 }
 
@@ -2156,7 +2171,7 @@ Time used: \Sexpr{laptime()} sec.
 \end{figure}
 
 \clearpage
-\subsection{RHRV:  example.beats - RR Variation: Comparison by Dimension}
+\subsubsection{RHRV:  example.beats - RR Variation: Comparison by Dimension}
 
 \gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
 %: dim 2
@@ -2387,7 +2402,7 @@ Time used: \Sexpr{laptime()} sec.
 \end{figure}
 %: ***
 \clearpage
-\subsection{RHRV:  example2.beats, RR-intervals. Comparison by Dimension}
+\subsubsection{RHRV:  example2.beats, RR-intervals. Comparison by Dimension}
 
 \gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
 % dim 2
@@ -2624,7 +2639,7 @@ Time used: \Sexpr{laptime()} sec.
 \end{figure}
 
 \clearpage
-\subsection{RHRV:  example2.beats - RR Variation: Comparison by Dimension}
+\subsubsection{RHRV:  example2.beats - RR Variation: Comparison by Dimension}
 
 \gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 beats is to be expected for the base signal.}
 %: dim 2
@@ -2822,9 +2837,9 @@ CVS/Svn repository information:
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
 copied to r-forge\\
-\verb*$HeadURL$*\\
+\verb!$HeadURL$!\\
 \verb+$Revision$+\\
-\verb*$Date$*\\
+\verb!$Date$!\\
 \verb+$Name:  $+\\
 \verb+$Author$+
 }
