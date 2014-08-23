@@ -64,6 +64,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black, pdfpagemode=U
 \indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
 %\keywords{data analysis, distribution diagnostics, recurrence plot}
 \thanks{\emph{A waist book. These notes are internal RFC for the R project RHRV, available from R-Forge. Material from RHRV may be used without explicit quotation.}\\
+For more details on recurrence plots, see \cite{Sawitzki:2013recurrence}.\\
 \indent \emph{Typeset}, with minor revisions: \today\  from svn $Revision$\\
 \indent \url{gs@statlab.uni-heidelberg.de}
 }%\\
@@ -199,6 +200,8 @@ clinical environment, and in ambulatory devices as the Polar series of
 monitors.
 
 For evaluation, we concentrate on the RHRV package for R (version 4.0) \cite{RHRV-Mendez:2014aa}.
+
+These technical notes concentrate on data preparation. Takens states and recurrence plots, with a view to heart rate variability, are discussed in a separate technical note \cite{Sawitzki:2013recurrence}.
 
 \section{RHRV Data Import}
 
@@ -623,9 +626,9 @@ CVS/Svn repository information:
 {\tiny%
 \noindent
 \verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
-\verb*$HeadURL$*\\
+\verb!$HeadURL$!\\
 \verb+$Revision$+\\
-\verb*$Date$*\\
+\verb!$Date$!\\
 \verb+$name:  $+\\
 \verb+$Author$+
 }

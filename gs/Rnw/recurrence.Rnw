@@ -922,7 +922,7 @@ sintakens <- local.buildTakens(time.series=sin10(),
 	embedding.dim=4, time.lag=1)
 statepairs(sintakens) #4
 @
-\plotpairs{sintakens}{Test case: sinus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{sintakens}{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -937,7 +937,7 @@ sintakenslag16 <- local.buildTakens(time.series=sin10(),
 	embedding.dim=4, time.lag=16)
 statepairs(sintakenslag16) #4
 @
-\plotpairs{sintakenslag16}{Test case: sinus at time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{sintakenslag16}{Test case: sinus at time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -948,7 +948,7 @@ Time used: \Sexpr{laptime()} sec.
 %\begin{figure}[htbp]
 %\begin{center}
 %\includegraphics[width=0.8\linewidth]{recurrence-sintakens}
-%\caption{Test case: sinus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+%\caption{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 %Time used: \Sexpr{laptime()} sec.
 %}
 %\label{fig:sintakens}
@@ -959,7 +959,7 @@ Time used: \Sexpr{laptime()} sec.
 <<sintakensno, fig=TRUE, include=FALSE>>=
 statepairs(sintakens, nooverlap=TRUE) #dim=4
 @
-\plotpairs{sintakensno}{Test case: sinus, no overlap. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{sintakensno}{Test case: sinus, no overlap. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }%
 
@@ -970,7 +970,7 @@ chunk.time.start<- proc.time()
 <<sintakensco, fig=TRUE, include=FALSE>>=
 statecoplot(sintakens) #4
 @
-\plotco{sintakensco}{Test case: sinus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotco{sintakensco}{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -981,7 +981,7 @@ chunk.time.start<- proc.time()
 <<sintakenslag16co, fig=TRUE, include=FALSE>>=
 statecoplot(sintakenslag16) #4
 @
-\plotco{sintakenslag16co}{Test case: sinus, time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotco{sintakenslag16co}{Test case: sinus, time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -1057,7 +1057,7 @@ dopplertakens <- local.buildTakens(time.series=doppler(),
 	embedding.dim=4, time.lag=1)
 statepairs(dopplertakens) #4
 @
-\plotpairs{dopplertakens}{Test case: Doppler. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{dopplertakens}{Test case: Doppler. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -1072,7 +1072,7 @@ dopplertakenslag16 <- local.buildTakens(time.series=doppler(),
 	embedding.dim=4, time.lag=16)
 statepairs(dopplertakenslag16) #4
 @
-\plotpairs{dopplertakenslag16}{Test case: doppler at time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{dopplertakenslag16}{Test case: doppler at time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -1083,7 +1083,7 @@ Time used: \Sexpr{laptime()} sec.
 %\begin{figure}[htbp]
 %\begin{center}
 %\includegraphics[width=0.8\linewidth]{recurrence-dopplertakens}
-%\caption{Test case: dopplerus. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+%\caption{Test case: dopplerus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 %Time used: \Sexpr{laptime()} sec.
 %}
 %\label{fig:dopplertakens}
@@ -1094,7 +1094,7 @@ Time used: \Sexpr{laptime()} sec.
 <<dopplertakensno, fig=TRUE, include=FALSE>>=
 statepairs(dopplertakens, nooverlap=TRUE) #dim=4
 @
-\plotpairs{dopplertakensno}{Test case: doppler, no overlap. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotpairs{dopplertakensno}{Test case: doppler, no overlap. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }%
 
@@ -1105,7 +1105,7 @@ chunk.time.start<- proc.time()
 <<dopplertakensco, fig=TRUE, include=FALSE>>=
 statecoplot(dopplertakens) #4
 @
-\plotco{dopplertakensco}{Test case: Doppler. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotco{dopplertakensco}{Test case: Doppler. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
@@ -1116,7 +1116,7 @@ chunk.time.start<- proc.time()
 <<dopplertakenslag16co, fig=TRUE, include=FALSE>>=
 statecoplot(dopplertakenslag16) #4
 @
-\plotco{dopplertakenslag16co}{Test case: Doppler, time lag 16. Note that $2d$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+\plotco{dopplertakenslag16co}{Test case: Doppler, time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
 Time used: \Sexpr{laptime()} sec.
 }
 
