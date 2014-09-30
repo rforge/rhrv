@@ -44,7 +44,14 @@ LoadBeat <- function(fileType, HRVData, Recordname, RecordPath = ".", annotator 
 						}
 						else
 						{
+							if(fileType == "Ambit")
+							{
+								toret = LoadBeatAmbit(HRVData, Recordname, RecordPath, verbose)
+							}
+							else
+							{
 							print("Error: unknown file type")
+							}
 						}
 					}
 				}
