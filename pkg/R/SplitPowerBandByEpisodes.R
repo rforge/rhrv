@@ -52,7 +52,8 @@ function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), Tag="", verb
    # cat("Beginning of file: ",head(HRVData$Beat$Time,1),"\n")
    # cat("End of file: ",tail(HRVData$Beat$Time,1),"\n")
 
-   index=c()
+   indexInEp=c()
+   indexOutEp=c()
 
    for (i in 1:lframes) {
       BegOfFrame = head(HRVData$Beat$Time,1)+HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift*(i-1)
@@ -62,6 +63,7 @@ function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), Tag="", verb
       #    cat("CenterOfFrame: ",CenterOfFrame,"\n")
       # }
       inEp = FALSE
+      outEp = TRUE
       if (length(ActiveEpisodes$InitTime)>0) {
          for (j in 1:length(ActiveEpisodes$InitTime)) {
             begEp = ActiveEpisodes$InitTime[j]
@@ -69,50 +71,55 @@ function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), Tag="", verb
             if (BegOfFrame>=begEp && EndOfFrame<=endEp) {
                inEp = TRUE
             }
+            if (BegOfFrame>=begEp && BegOfFrame<=endEp) {
+               outEp = FALSE
+            }
+            if (EndOfFrame>=begEp && EndOfFrame<=endEp) {
+               outEp = FALSE
+            }
+
          }
       }
-
       if (inEp) {
-         # cat("Frame in episode: ",i,"  -  ")
-         # cat("Beg of frame: ",BegOfFrame,"  -  ")
-         # cat("End of frame: ",EndOfFrame,"\n")
-         index=c(index,i)
+         indexInEp=c(indexInEp,i)
       }
 
+      if (outEp) {
+         indexOutEp=c(indexOutEp,i)
+      }
+
+   } # for (i in 1:lframes)
+
+   if (length(indexInEp)==0){
+      cat("   --- Warning: no frames in episodes with tag '",Tag,"'!! ---\n",sep="")
    }
 
-   if (length(index)==0){
-      cat("   --- Warning: no frames in episodes with tag '",Tag,"'!! ---\n",sep="")
+   if (length(indexOutEp)==0){
+      cat("   --- Warning: no frames outside episodes with tag '",Tag,"'!! ---\n",sep="")
    }
 
    l=list()
 
 
-   l$InEpisodes=list(ULF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[index],
-      VLF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[index],
-      LF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[index],
-      HF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[index]
+   l$InEpisodes=list(ULF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[indexInEp],
+      VLF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[indexInEp],
+      LF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[indexInEp],
+      HF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[indexInEp]
    )
 
-   if (length(index)==0){
-      l$OutEpisodes=list(ULF=c(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF),
-         c(VLF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF),
-         c(LF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF),
-         c(HF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF)
-      )
-   } else {
-      l$OutEpisodes=list(ULF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[-index],
-         VLF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[-index],
-         LF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[-index],
-         HF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[-index]
-      )   
-   }
+
+   l$OutEpisodes=list(ULF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF[indexOutEp],
+      VLF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF[indexOutEp],
+      LF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[indexOutEp],
+      HF=HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[indexOutEp]
+   )   
 
 
    if (HRVData$Verbose) {
       cat("   No. of frames:",lframes,"\n")
       cat("   No. of frames in episodes:",length(l$InEpisodes$ULF),"\n")
       cat("   No. of frames outside episodes:",length(l$OutEpisodes$ULF),"\n")
+      cat("   No. of borderline frames:",lframes-length(l$InEpisodes$ULF)-length(l$OutEpisodes$ULF),"\n")
    }
 
    return(l)
