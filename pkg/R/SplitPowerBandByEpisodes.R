@@ -55,9 +55,16 @@ function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis), Tag="", verb
    indexInEp=c()
    indexOutEp=c()
 
+   if (HRVData$FreqAnalysis[[indexFreqAnalysis]]$type=="fourier"){
+     useShift <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift
+     useSize <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$size
+   }else{
+     useShift <- useSize <- 1 / HRVData$Freq_HR
+   }
+      
    for (i in 1:lframes) {
-      BegOfFrame = head(HRVData$Beat$Time,1)+HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift*(i-1)
-      EndOfFrame = BegOfFrame + HRVData$FreqAnalysis[[indexFreqAnalysis]]$size
+      BegOfFrame = head(HRVData$Beat$Time,1)+useShift*(i-1)
+      EndOfFrame = BegOfFrame + useSize
       # if (i<10 || i>lframes-10) {
       #    cat("Frame: ",i,"  -  ")
       #    cat("CenterOfFrame: ",CenterOfFrame,"\n")
