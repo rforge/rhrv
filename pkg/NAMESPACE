@@ -20,7 +20,7 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "CalculateInfDim","EstimateInfDim","PlotInfDim",
        "RQA","RecurrencePlot","NonLinearNoiseReduction",
        "NonlinearityTests","SurrogateTest","OverplotEpisodes",
-       "Window","ListEpisodes"
+       "Window","ListEpisodes", "RemoveEpisodes"
 )
 
 # Import all packages listed as Imports or Depends
