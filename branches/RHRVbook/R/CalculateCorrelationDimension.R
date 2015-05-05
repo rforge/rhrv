@@ -81,7 +81,7 @@ CalculateCorrDim <-
     # Calculates generalized Correlation Dimension
     # -------------------------------------
         
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     if (is.null(HRVData$Beat$RR)){
       stop("RR time series not present\n")
@@ -140,7 +140,7 @@ EstimateCorrDim <-
     # Estimates generalized Correlation Dimension
     # -------------------------------------
     
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations)){
         stop("  --- Error: Correlation Object not found!! Calculate the correlation
              sum before estimate the Correlation Dimension using CalculateCorrDim!! ---\n")
@@ -184,7 +184,7 @@ PlotCorrDim <-
     # Plots Corr sum
     # -------------------------------------
           
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations)){
       stop(" Correlation Object not found!! Calculate the correlation
              sum before estimate the Correlation Dimension using CalculateCorrDim()!!\n")

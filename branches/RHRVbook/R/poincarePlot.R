@@ -2,7 +2,7 @@
 #' Poincare Plot
 #' @description  The Poincare plot is a graphical representation of the dependance
 #'  between successive RR intervals obtained by plotting the \eqn{RR_{j+\tau}}{RR_(j+tau)}
-#'  as a function of \eqn{RR_j}. This dependance #' is often quantified by fitting an
+#'  as a function of \eqn{RR_j}. This dependance is often quantified by fitting an
 #'  ellipse to the plot. In this way, two parameters are obtained:  
 #' \eqn{SD_1}  and \eqn{SD_2}.
 #' \eqn{SD_1} characterizes short-term variability
@@ -11,31 +11,36 @@
 #' @param indexNonLinearAnalysis Reference to the data structure that will contain the nonlinear analysis
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' dependance relation:  \eqn{RR_{j+timeLag}}{RR_(j+timeLag)} as a function of \eqn{RR_j}.
-#' @param confidenceEstimation Logical value. If TRUE, the ellipse-like confidence region
-#' for the two dimensional plot is used for fitting the ellipse and computing the \eqn{SD_1} and
+#' @param confidenceEstimation Logical value. If TRUE, the covariance matrix is
+#' used for fitting the ellipse and computing the \eqn{SD_1} and
 #' \eqn{SD_2} parameters (see details). Default: FALSE. 
-#' @param confidence The confidence for computing the confidence region if \emph{confidenceEstimation = TRUE}.
+#' @param confidence The confidence used for plotting the confidence ellipse.
 #' @param doPlot Logical value. If TRUE (default), the PoincarePlot is shown. 
 #' @param xlab A title for the x axis.
 #' @param ylab A title for the y axis.
 #' @param main An overall title for the Poincare plot.
+#' @param pch Plotting character (symbol to use).
+#' @param cex Character (or symbol) expansion. 
 #' @param ... Additional parameters for the Poincare plot figure.
 #' @details In the HRV literature, when \emph{timeLag = 1}, the \eqn{SD_1} and \eqn{SD_2}
 #' parameters are computed using time domain measures. This is the default approach in this
-#' function if \emph{timeLag=1}. However, sometimes the ellipse that is fitted using this 
-#' approach is too small. This function also allows the user to fit a ellipse by estimating a
-#' confidence region (by setting \emph{confidenceEstimation = TRUE}). If \emph{timeLag > 1}, the
-#' confidence region approach is always used.
-#' @return  A \emph{HRVData} structure containing a \emph{PoincarePlot} field storing the \eqn{SD_1}
-#' and \eqn{SD_2} parameters. The \emph{PoincarePlot} field is stored under the \emph{NonLinearAnalysis} list.
+#' function if \emph{timeLag=1}. This function also allows the user to fit a ellipse
+#'  by computing the covariance matrix of 
+#'  (\eqn{RR_{j}}{RR_(j)},\eqn{RR_{j+\tau}}{RR_(j+tau)})
+#' (by setting \emph{confidenceEstimation = TRUE}). In most cases, both approaches
+#' yield similar results.
+#' @return  A \emph{HRVData} structure containing a \emph{PoincarePlot} field storing
+#' the \eqn{SD_1} and \eqn{SD_2} parameters. The \emph{PoincarePlot} field is
+#' stored under the \emph{NonLinearAnalysis} list.
 PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
                         timeLag = 1, confidenceEstimation = FALSE, confidence = 0.95,
                         doPlot =FALSE, main = "Poincare plot",xlab="RR[n]", 
-                        ylab = paste(sep="","RR[n+",timeLag,"]"), ...){
+                        ylab = paste(sep="","RR[n+",timeLag,"]"), pch=1,
+                        cex=0.3, ...){
   # -------------------------------------
   # Poincare plot and SD1 and SD2 index
   # -------------------------------------
-  checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+  CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
   
   if (HRVData$Verbose){
     cat("  --- Calculating SD1 and SD2 parameters ---\n")  
@@ -44,8 +49,6 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   if (is.null(HRVData$Beat$niHR)){
     stop("RR time series not present\n")
   }
-  # if timeLag > 1 we have to use the confidence region estimation
-  if (timeLag > 1){ confidenceEstimation = TRUE }
   
   if ( (confidence < 0) || (confidence >1) ){
     stop("   --- Confidence must be in the [0,1] interval  ---\n    --- Quitting now!! ---\n")
@@ -54,8 +57,10 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   SD = computeSD(timeSeries = HRVData$Beat$niHR, timeLag = timeLag,
                  confidenceEstimation = confidenceEstimation,
                  confidence = confidence)
-  # greates value is SD2
-  
+  # Get critical value depending on the confidenceValue
+  cv2 = qchisq(confidence, 2)
+  cv = sqrt(cv2)  
+  # greatest value is SD2
   sd1 = SD$sd[[2]]
   sd2 = SD$sd[[1]]
   sd1Direction = SD$direction[,2]
@@ -69,16 +74,16 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
     takens = buildTakens(HRVData$Beat$niHR, embedding.dim=2, time.lag = timeLag)
     mu = c(mean(takens[,1]),mean(takens[,2]))
     ifelse(confidenceEstimation, yes = {maxLen = (2.1 - confidence) * sd2},
-                                 no = {maxLen = 1.5 * sd2})
+           no = {maxLen = 1.5 * sd2})
     # plotting
-    plot(takens[,1],takens[,2], 'p', col="blue", pch=1, cex=0.3, xlab=xlab,
+    plot(takens[,1],takens[,2], 'p', col=2, pch=pch, cex=cex, xlab=xlab,
          ylab = ylab, main = main, ...)
     # a will denote the largest axis of the ellipse and b the shortest one.
-    drawEllipse(a=sd2,b=sd1,aVector=sd2Direction, bVector=sd1Direction,
+    drawEllipse(a=sd2*cv,b=sd1*cv,aVector=sd2Direction, bVector=sd1Direction,
                 mu=mu)
-    drawArrows(mu = mu, a = sd2, b = sd1, aVector = sd2Direction,
+    drawArrows(mu = mu, a = sd2*cv, b = sd1*cv, aVector = sd2Direction,
                bVector = sd1Direction, maxLen = maxLen )
-    legend("bottomright",c("SD1","SD2"),col=c("red","green"),lty=c(1,1),lwd=c(2,2))
+    legend("bottomright",c("SD1","SD2"),col=c(3,4),lty=c(1,1),lwd=c(2,2))
   }
   
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PoincarePlot$SD1 = sd1
@@ -136,16 +141,16 @@ drawArrows <- function(mu,a,b, aVector=c(1,1)/sqrt(2), bVector=c(-1,1)/sqrt(2),m
   # Plot axis of the ellipse
   end = c(meanX,meanY) + a * aVector
   arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 = end[[2]],
-         angle = 15, col = "green", code = 2, lty = 1, lwd = 2)
+         angle = 15, col = 3, code = 2, lty = 1, lwd = 2)
   end = c(meanX,meanY) + b * bVector
   arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 = end[[2]],
-         angle = 15, col = "red", code = 2, lty = 1, lwd = 2)
+         angle = 15, col = 4, code = 2, lty = 1, lwd = 2)
   
 }
 
 
 confidenceEllipse <-function(x,y, confidence=0.95){
-
+  
   # Get covariance matrix and mean point
   covMatrix = cov(cbind(x,y))
   # Compute eigenvalues and eigenvectors
@@ -158,8 +163,6 @@ confidenceEllipse <-function(x,y, confidence=0.95){
     rotationMatrix = matrix(c(-1,0,0,-1),ncol=2,byrow=FALSE)
     eigenvectors = rotationMatrix %*% eigenvectors
   }
-  # Get critical value depending on the confidenceValue
-  cv2 = qchisq(confidence, 2)
-  cv = sqrt(cv2)
-  return (list(sd=cv*sqrt(eigenvalues), directions = eigenvectors))
+  
+  return (list(sd=sqrt(eigenvalues), directions = eigenvectors))
 }

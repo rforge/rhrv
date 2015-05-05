@@ -2,6 +2,7 @@
 \alias{BuildTakensVector}
 \title{ Calculates Takens expanded vectors }
 \description{
+WARNING: \bold{deprecated} function. 
    In order to calculate de Fractal Dimension and Approximate Entropy (or others properties of the data) a representation of the data in a space m-dimensional is needed
 }
 \usage{
@@ -23,3 +24,7 @@ L. Rodriguez-Linares, A. Mendez, M. Lado, D. Olivieri, X. Vila, I. Gomez-Conde, 
 M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
 }
 \keyword{ misc }
+
+\note{
+This function is  \bold{deprecated}. Please use \code{\link{BuildTakens}} instead.
+}

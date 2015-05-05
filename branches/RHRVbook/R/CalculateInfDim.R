@@ -33,7 +33,7 @@
 #' enough so that the fixed mass contained in this radius is slightly greater than the \emph{minFixedMass}. However,
 #' whereas the radius is not too large (so that the performance decreases) the choice is not critical.
 #' @param increasingRadiusFactor Numeric value. If no enough neighbours are found within \emph{radius}, the radius
-#' is increased by a factor \emph{increasingRadiusFactor} until succesful. Default: sqrt(2) = 1.05.
+#' is increased by a factor \emph{increasingRadiusFactor} until succesful. Default: 1.05.
 #' @param numberPoints Number of reference points that the routine will try to use, saving computation time.
 #' @param theilerWindow Integer denoting the Theiler window:  Two Takens' vectors must be separated by more than
 #' theilerWindow time steps in order to be considered neighbours. By using a Theiler window, we exclude temporally correlated 
@@ -57,11 +57,10 @@ CalculateInfDim <-
     #constant
     kMax = 200
     
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
-    if (HRVData$Verbose){
-      cat("  --- Computing the Information dimension ---\n")  
-    }
+    VerboseMessage(HRVData$Verbose, "Computing the Information dimension")  
+    
     
     if (is.null(HRVData$Beat$RR)){
       stop("RR time series not present\n")
@@ -113,7 +112,7 @@ EstimateInfDim <-
     # -------------------------------------
     # Estimates Information Dimension
     # -------------------------------------
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
       stop("  --- Error: Correlation Object not found!! Run the CalculateInfDim routine before estimating
@@ -121,19 +120,20 @@ EstimateInfDim <-
     }
     
     infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations
+  
     
-    if (HRVData$Verbose){
-       cat("  --- Estimating the information dimension ---\n")
-    }
+    VerboseMessage(HRVData$Verbose, "Estimating the Information dimension")  
+    
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic = 
       estimate(infDimObject,regression.range=regressionRange,
                use.embeddings=useEmbeddings,
                do.plot=doPlot)
     
-    if (HRVData$Verbose){
-        cat("  --- Information dimension = ",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic,"---\n")
-    }
+    VerboseMessage(HRVData$Verbose,
+                   paste("Information dimension = ",
+                         round(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$statistic,3)))  
+    
     return(HRVData)
 }
 
@@ -148,7 +148,7 @@ PlotInfDim <-
     # Plots InfDim calculations
     # -------------------------------------
     
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
       stop(" Information Dimension Object not found!! Run the CalculateInfDim routine!!\n")
     }    

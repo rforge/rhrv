@@ -51,14 +51,13 @@ CalculateDFA <-
     # Calculates Detrended Fluctuation Analysis(DFA)
     # -------------------------------------
         
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
-  
-    if (HRVData$Verbose){
-      cat("  --- Performing Detrended Fluctuation Analysis---\n")
-    }
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")  
+    
+    VerboseMessage(HRVData$Verbose, "Performing Detrended Fluctuation Analysis")     
+    
     
     if (is.null(HRVData$Beat$niHR)){
-      stop("RR time series not present\n")
+      stop("RR time series not present")
     }
     
     dfaObject = dfa( time.series = HRVData$Beat$niHR, window.size.range= windowSizeRange,
@@ -87,7 +86,7 @@ EstimateDFA <-
     # -------------------------------------
     
     # some basic checkings
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations)){
       stop("  --- Error: DFA computations not found!! Run CalculateDFA()
            before using EstimateDFA()!! ---\n")
@@ -95,9 +94,7 @@ EstimateDFA <-
     
     dfaObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations
     
-    if (HRVData$Verbose){
-      cat("  --- Estimating Scaling exponent ---\n")
-    }
+    VerboseMessage(HRVData$Verbose, "Estimating Scaling exponent")     
    
     # estimate scaling Exponent
     scalingExponentEstimate = estimate(dfaObject,regression.range=regressionRange, do.plot=doPlot)
@@ -115,6 +112,10 @@ EstimateDFA <-
      cat("  --- Scaling Exponent number",idxScaling," =", scalingExponentEstimate,"---\n")  
     }
     
+    VerboseMessage(HRVData$Verbose, 
+                   paste("Scaling Exponent number",idxScaling,
+                         "=", scalingExponentEstimate))     
+    
     return(HRVData)
 }
 
@@ -130,7 +131,7 @@ PlotDFA <-
     # Plots DFA
     # -------------------------------------
         
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$dfa$computations)){
       stop("  --- Error: DFA computations not found!! Run CalculateDFA()
            before using EstimateDFA()!! ---\n")

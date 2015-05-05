@@ -4,8 +4,8 @@
 #' rate signal
 #' @param HRVData Data structure that stores the beats register and information
 #' related to it
-#' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tags="all" plots all episodes present
+#' @param Tag List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. Tag="all" plots all episodes present
 #' in the data. 
 #' @param verbose Deprecated argument maintained for compatibility, 
 #' use SetVerbose() instead.
@@ -24,31 +24,27 @@
 #' @author  M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila, C.A. Garcia
 #' @keywords aplot 
 PlotNIHR <-
-function(HRVData,Tags=NULL, Indexes=NULL,  
+function(HRVData,Tag=NULL, verbose=NULL, 
          main = "Non-interpolated instantaneous heart rate",
          xlab="time (sec.)", ylab="HR (beats/min.)", type="l", ylim=NULL, ... ){
 #------------------------------------------------
 # Plots non-interpolated instantaneous heart rate
 #------------------------------------------------
-#	Tags -> Tags of episodes to include in the plot
+#	Tag -> Tags of episodes to include in the plot
 #    "all" includes all types
 
 
-	if (hasArg(verbose)) {
-		stop("Deprecated argument 'Verbose': use SetVerbose() instead (see help)")
+	if (!is.null(verbose)) {
+		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
+		SetVerbose(HRVData,verbose)
 	}
-
-	if (hasArg(Tag)) {
-		cat("  --- Warning: deprecated argument 'Tag'. Use 'Tags' or 'Indexes' instead (see help)")
-		Tags <- Tag
-	}
-
+	
 	if (HRVData$Verbose) {
 		cat("** Plotting non-interpolated instantaneous heart rate **\n");
 	}
 
 
-   if ((!is.null(Tags) || !is.null(Indexes)) & is.null(HRVData$Episodes)) {
+   if (!is.null(Tag) & is.null(HRVData$Episodes)) {
       stop("  --- Episodes not present ---\n    --- Quitting now!! ---\n")
    }
 	
@@ -68,52 +64,48 @@ function(HRVData,Tags=NULL, Indexes=NULL,
 	HRMax=max(HRVData$Beat$niHR)
 	HRDiff=HRMax-HRMin
 
-	
+	if (!is.null(Tag)) {
+		if (Tag[1]=="all") {
+			Tag=levels(HRVData$Episodes$Type)
+		}
 
-	if (is.null(ylim)){
-	  ylim <- c(HRMin-0.1*HRDiff,HRMax)
+		if (HRVData$Verbose) {
+			cat("   Episodes in plot:",Tag,"\n")
+		}
 	}
 
+  if (is.null(ylim)){
+    ylim <- c(HRMin-0.1*HRDiff,HRMax)
+  }
 	plot(HRVData$Beat$Time,HRVData$Beat$niHR,type=type,
        xlab = xlab, ylab = ylab, ylim = ylim, ...)
 
 	grid()
 	
-	if (!is.null(Tags) || !is.null(Indexes)) {
-		EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
-		EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
+	if (!is.null(Tag)) {
 
 		# Data for representing episodes
-		EpisodesAuxLeft <- EpisodesToPlot$InitTime
-		EpisodesAuxBottom <- c(HRMin-0.09*HRDiff,HRMin-0.04*HRDiff)
-		EpisodesAuxRight <- EpisodesToPlot$InitTime + EpisodesToPlot$Duration
-		EpisodesAuxTop <- c(HRMin-0.07*HRDiff,HRMin-0.02*HRDiff)
-		EpisodesAuxType <- EpisodesToPlot$Type
+		EpisodesAuxLeft=HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag]
+		EpisodesAuxBottom=c(HRMin-0.09*HRDiff,HRMin-0.04*HRDiff)
+		EpisodesAuxRight=HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag] + 
+			HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag]
+		EpisodesAuxTop=c(HRMin-0.07*HRDiff,HRMin-0.02*HRDiff)
+		EpisodesAuxType=HRVData$Episodes$Type[HRVData$Episodes$Type %in% Tag]
 
-		labels <- levels(factor(EpisodesAuxType))
+		Pal=rainbow(length(Tag))
+		Bor=Pal[match(EpisodesAuxType,Tag)]
 
-	 	Pal=rainbow(length(labels))
-	 	Bor=Pal[match(EpisodesAuxType,labels)]
+		cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
+		cat("   No of classes of episodes:",length(Pal),"\n")
 
-	 	if (HRVData$Verbose) {
-	 		cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
-			cat("   No of classes of episodes:",length(Pal),"\n")
+		rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
+
+		for (i in 1:length(EpisodesAuxLeft)) {
+			lines(rep(EpisodesAuxLeft[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
+			lines(rep(EpisodesAuxRight[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
 		}
 
-		if (length(EpisodesAuxLeft)==1) {
-				rect(EpisodesAuxLeft,EpisodesAuxBottom[1],EpisodesAuxRight,EpisodesAuxTop[1],border=Bor,col=Bor)
-			} else {
-				rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
-			}
-
-	 	
-
-	 	for (i in 1:length(EpisodesAuxLeft)) {
-	 		lines(rep(EpisodesAuxLeft[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
-	 		lines(rep(EpisodesAuxRight[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
-	 	}
-
-	 	legend("topright",inset=0.01,legend=labels,fill=Pal,cex=0.6,horiz=FALSE,bg='white')
+		legend("topright",inset=0.01,legend=Tag,fill=Pal,cex=0.6,horiz=FALSE,bg='white')
 	}
 
 	title(main = main)

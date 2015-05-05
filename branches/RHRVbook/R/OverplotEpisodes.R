@@ -66,10 +66,8 @@ OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
     Tag=levels(HRVData$Episodes$Type)
   }
   
-  if (HRVData$Verbose) {
-    cat("   Episodes in plot:",Tag,"\n")
-  }
-  
+  VerboseMessage(HRVData$Verbose, paste("Episodes in plot:",Tag))     
+ 
   # Data for representing episodes
   indx <- HRVData$Episodes$Type %in% Tag
   
@@ -79,11 +77,11 @@ OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
                          HRVData$Episodes$Duration[indx]
   
   episodesType = HRVData$Episodes$Type[indx]
+
   
-  if (HRVData$Verbose) {
-    cat("   No of episodes:",length(episodesInitTime),"\n")
-  }
-  
+  VerboseMessage(HRVData$Verbose, 
+                 paste("No of episodes:",length(episodesInitTime)))     
+
   if (is.null(epColorPalette)){
     epColorPalette = rainbow(length(Tag))
   }
