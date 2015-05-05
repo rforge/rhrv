@@ -17,24 +17,29 @@ function(HRVData, Tags=NULL, Indexes=NULL) {
       	cat("   Number of episodes before removal: ",noEpBefore,"\n")
    	}
 
-   	HRVData$Episodes$ToRemove <- FALSE
+   	# HRVData$Episodes$ToRemove <- FALSE
 
-   	if (!is.null(Tags)) {
-   		Tags <- Tags[is.element(Tags,HRVData$Episodes$Type)]
-   		if (length(Tags) != 0) {
-   			HRVData$Episodes[is.element(HRVData$Episodes$Type,Tags),]$ToRemove <- TRUE
-   		}
-   	}
-   	if (!is.null(Indexes)) {
-   		Indexes <- Indexes[Indexes<=length(HRVData$Episodes$Type)]
-   		if (length(Indexes) != 0) {
-   			HRVData$Episodes[Indexes,]$ToRemove <- TRUE
-   		}
-   	}
+   	# if (!is.null(Tags)) {
+   	# 	Tags <- Tags[is.element(Tags,HRVData$Episodes$Type)]
+   	# 	if (length(Tags) != 0) {
+   	# 		HRVData$Episodes[is.element(HRVData$Episodes$Type,Tags),]$ToRemove <- TRUE
+   	# 	}
+   	# }
+   	# if (!is.null(Indexes)) {
+   	# 	Indexes <- Indexes[Indexes<=length(HRVData$Episodes$Type)]
+   	# 	if (length(Indexes) != 0) {
+   	# 		HRVData$Episodes[Indexes,]$ToRemove <- TRUE
+   	# 	}
+   	# }
 
-   	HRVData$Episodes <- HRVData$Episodes[!HRVData$Episodes$ToRemove,]  # Removal happens here
+   	# HRVData$Episodes <- HRVData$Episodes[!HRVData$Episodes$ToRemove,]  # Removal happens here
 
-   	HRVData$Episodes$ToRemove <- NULL
+   	# HRVData$Episodes$ToRemove <- NULL
+
+   	HRVData$Episodes <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
+   	HRVData$Episodes <- HRVData$Episodes[!HRVData$Episodes$selected,]  # Removal happens here
+   	HRVData$Episodes$selected <- NULL
+
    	HRVData$Episodes <- HRVData$Episodes[order(HRVData$Episodes$InitTime),]  # Sort episodes by InitTime
 
 
