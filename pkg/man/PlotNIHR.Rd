@@ -2,7 +2,7 @@
 \alias{PlotNIHR}
 \title{Simple plot of non-interpolated heart rate}
 \usage{
-PlotNIHR(HRVData, Tag = NULL, verbose = NULL,
+PlotNIHR(HRVData, Tags = NULL, Indexes = NULL,
   main = "Non-interpolated instantaneous heart rate", xlab = "time (sec.)",
   ylab = "HR (beats/min.)", type = "l", ylim = NULL, ...)
 }
@@ -10,12 +10,13 @@ PlotNIHR(HRVData, Tag = NULL, verbose = NULL,
   \item{HRVData}{Data structure that stores the beats
   register and information related to it}
 
-  \item{Tag}{List of tags to specify which episodes, as
+  \item{Tags}{List of tags to specify which episodes, as
   apnoea or oxygen desaturation, are included in the plot.
-  Tag="all" plots all episodes present in the data.}
+  Tags="all" plots all episodes present in the data.}
 
-  \item{verbose}{Deprecated argument maintained for
-  compatibility, use SetVerbose() instead.}
+  \item{Indexes}{List of indexes of episodes (see ListEpisodes())
+  to specify which episodes are included in the plot.
+  Indexes="all" plots all episodes present in the data.}
 
   \item{main}{A main title for the plot.}
 

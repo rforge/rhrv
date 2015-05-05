@@ -91,8 +91,6 @@ function(HRVData,Tags=NULL, Indexes=NULL,
 		EpisodesAuxType <- EpisodesToPlot$Type
 
 		labels <- levels(factor(EpisodesAuxType))
-		#levels(factor(s$Type[s$selected]))
-		cat(labels)
 
 	 	Pal=rainbow(length(labels))
 	 	Bor=Pal[match(EpisodesAuxType,labels)]
