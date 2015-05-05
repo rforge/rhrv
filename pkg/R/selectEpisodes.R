@@ -8,8 +8,20 @@ function(Episodes, Tags, Indexes) {
 #    It adds a new column Episodes$selected
 #    After using remove the column with HRVData$Episodes$selected <- NULL
 
+	if (!is.null(Tags)) {
+		if (Tags[1]=="all") {
+			Episodes$selected <- TRUE
+			return(Episodes)
+		} 
+	}
 
-	
+	if (!is.null(Indexes)) {
+		if (Indexes[1]=="all") {
+			Episodes$selected <- TRUE
+			return(Episodes)
+		} 
+	}
+
 
    	Episodes$selected <- FALSE
 
@@ -25,6 +37,7 @@ function(Episodes, Tags, Indexes) {
    			Episodes[Indexes,]$selected <- TRUE
    		}
    	}
+	
 
 
    	return(Episodes)
