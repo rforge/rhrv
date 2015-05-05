@@ -100,7 +100,13 @@ function(HRVData,Tags=NULL, Indexes=NULL,
 			cat("   No of classes of episodes:",length(Pal),"\n")
 		}
 
-	 	rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
+		if (length(EpisodesAuxLeft)==1) {
+				rect(EpisodesAuxLeft,EpisodesAuxBottom[1],EpisodesAuxRight,EpisodesAuxTop[1],border=Bor,col=Bor)
+			} else {
+				rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
+			}
+
+	 	
 
 	 	for (i in 1:length(EpisodesAuxLeft)) {
 	 		lines(rep(EpisodesAuxLeft[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
