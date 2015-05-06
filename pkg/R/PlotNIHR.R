@@ -40,7 +40,6 @@ function(HRVData,Tags=NULL, Indexes=NULL,
 	}
 
 	if (hasArg(Tag)) {
-		cat("  --- Warning: deprecated argument 'Tag'. Use 'Tags' or 'Indexes' instead (see help)")
 		Tags <- Tag
 	}
 
