@@ -7,8 +7,9 @@
 #' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
 #' desaturation, are included in the plot. Tags="all" plots all episodes present
 #' in the data. 
-#' @param verbose Deprecated argument maintained for compatibility, 
-#' use SetVerbose() instead.
+#' @param Indexes List of indexes to specify which episodes (see ListEpisodes),
+#' are included in the plot. Indexes="all" plots all episodes present
+#' in the data. 
 #' @param main A main title for the plot.
 #' @param xlab A label for the x axis.
 #' @param ylab a label for the y axis
