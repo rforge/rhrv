@@ -1,8 +1,8 @@
 \name{ModifyEpisodes}
 \alias{ModifyEpisodes}
-\title{ Modifies values for episodes}
+\title{ Modifies values of episodes}
 \description{
-  Adds information of episodes manually, or annotated physiological events, and stores it into the data structure containing the beat positions
+  Modifies information of episodes manually and stores it into the data structure
 }
 \usage{
 ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL, NewDurations=NULL ,NewValues=NULL)
@@ -10,7 +10,7 @@ ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }
   \item{Tags}{ Vector containing types of episodes to remove }
-  \item{Indexes}{ Vector containing indexes of episodes to remove (see ListEpisodes())
+  \item{Indexes}{ Vector containing indexes of episodes to remove (see ListEpisodes()) }
   \item{NewInitTimes}{ Vector containing new init times in seconds }
   \item{NewTags}{ Vector containing new tags for episodes }
   \item{NewDurations}{ Vector containing new durations in seconds }
@@ -21,8 +21,11 @@ ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL
 }
 \description{
 This function allow users to modify the parameters that define episodes: Tags, InitTimes, Durations and Values.
+
 Episodes can be selected by Tags or Indexes (or both) and more than one episodes' characteristics can be modified within the same call.
+
 When modifying more than one episode, vectors of new parameters are recycled.
+
 After the modification has been made, duplicate episodes are removed and they are reordered by increasing InitTimes.
 }
 \references{
