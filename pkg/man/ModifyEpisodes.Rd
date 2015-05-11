@@ -1,9 +1,6 @@
 \name{ModifyEpisodes}
 \alias{ModifyEpisodes}
 \title{ Modifies values of episodes}
-\description{
-  Modifies information of episodes manually and stores it into the data structure
-}
 \usage{
 ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL, NewDurations=NULL ,NewValues=NULL)
 }

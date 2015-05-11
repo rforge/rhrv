@@ -27,7 +27,8 @@
 PlotHR <-
 function(HRVData, Tags=NULL, Indexes=NULL,
          main = "Interpolated instantaneous heart rate",
-         xlab="time (sec.)", ylab="HR (beats/min.)",type="l",ylim=NULL, ...) {
+         xlab="time (sec.)", ylab="HR (beats/min.)",type="l",ylim=NULL,
+         Tag=NULL, verbose=NULL, ...) {
 # -----------------------------
 # Plots interpolated Heart Rate
 # -----------------------------
@@ -35,11 +36,13 @@ function(HRVData, Tags=NULL, Indexes=NULL,
 #    "all" includes all types
 
 
-	if (hasArg(verbose)) {
-		stop("Deprecated argument 'Verbose': use SetVerbose() instead (see help)")
-	}
+	if (!is.null(verbose)) {
+      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
+      SetVerbose(HRVData,verbose)
+    }
 
-	if (hasArg(Tag)) {
+	if (is.null(Tags) & !is.null(Tag)) {
+		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
 		Tags <- Tag
 	}
 

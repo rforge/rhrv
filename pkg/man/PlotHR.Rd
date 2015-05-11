@@ -4,7 +4,7 @@
 \usage{
 PlotHR(HRVData, Tags = NULL, Indexes = NULL,
   main = "Interpolated instantaneous heart rate", xlab = "time (sec.)",
-  ylab = "HR (beats/min.)", type = "l", ylim = NULL, ...)
+  ylab = "HR (beats/min.)", type = "l", ylim = NULL, Tag=NULL, verbose=NULL, ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -28,6 +28,12 @@ PlotHR(HRVData, Tags = NULL, Indexes = NULL,
   desired. See \code{\link[graphics]{plot.default}}.}
 
   \item{ylim}{The y limits of the plot.}
+
+  \item{Tag}{Deprecated argument maintained for
+  compatibility, use Tags instead}
+
+  \item{verbose}{Deprecated argument maintained for
+  compatibility, use setVerbose() instead}
 
   \item{...}{Other graphical parameters. See
   \code{\link[graphics]{plot.default}}.}
