@@ -2,17 +2,22 @@
 \alias{OverplotEpisodes}
 \title{OverplotEpisodes}
 \usage{
-OverplotEpisodes(HRVData, Tag = "all", epColorPalette = NULL, eplim,
-  lty = 2, markEpisodes = T, ymark, showEpLegend = T,
-  epLegendCoords = NULL, ...)
+OverplotEpisodes(HRVData, Tags=NULL, Indexes=NULL,
+  epColorPalette = NULL, eplim, lty = 2, markEpisodes = T,
+  ymark, showEpLegend = T, epLegendCoords = NULL,
+  Tag = NULL, ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
   register and information related to it.}
 
-  \item{Tag}{List of tags to specify which episodes, as
+  \item{Tags}{List of tags to specify which episodes, as
   apnoea or oxygen desaturation, are included in the plot.
-  Tag="all" plots all episodes present in the data.}
+  Tags="all" plots all episodes present in the data.}
+
+  \item{Indexes}{List of indexes of episodes (see ListEpisodes())
+  to specify which episodes are included in the plot.
+  Indexes="all" plots all episodes present in the data.}
 
   \item{epColorPalette}{Vector specifying the color of each
   of the episodes that will be plotted. The length of
@@ -38,6 +43,9 @@ OverplotEpisodes(HRVData, Tag = "all", epColorPalette = NULL, eplim,
   \item{epLegendCoords}{Two-component vector specifiying
   the coordinates where the legend should be placed. By
   defaul, the legend is placed on top of the plot.}
+
+  \item{Tag}{Deprecated argument maintained for
+  compatibility, use Tags instead}
 
   \item{...}{Other graphical parameters for the vertical
   lines limiting each episode. See

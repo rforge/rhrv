@@ -58,36 +58,41 @@
 #'                  eplim=c(0,0.04), Tag="APNEA",
 #'                  epColorPalette = c("white"), lwd=3)
 #'}
-OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
+OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette = NULL,
                              eplim, lty= 2, markEpisodes = T, ymark,
-                             showEpLegend = T, epLegendCoords = NULL, ...){
-    
-  if (tolower(Tag) == "all") {
-    Tag=levels(HRVData$Episodes$Type)
+                             showEpLegend = T, epLegendCoords = NULL, Tag=NULL, ...){
+
+  if (is.null(Tags) & !is.null(Tag)) {
+    cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
+    Tags <- Tag
   }
-  
-  if (HRVData$Verbose) {
-    cat("   Episodes in plot:",Tag,"\n")
+
+  if (is.null(Tags) & is.null(Indexes)) {
+    stop("  --- No episodes specified in OverplotEpisodes ---\n")
   }
+
+
+  EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
+
+  EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,] 
+
   
   # Data for representing episodes
-  indx <- HRVData$Episodes$Type %in% Tag
   
-  episodesInitTime = HRVData$Episodes$InitTime[indx]
-  
-  episodesEndTime = HRVData$Episodes$InitTime[indx] + 
-                         HRVData$Episodes$Duration[indx]
-  
-  episodesType = HRVData$Episodes$Type[indx]
+  episodesInitTime = EpisodesToPlot$InitTime
+  episodesEndTime = EpisodesToPlot$InitTime + EpisodesToPlot$Duration
+  episodesType = EpisodesToPlot$Type
+
+  labels <- levels(factor(episodesType))
   
   if (HRVData$Verbose) {
     cat("   No of episodes:",length(episodesInitTime),"\n")
   }
   
   if (is.null(epColorPalette)){
-    epColorPalette = rainbow(length(Tag))
+    epColorPalette = rainbow(length(labels))
   }
-    episodeColors = epColorPalette[match(episodesType, Tag)]  
+    episodeColors = epColorPalette[match(episodesType, labels)]  
   
   
   if (markEpisodes){
@@ -105,11 +110,11 @@ OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
   if (showEpLegend){
     if (is.null(epLegendCoords)){
       legend("top", 
-             legend=Tag, fill=episodeColors, cex=0.9, ncol = length(Tag), 
+             legend=labels, fill=episodeColors, cex=0.9, ncol = length(labels), 
              xjust=0.5, yjust=-0.2, bty="n")  
     }else{
       legend(x=epLegendCoords[1], epLegendCoords[2],
-             legend=Tag, fill=episodeColors, cex=0.9, ncol = length(Tag), 
+             legend=labels, fill=episodeColors, cex=0.9, ncol = length(labels), 
              xjust=0.5, yjust=-0.2, bty="n")  
     }
     

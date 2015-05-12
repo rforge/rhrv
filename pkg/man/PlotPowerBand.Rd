@@ -4,7 +4,7 @@
 \usage{
 PlotPowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   normalized = FALSE, hr = FALSE, ymax = NULL, ymaxratio = NULL,
-  ymaxnorm = 1, Tag = NULL, verbose = NULL)
+  ymaxnorm = 1, Tags=NULL, Indexes=NULL, Tag = NULL, verbose = NULL)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -26,10 +26,16 @@ PlotPowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   \item{ymaxnorm}{Maximum value for y axis (normalized
   plots)}
 
-  \item{Tag}{Argument that allows to specify if episodes
-  contained in Data are represented by means of coloured
-  boxes, for example apnoea or oxygen desaturation, "ALL"
-  for all episodes.}
+  \item{Tags}{List of tags to specify which episodes, as
+  apnoea or oxygen desaturation, are included in the plot.
+  Tags="all" plots all episodes present in the data.}
+
+  \item{Indexes}{List of indexes of episodes (see ListEpisodes())
+  to specify which episodes are included in the plot.
+  Indexes="all" plots all episodes present in the data.}
+
+  \item{Tag}{Deprecated argument maintained for
+  compatibility, use Tags instead}
 
   \item{verbose}{Deprecated argument maintained for
   compatibility, use setVerbose() instead}
@@ -74,6 +80,8 @@ july 2011.
 }
 \seealso{
 \code{\link{CalculatePowerBand}} for power calculation
+\code{\link{PlotSinglePowerBand}} for plotting a specific power band
+
 }
 \keyword{hplot}
 

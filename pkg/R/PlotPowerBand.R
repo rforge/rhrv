@@ -1,12 +1,12 @@
 # Private Function for RHRV functions use only
-checkPlotPowerBandOpts <- function(HRVData, indexFreqAnalysis, Tag){
+checkPlotPowerBandOpts <- function(HRVData, indexFreqAnalysis, Tags, Indexes){
   
   if ((length(HRVData$FreqAnalysis) < indexFreqAnalysis) || (indexFreqAnalysis<1) ) {
     stop("  --- Frequency analysis no.", indexFreqAnalysis," not present!! ---\n    --- Quitting now!! ---\n")
   }
   
-  if (!is.null(Tag) & is.null(HRVData$Episodes)) {
-    stop("  --- Episodes not present!! ---\n    --- Quitting now!! ---\n")
+  if ((!is.null(Tags) || !is.null(Indexes)) & is.null(HRVData$Episodes)) {
+      stop("  --- Episodes not present ---\n    --- Quitting now!! ---\n")
   }
   
   if (is.null(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF)) {
@@ -33,9 +33,13 @@ checkPlotPowerBandOpts <- function(HRVData, indexFreqAnalysis, Tag){
 #' @param ymaxratio Maximum value for y axis in LF/HF band (normalized and 
 #' unnormalized plots) 
 #' @param ymaxnorm Maximum value for y axis (normalized plots) 
-#' @param Tag Argument that allows to specify if episodes contained in Data are 
-#' represented by means of coloured boxes, for example apnoea or oxygen 
-#' desaturation, "ALL" for all episodes.
+#'  @param Tags List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. Tags="all" plots all episodes present
+#' in the data. 
+#' @param Indexes List of indexes to specify which episodes (see ListEpisodes),
+#' are included in the plot. Indexes="all" plots all episodes present
+#' in the data. 
+#' @param Tag Deprecated argument, use Tags instead
 #' @param verbose Deprecated argument maintained for compatibility, use 
 #' setVerbose() instead 
 #' @references
@@ -69,7 +73,7 @@ checkPlotPowerBandOpts <- function(HRVData, indexFreqAnalysis, Tag){
 PlotPowerBand <-
   function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
            normalized = FALSE, hr = FALSE, ymax = NULL, ymaxratio = NULL,
-           ymaxnorm = 1, Tag = NULL, verbose = NULL) {
+           ymaxnorm = 1, Tags=NULL, Indexes=NULL, Tag = NULL, verbose = NULL) {
     # --------------------
     # Plots power per band
     # --------------------
@@ -78,19 +82,27 @@ PlotPowerBand <-
     # 	hr: plots heart rate signal if TRUE
     # 	ymax: maximum value for y axis (unnormalized plots)
     # 	ymaxratio: maximum value for y axis in LF/HF band (normalized and unnormalized plots)
-    #	Tag -> Tags of episodes to include in the plot
+    #	Tags -> Tags of episodes to include in the plot
     #    "all" includes all types
+    #	Indexes -> Indexes of episodes to include in the plot
+    #    "all" includes all episodes
     
     
     if (!is.null(verbose)) {
       cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
       SetVerbose(HRVData,verbose)
     }
+
+    if (is.null(Tags) & !is.null(Tag)) {
+		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
+		Tags <- Tag
+	}
     
     if (HRVData$Verbose) {
       cat("** Plotting power per band **\n")
     }
-    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tag)
+
+    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tags, Indexes)
     # if (is.null(ymax)) {
     # 	ymax = max(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF) )
     # }
@@ -119,29 +131,27 @@ PlotPowerBand <-
     lframes=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)
     
     # Episodes
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       
-      if (Tag[1]=="all") {
-        Tag=levels(HRVData$Episodes$Type)
-      }
+      EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
+	  EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
       
-      if (HRVData$Verbose) {
-        cat("   Episodes in plot:",Tag,"\n")
-      }
+      
       
       # Data for representing episodes
-      EpisodesAuxLeft=HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag]
+      EpisodesAuxLeft=EpisodesToPlot$InitTime
       EpisodesAuxLeftFrame=EpisodesAuxLeft*lframes/(tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)) # Beg of episodes (frames)
-      EpisodesAuxRight=HRVData$Episodes$InitTime[HRVData$Episodes$Type %in% Tag] + 
-        HRVData$Episodes$Duration[HRVData$Episodes$Type %in% Tag]
+      EpisodesAuxRight=EpisodesToPlot$InitTime + EpisodesToPlot$Duration
       EpisodesAuxRightFrame=EpisodesAuxRight*lframes/(tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)) # Beg of episodes (frames)
-      EpisodesAuxType=HRVData$Episodes$Type[HRVData$Episodes$Type %in% Tag]
+      EpisodesAuxType=EpisodesToPlot$Type
       if (HRVData$Verbose) {
         cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
       }
       
-      Pal=rainbow(length(Tag))
-      Bor=Pal[match(EpisodesAuxType,Tag)]
+      labels <- levels(factor(EpisodesAuxType))
+
+	  Pal=rainbow(length(labels))
+	  Bor=Pal[match(EpisodesAuxType,labels)]
       
       
       EpisodesLeft=HRVData$Episodes$InitTime # Beg of episodes (seconds)
@@ -159,7 +169,7 @@ PlotPowerBand <-
     
     mfg=c(1,1,numfilas,1)
     plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF,type='l',xlab="",ylab="LF/HF",ylim=c(0,ymaxratio*1.1))
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       EpisodesAuxTop=c(ymaxratio*1.09,ymaxratio*1.04)
       EpisodesAuxBottom=c(ymaxratio*1.06,ymaxratio*1.01)
       rect(EpisodesAuxLeftFrame,EpisodesAuxBottom,EpisodesAuxRightFrame,EpisodesAuxTop,border=Bor,col=Bor)
@@ -171,7 +181,7 @@ PlotPowerBand <-
       
       
       par(xpd=NA) 
-      legend(lframes/2,ymaxratio,legend=Tag,fill=Pal,cex=0.9,ncol=length(Tag),xjust=0.5,yjust=-0.2,bty="n")
+      legend(lframes/2,ymaxratio,legend=labels,fill=Pal,cex=0.9,ncol=length(labels),xjust=0.5,yjust=-0.2,bty="n")
       
     }
     if (HRVData$Verbose) {
@@ -190,7 +200,7 @@ PlotPowerBand <-
     mfg=c(1,2,numfilas,1)
     plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
          HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF,type='l',xlab="",ylab="ULF",ylim=ymaxv)
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       for (i in 1:length(EpisodesAuxLeftFrame)) {
         lines(rep(EpisodesAuxLeftFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
         lines(rep(EpisodesAuxRightFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
@@ -212,7 +222,7 @@ PlotPowerBand <-
     mfg=c(1,3,numfilas,1)
     plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
          HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF,type='l',xlab="",ylab="VLF",ylim=ymaxv)
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       for (i in 1:length(EpisodesAuxLeftFrame)) {
         lines(rep(EpisodesAuxLeftFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
         lines(rep(EpisodesAuxRightFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
@@ -234,7 +244,7 @@ PlotPowerBand <-
     mfg=c(1,4,numfilas,1)
     plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
          HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF,type='l',xlab="",ylab="LF",ylim=ymaxv)
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       for (i in 1:length(EpisodesAuxLeftFrame)) {
         lines(rep(EpisodesAuxLeftFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
         lines(rep(EpisodesAuxRightFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
@@ -257,7 +267,7 @@ PlotPowerBand <-
     texto4="No. of frames"
     plot(seq(from=0,to=lframes,length.out=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)),
          HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF,type='l',xlab=texto4,ylab="HF",ylim=ymaxv)
-    if (!is.null(Tag)) {
+    if (!is.null(Tags) || !is.null(Indexes)) {
       for (i in 1:length(EpisodesAuxLeftFrame)) {
         lines(rep(EpisodesAuxLeftFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
         lines(rep(EpisodesAuxRightFrame[i],times=2),c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
@@ -278,7 +288,7 @@ PlotPowerBand <-
         cat("   Plotted HRV\n")
       }
       
-      if (!is.null(Tag)) {
+      if (!is.null(Tags) || !is.null(Indexes)) {
         for (i in 1:length(EpisodesAuxLeftFrame)) {
           lines(rep(EpisodesAuxLeft[i],times=2),c(min(HRVData$HR),max(HRVData$HR)),lty=2,col=Bor[i])
           lines(rep(EpisodesAuxRight[i],times=2),c(min(HRVData$HR),max(HRVData$HR)),lty=2,col=Bor[i])
@@ -288,7 +298,7 @@ PlotPowerBand <-
       # --------------------
     }
     
-    if (HRVData$Verbose & !is.null(Tag)) {
+    if (HRVData$Verbose &  (!is.null(Tags) || !is.null(Indexes)) ) {
       cat("   Episodes plotted\n")
     }
     
@@ -392,16 +402,23 @@ PlotSinglePowerBand <-
            band = c("ULF","VLF","LF","HF","LF/HF")[3],
            normalized = FALSE,  main = paste(band, "Power Band"), xlab ="Time",
            ylab = paste("Power in",band), type = "l",
-           Tag = NULL,  eplim = NULL,  epColorPalette = NULL,
+           Tags = NULL, Indexes = NULL,
+           eplim = NULL,  epColorPalette = NULL,
            markEpisodes = TRUE, ymark = NULL,
-           showEpLegend = TRUE, epLegendCoords = NULL, 
+           showEpLegend = TRUE, epLegendCoords = NULL, Tag = NULL,
            ...){
     
+
     if (HRVData$Verbose) {
       cat("** Plotting power per band **\n")
     }
+
+    if (is.null(Tags) & !is.null(Tag)) {
+		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
+		Tags <- Tag
+	}
     
-    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tag)
+    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tags, Indexes)
     
     if (!(band %in% c("ULF","VLF","LF","HF","LF/HF"))){
       stop ( paste("** Invalid Frequency band name **",
@@ -427,12 +444,12 @@ PlotSinglePowerBand <-
          ylab = ylab, type = type, ... )
     
     # Episodes plotting
-    if (!is.null(Tag)){
+    if (!is.null(Tags) || !is.null(Indexes)) {
       ylim = list(...)$ylim
       if (is.null(ylim)) ylim = range(bandData, finite = TRUE)
       if (is.null(eplim)) eplim = c(ylim[1], 0.90 * ylim[2])
       if (is.null(ymark)) ymark = c(0.99 * eplim[2], eplim[2])
-      OverplotEpisodes(HRVData, Tag=Tag, eplim = eplim,
+      OverplotEpisodes(HRVData, Tags=Tags, Indexes=Indexes, eplim = eplim,
                        showEpLegend = showEpLegend,                     
                        epLegendCoords = epLegendCoords,
                        epColorPalette = epColorPalette,

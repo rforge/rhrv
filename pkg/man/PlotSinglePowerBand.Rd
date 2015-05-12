@@ -5,9 +5,9 @@
 PlotSinglePowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   band = c("ULF", "VLF", "LF", "HF", "LF/HF")[3], normalized = FALSE,
   main = paste(band, "Power Band"), xlab = "Time",
-  ylab = paste("Power in", band), type = "l", Tag = NULL, eplim = NULL,
-  epColorPalette = NULL, markEpisodes = TRUE, ymark = NULL,
-  showEpLegend = TRUE, epLegendCoords = NULL, ...)
+  ylab = paste("Power in", band), type = "l", Tags = NULL, Indexes=NULL,
+  eplim = NULL,  epColorPalette = NULL, markEpisodes = TRUE, ymark = NULL,
+  showEpLegend = TRUE, epLegendCoords = NULL, Tag = NULL, ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -31,9 +31,13 @@ PlotSinglePowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   \item{type}{1-character string giving the type of plot
   desired. See \code{\link[graphics]{plot.default}}.}
 
-  \item{Tag}{List of tags to specify which episodes, as
+  \item{Tags}{List of tags to specify which episodes, as
   apnoea or oxygen desaturation, are included in the plot.
-  Tag="all" plots all episodes present in the data.}
+  Tags="all" plots all episodes present in the data.}
+
+  \item{Indexes}{List of indexes of episodes (see ListEpisodes())
+  to specify which episodes are included in the plot.
+  Indexes="all" plots all episodes present in the data.}
 
   \item{eplim}{Two-component vector specifying the y-range
   (min,max) for the vertical lines limiting each episode.}
@@ -56,6 +60,9 @@ PlotSinglePowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   \item{epLegendCoords}{Two-component vector specifiying
   the coordinates where the legend should be placed. By
   defaul, the legend is placed on top of the plot.}
+
+  \item{Tag}{Deprecated argument maintained for
+  compatibility, use Tags instead}
 
   \item{...}{Other graphical parameters for plotting the
   power band. See \code{\link[graphics]{plot.default}}.}
@@ -86,14 +93,14 @@ HRVData = CalculatePowerBand(HRVData, indexFreqAnalysis = 1,
           size = 300, shift = 60, sizesp = 1024)
 
 layout(matrix(1:4, nrow = 2))
-PlotSinglePowerBand(HRVData, 1, "VLF", Tag = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "VLF", Tags = "APNEA", epColorPalette = "red",
                     epLegendCoords = c(2000,7500))
-PlotSinglePowerBand(HRVData, 1, "LF", Tag = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "LF", Tags = "APNEA", epColorPalette = "red",
                     eplim = c(0,6000),
                     markEpisodes = F, showEpLegend = FALSE)
-PlotSinglePowerBand(HRVData, 1, "HF", Tag = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "HF", Tags = "APNEA", epColorPalette = "red",
                     epLegendCoords = c(2000,1700))
-PlotSinglePowerBand(HRVData, 1, "LF/HF", Tag = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "LF/HF", Tags = "APNEA", epColorPalette = "red",
                     eplim = c(0,20),
                     markEpisodes = F, showEpLegend = FALSE)
 # Reset layout
