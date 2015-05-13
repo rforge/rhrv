@@ -12,7 +12,7 @@ rhrv.filled.contour <-
             col = color.palette(length(levels) - 1), plot.title, plot.axes, 
             key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
             axes = TRUE, frame.plot = axes, show.legend = TRUE,
-            Tag, HRVData, episodesColorPalette = NULL, markEpisodes = TRUE,
+            episodesColorPalette = NULL, markEpisodes = TRUE,
             ...) {
   if (missing(z)) {
     if (!missing(x)) {

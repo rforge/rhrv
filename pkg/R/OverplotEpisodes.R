@@ -83,7 +83,7 @@ OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette 
   episodesEndTime = EpisodesToPlot$InitTime + EpisodesToPlot$Duration
   episodesType = EpisodesToPlot$Type
 
-  labels <- levels(factor(episodesType))
+  labels <- levels(factor(episodesType,levels=episodesType))
   
   if (HRVData$Verbose) {
     cat("   No of episodes:",length(episodesInitTime),"\n")

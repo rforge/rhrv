@@ -3,11 +3,12 @@
 \title{Calculates and Plots spectrogram}
 \usage{
 PlotSpectrogram(HRVData, size, shift, sizesp = NULL, freqRange = NULL,
-  scale = "linear", verbose = NULL, showLegend = TRUE, Tag = NULL,
+  scale = "linear", verbose = NULL, showLegend = TRUE,
+  Tags = NULL, Indexes = NULL,
   eplim = NULL, epColorPalette = NULL, markEpisodes = TRUE,
   ymark = NULL, showEpLegend = TRUE, epLegendCoords = NULL,
   main = "Spectrogram of the HR  series", xlab = "Time (sec.)",
-  ylab = "Frequency (Hz.)", ylim = freqRange, ...)
+  ylab = "Frequency (Hz.)", ylim = freqRange, Tag=NULL, ...)
 }
 \arguments{
   \item{HRVData}{Data structure that stores the beats
@@ -38,9 +39,13 @@ PlotSpectrogram(HRVData, size, shift, sizesp = NULL, freqRange = NULL,
   \item{showLegend}{Logical argument. If true, a legend of
   the color map is shown (default is TRUE)}
 
-  \item{Tag}{List of tags to specify which episodes, as
+  \item{Tags}{List of tags to specify which episodes, as
   apnoea or oxygen desaturation, are included in the plot.
-  Tag="all" plots all episodes present in the data.}
+  Tags="all" plots all episodes present in the data.}
+
+  \item{Indexes}{List of indexes of episodes (see ListEpisodes())
+  to specify which episodes are included in the plot.
+  Indexes="all" plots all episodes present in the data.}
 
   \item{eplim}{Two-component vector specifying the y-range
   (min,max) for the vertical lines limiting each episode.}
@@ -73,6 +78,9 @@ PlotSpectrogram(HRVData, size, shift, sizesp = NULL, freqRange = NULL,
   \item{ylim}{Numeric vectors of length 2, giving the x and
   y coordinates range. If freqRange is specified, ylim is
   overwriten by it because of backward compatibility.}
+
+  \item{Tag}{Deprecated argument maintained for
+  compatibility, use Tags instead}
 
   \item{...}{Other graphical parameters. See
   \code{\link[graphics]{filled.contour}}.}
