@@ -1,4 +1,4 @@
-LoadBeatAscii <- function (HRVData, RecordName, RecordPath=".", scale = 1, datetime = "1/1/1900 0:0:0", verbose = NULL) {
+LoadBeatAscii <- function (HRVData, RecordName, RecordPath=".", scale = 1, starttime=NULL, endtime=NULL, datetime = "1/1/1900 0:0:0", verbose = NULL) {
 #-------------------------------
 # Loads beats from an ASCII file
 #-------------------------------
@@ -14,11 +14,21 @@ LoadBeatAscii <- function (HRVData, RecordName, RecordPath=".", scale = 1, datet
         cat("** Loading beats positions for record:", RecordName,"**\n")
     }
 
+    if ( (!is.null(starttime) & is.null(endtime) ) | ( is.null(starttime) & !is.null(endtime) ) ) {
+        stop("--- Bad specification of starttime and endtime\n")
+    }
+
+    if (!is.null(starttime) & !is.null(endtime)) {
+        if ( (starttime<0) | (endtime<0) | (starttime > endtime) ) {
+        stop("--- Bad specification of starttime and endtime\n")
+      }
+    }
+
     dir = getwd()
     on.exit(setwd(dir))
     if (HRVData$Verbose) {
        	cat("   Path:", RecordPath, "\n")
-	cat("   Scale:", scale, "\n")
+	      cat("   Scale:", scale, "\n")
     }
     setwd(RecordPath)
 
@@ -30,6 +40,19 @@ LoadBeatAscii <- function (HRVData, RecordName, RecordPath=".", scale = 1, datet
             cat("   Removed", length(beatsaux) - length(beats),"duplicated beats\n")
         }
     }
+
+    if (!is.null(starttime)) {
+      lastbeattime = tail(beats,n=1)
+      if (endtime>lastbeattime)  {
+        stop("--- Endtime exceeds record length\n")
+      }
+      beats <- beats[beats>=starttime & beats<=endtime]
+      if (HRVData$Verbose) {
+        cat("   Init time:", starttime, "\n")
+        cat("   End time:", endtime, "\n")
+      }
+    }
+
     datetimeaux = strptime(datetime, "%d/%m/%Y %H:%M:%S")
     if (is.na(datetimeaux)) {
         cat("   --- ERROR: Date/time format is dd/mm/yyyy HH:MM:SS ---\n")
