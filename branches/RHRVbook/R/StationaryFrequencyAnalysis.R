@@ -85,7 +85,7 @@ spec.arAdapter = function(HRVData, indexFreqAnalysis, doPlot = TRUE,
   # Compute the spectrogram using RR data
   x = ts(1000.0/(HRVData$HR/60.0),frequency = HRVData$Freq_HR,
          start=HRVData$Beat$Time[[1]])
-  periodogram = spec.ar(x,n.freq,order,plot=F,na.action, method)
+  periodogram = stats::spec.ar(x,n.freq,order,plot=F,na.action, method)
   HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram=periodogram
   if (doPlot){
     PlotPSD(HRVData,indexFreqAnalysis,...)
@@ -110,7 +110,7 @@ spec.pgramAdapter = function(HRVData, indexFreqAnalysis,doPlot = TRUE,
   # Compute the spectrogram using RR data
   x = ts(1000.0/(HRVData$HR/60.0),frequency = HRVData$Freq_HR,
          start=HRVData$Beat$Time[[1]])
-  periodogram = spec.pgram(x, spans, kernel, taper,
+  periodogram = stats::spec.pgram(x, spans, kernel, taper,
                            pad, fast, demean, detrend,
                            plot = FALSE, na.action)
   
@@ -161,8 +161,8 @@ lombAdapter = function(HRVData,indexFreqAnalysis,doPlot=TRUE,
 #' the different frequency bands with different colurs.
 #' @param HRVData Data structure that stores the beats register and information 
 #' related to it.
-#' @param indexFreqAnalysis An integer referencing the data structure that will contain 
-#' the frequency analysis.
+#' @param indexFreqAnalysis An integer referencing the data structure that contains 
+#' the PSD analysis.
 #' @param ULFmin Lower limit ULF band used for distinguish the ULF band.
 #' @param ULFmax Upper limit ULF band used for distinguish the ULF band.
 #' @param VLFmin Lower limit VLF band.
@@ -242,9 +242,8 @@ PlotPSD = function(HRVData,
   CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis),
                         "frequency")
   # check if the periodogram has been computed
-  if(is.null(HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram)){
-      stop(" --- The periodogram has not been computed yet!!   ---\n   --- Use the CalculatePSD() function ---\n")
-  }
+  CheckPeriodogram(HRVData, indexFreqAnalysis)
+  
   method = HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram$method
   freq = HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram$freq
   spect = HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram$spec
@@ -354,6 +353,75 @@ plotUnderCurve = function(x,y,xlim,ylim,col){
     coordPolY = c(min(ylim), coordPolY, min(ylim))
     polygon(coordPolX,coordPolY,col=col)
   }
+}
+
+
+########################### CalculatePSDBandsEnergy ###########################
+#' CalculateSPDBandsEnergy
+#' @description Calculates the Energy in the bands of the Power Spectral Density
+#' (PSD).
+#' @inheritParams PlotPSD
+#' @return A vector containing the energy of the ULF, VLF, LF and HF bands in the
+#' PSD.
+#' @examples
+#' \dontrun{
+#' data(HRVData)
+#' HRVData=BuildNIHR(HRVData)
+#' HRVData=FilterNIHR(HRVData)
+#' # Frequency analysis requires interpolated data (except Lomb)
+#' HRVData=InterpolateNIHR(HRVData)
+#' HRVData=CreateFreqAnalysis(HRVData)
+#' HRVData=CalculatePSD(HRVData,1,"pgram",doPlot = F)
+#' # get Energy in the default ULF, VLF and LF frequency bands.
+#' # We modify the limits for the HF band
+#' CalculateEnergyInPSDBands(HRVData, 1, HFmin = 0.15, HFmax = 0.3) 
+#' }
+#' @author Constantino A. Garcia
+#' @seealso \code{\link{PlotPSD}}, \code{\link{CalculatePSD}}. 
+CalculateEnergyInPSDBands = function(HRVData,
+                                   indexFreqAnalysis = length(HRVData$FreqAnalysis),
+                                   ULFmin=0, ULFmax=0.03, 
+                                   VLFmin=0.03, VLFmax=0.05,
+                                   LFmin=0.05, LFmax=0.15, 
+                                   HFmin=0.15, HFmax=0.4){
+  
+  CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis),
+                     "frequency")
+  # check if the periodogram has been computed
+  CheckPeriodogram(HRVData, indexFreqAnalysis)  
+  
+  psd = HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram
+  c(getEnergyInBand(psd,ULFmin, ULFmax),
+    getEnergyInBand(psd,VLFmin, VLFmax),
+    getEnergyInBand(psd,LFmin, LFmax),
+    getEnergyInBand(psd,HFmin, HFmax))
+
+}
+
+
+getEnergyInBand = function(psd,freq.min, freq.max){
+  
+  if (freq.min == freq.max){
+    return(0)
+  }
+  
+  if (freq.min > freq.max) {
+    stop("The band limits are not properly defined")
+  }
+  if (freq.min > max(psd$freq)){
+    stop("The band's lower frequency is greater than the maximum reachable frequency")
+  }
+  if (freq.max < min(psd$freq)){
+    stop("The band's higher frequency is smaller than the minimun reachable frequency")
+  }
+  
+  indx = getIndexValuesInRange(psd$freq, c(freq.min,freq.max))
+  if (length(indx) == 0){
+    stop("No values in the specified frequency band")
+  }else{
+    return(sum(psd$spec[indx]))
+  }
+  
 }
 
 ############################## EstimatePSDSlope ##########################

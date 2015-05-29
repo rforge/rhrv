@@ -117,7 +117,7 @@ PlotPowerBand <-
     
     # lframes is the number of frames for plotting power per band
     lframes=length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV)
-    
+      
     # Episodes
     if (!is.null(Tag)) {
       
@@ -420,8 +420,7 @@ PlotSinglePowerBand <-
       }
     }
     
-    timeAxis = seq(head(HRVData$Beat$Time, 1), tail(HRVData$Beat$Time, 1), 
-                   length = length(bandData))
+    timeAxis = HRVData$FreqAnalysis[[indexFreqAnalysis]]$Time
     
     plot(timeAxis, bandData, main = main, xlab = xlab, 
          ylab = ylab, type = type, ... )
