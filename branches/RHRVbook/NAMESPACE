@@ -21,9 +21,9 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "CalculateDFA","EstimateDFA","PlotDFA",
        "CalculateInfDim","EstimateInfDim","PlotInfDim",
        "RQA","RecurrencePlot","NonLinearNoiseReduction",
-       "NonlinearityTests","SurrogateTest","OverplotEpisodes","Window",
-       "EstimatePSDSlope",
-       "ListEpisodes", "RemoveEpisodes"
+       "NonlinearityTests","SurrogateTest","OverplotEpisodes",
+       "Window","EstimatePSDSlope",
+       "ListEpisodes", "RemoveEpisodes", "ModifyEpisodes"
 )
 
 # Import all packages listed as Imports or Depends

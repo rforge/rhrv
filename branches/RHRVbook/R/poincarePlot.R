@@ -20,7 +20,7 @@
 #' @param ylab A title for the y axis.
 #' @param main An overall title for the Poincare plot.
 #' @param pch Plotting character (symbol to use).
-#' @param cex Character (or symbol) expansion. 
+#' @param cex Character (or symbol) expansion.     
 #' @param ... Additional parameters for the Poincare plot figure.
 #' @details In the HRV literature, when \emph{timeLag = 1}, the \eqn{SD_1} and \eqn{SD_2}
 #' parameters are computed using time domain measures. This is the default approach in this
@@ -29,6 +29,14 @@
 #'  (\eqn{RR_{j}}{RR_(j)},\eqn{RR_{j+\tau}}{RR_(j+tau)})
 #' (by setting \emph{confidenceEstimation = TRUE}). In most cases, both approaches
 #' yield similar results.
+#' @examples
+#' \dontrun{
+#'  data(HRVProcessedData)
+#'  # rename for convenience
+#'  hd = HRVProcessedData
+#'  hd = CreateNonLinearAnalysis(hd)
+#'  hd = PoincarePlot(hd, doPlot = T)
+#' }
 #' @return  A \emph{HRVData} structure containing a \emph{PoincarePlot} field storing
 #' the \eqn{SD_1} and \eqn{SD_2} parameters. The \emph{PoincarePlot} field is
 #' stored under the \emph{NonLinearAnalysis} list.
@@ -42,19 +50,15 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   # -------------------------------------
   CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
   
-  if (HRVData$Verbose){
-    cat("  --- Calculating SD1 and SD2 parameters ---\n")  
-  }
-  
-  if (is.null(HRVData$Beat$niHR)){
-    stop("RR time series not present\n")
-  }
+  VerboseMessage(HRVData$Verbose, "Calculating SD1 and SD2 parameters")  
+  CheckNIHR(HRVData)
   
   if ( (confidence < 0) || (confidence >1) ){
     stop("   --- Confidence must be in the [0,1] interval  ---\n    --- Quitting now!! ---\n")
   }
   
-  SD = computeSD(timeSeries = HRVData$Beat$niHR, timeLag = timeLag,
+  rrSeries = HRVData$Beat$RR
+  SD = computeSD(timeSeries = rrSeries, timeLag = timeLag,
                  confidenceEstimation = confidenceEstimation,
                  confidence = confidence)
   # Get critical value depending on the confidenceValue
@@ -71,7 +75,7 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
       cat(" --- Creating Poincare Plot with time lag = ",timeLag," ---\n")
     }
     # get 2D-phase space
-    takens = buildTakens(HRVData$Beat$niHR, embedding.dim=2, time.lag = timeLag)
+    takens = buildTakens(rrSeries, embedding.dim=2, time.lag = timeLag)
     mu = c(mean(takens[,1]),mean(takens[,2]))
     ifelse(confidenceEstimation, yes = {maxLen = (2.1 - confidence) * sd2},
            no = {maxLen = 1.5 * sd2})

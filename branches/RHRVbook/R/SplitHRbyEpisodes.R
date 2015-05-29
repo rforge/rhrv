@@ -108,7 +108,7 @@ Window = function(HRVData, start, end){
   if ( length(indx) == 0){
     stop("Window out of range: No values were selected")
   }else{
-    newHRVData$Beat = HRVData$Beat[indx,]
+    newHRVData$Beat = HRVData$Beat[indx,,drop=FALSE]
   }
   # If HRVData has interpolated data, we also interpolate in newHRVData
   if( !is.null(HRVData$HR) ){
