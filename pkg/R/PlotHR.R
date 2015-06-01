@@ -5,17 +5,21 @@
 #' @param HRVData Data structure that stores the beats register and information 
 #' related to it.
 #' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tags="all" plots all episodes present
-#' in the data. 
-#' @param Indexes List of indexes to specify which episodes (see ListEpisodes),
-#' are included in the plot. Indexes="all" plots all episodes present
-#' in the data. 
+#' desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
+#' in the data.
+#' @param Indexes List of indexes of episodes (see \code{\link{ListEpisodes}})
+#' to specify which episodes are included in the plot. 
+#' \emph{Indexes}="all" plots all episodes present in the data.
 #' @param main A main title for the plot.
 #' @param xlab A label for the x axis.
 #' @param ylab a label for the y axis
 #' @param type 1-character string giving the type of plot desired. See 
 #' \code{\link[graphics]{plot.default}}.
 #' @param ylim The y limits of the plot.
+#' @param verbose  Deprecated argument maintained for compatibility, 
+#' use SetVerbose() instead 
+#' @param Tag Deprecated argument maintained for
+#' compatibility, use \emph{Tags} instead.
 #' @param ... Other graphical parameters. See 
 #' \code{\link[graphics]{plot.default}}.
 #' @references L. Rodriguez-Linares, L., A.J. Mendez, M.J. Lado, D.N. Olivieri,

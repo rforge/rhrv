@@ -49,7 +49,7 @@ RQA <-
     # Calculates Recurrence Quantification Analysis
     # -------------------------------------
       
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     if (HRVData$Verbose){
       cat("  --- Performing Recurrence Quantification Analysis ---\n")

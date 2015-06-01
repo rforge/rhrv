@@ -116,7 +116,13 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
             HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF[i]=HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF[i]/HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF[i]
             # cat("  Now: ",HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF[i],"\n")
           }   
-
+          # We set time in the center of each window
+          realShiftTime =   shiftsamples / HRVData$Freq_HR
+          realSizeTime = sizesamples / HRVData$Freq_HR
+          HRVData$FreqAnalysis[[indexFreqAnalysis]]$Time =
+            seq(realSizeTime / 2, by = realShiftTime,
+                length.out = length(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF))
+             
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$size=size
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$shift=shift
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$sizesp=sizesp
@@ -127,7 +133,6 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
               cat("** Using Wavelet analysis **\n")
           }
           
-          
           signal=1000.0/(HRVData$HR/60.0)  # msec.
           powers=modwptAnalysis(signal,wavelet, ULFmin, ULFmax , VLFmin, VLFmax, LFmin, LFmax, HFmin , HFmax, HRVData$Freq_HR,bandtolerance,relative)
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF=powers$ULF
@@ -136,6 +141,9 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF=powers$HF
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$HRV=powers$ULF+powers$VLF+powers$LF+powers$HF
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF=powers$LF/powers$HF
+          HRVData$FreqAnalysis[[indexFreqAnalysis]]$Time=
+            seq(head(HRVData$Beat$Time,1), by = 1/HRVData$Freq_HR,
+                length.out = length(powers$ULF))
           #metadata for wavelet analysis
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$wavelet=wavelet
           HRVData$FreqAnalysis[[indexFreqAnalysis]]$bandtolerance=bandtolerance
@@ -165,4 +173,95 @@ if (( type=="wavelet")&& (bandtolerance< 0)){
 		cat("Power per band calculated\n")
 	}
 	return(HRVData)
+}
+
+
+############################## getNormSpectralUnits ##########################
+#' Normalized Spectral Units
+#' @description
+#' Calculates the spectrogram bands in normalized units
+#' @details 
+#' The default behaviour of this function computes the normalized power
+#' time series in the LF and HF bands following the Task Force recommendations:
+#' 
+#' \deqn{normalized\_LF = LF\_power / (total\_power - VLF\_power - ULF\_power)}{
+#' normalized_LF = LF_power / (total_power - VLF_power - ULF_power)}
+#' \deqn{normalized\_HF = HF\_power / (total\_power - VLF\_power -ULF\_power)}{
+#' normalized_HF = HF_power / (total_power - VLF_power -ULF-power)}
+#' 
+#' If \emph{VLFnormalization} is set to FALSE, the functions computes:
+#' \deqn{normalized\_VLF = VLF\_power / (total\_power - ULF\_power)}{
+#' normalized_VLF = VLF_power / (total_power - ULF_power)}
+#' \deqn{normalized\_LF = LF\_power / (total\_power - ULF\_power)}{
+#' normalized_LF = LF_power / (total_power - ULF_power)}
+#' \deqn{normalized\_HF = HF\_power / (total\_power - ULF\_power)}{
+#' normalized_HF = HF_power / (total_power - ULF_power)}
+#' 
+#' The resulting time series are returned in a list. Note that before using this
+#' function, the spectrogram should be computed with the \emph{CalculatePowerBand}
+#' function.
+#' @param HRVData Data structure that stores the beats register and information related to it
+#' @param indexFreqAnalysis Reference to the data structure that contains the spectrogram analysis
+#' @param VLFnormalization Logical value. If TRUE (default), the function
+#' normalizes LF and HF power series by its sum. If FALSE, the function computes
+#' VLF, LF and HF power series  by its sum.
+#' @return  The \emph{getNormSpectralUnits} returns a list storing the resulting
+#' normalized power-band series. Note that this list is not stored in the 
+#' \emph{HRVData} structure.
+#' @references Camm, A. J., et al. "Heart rate variability: standards of measurement, physiological interpretation and clinical use.
+#' Task Force of the European Society of Cardiology and the North American Society of
+#' Pacing and Electrophysiology." Circulation 93.5 (1996): 1043-1065.
+#' @examples
+#' \dontrun{
+#' # load some data...
+#' data(HRVProcessedData)
+#' hd = HRVProcessedData
+#' # Perform some spectral analysis and normalize the results
+#' hd = CreateFreqAnalysis(hd)
+#' hd = CalculatePowerBand(hd,indexFreqAnalysis = 1,shift=30,size=60)
+#' normUnits = getNormSpectralUnits(hd)
+#' # plot the normalized time series
+#' par(mfrow=c(2,1))
+#' plot(normUnits$Time, normUnits$LF, xlab="Time", ylab="normalized LF",
+#'      main="normalized LF",type="l")
+#' plot(normUnits$Time, normUnits$HF, xlab="Time", ylab="normalized HF",
+#'      main="normalized HF",type="l")
+#' par(mfrow=c(1,1))
+#' 
+#' }
+#' @author Constantino A. Garcia
+#' @rdname getNormSpectralUnits
+getNormSpectralUnits <- function(HRVData,
+                                 indexFreqAnalysis = length(HRVData$FreqAnalysis),
+                                 VLFnormalization = T){
+  CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis),
+                     "frequency")
+  # check if the spectromgram has been computed
+  CheckSpectrogram(HRVData, indexFreqAnalysis)
+  
+  Time = HRVData$FreqAnalysis[[indexFreqAnalysis]]$Time
+  # if VLFnormalization = T
+  # normalization factor is (totalPower - ULF-power - VLFpower) 
+  # else normalization factor is (totalPower - ULF-power) 
+  if (VLFnormalization){
+    normFactor <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF +
+      HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF  
+  }else{
+    normFactor <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF +
+      HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF +
+      HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF
+  }
+  
+  LFnorm <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF / normFactor
+  HFnorm <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF / normFactor
+  
+  if (!VLFnormalization){
+    # if we don't normalize by the VLF norm we may return the
+    # VLFpower normalized
+    VLFnorm <- HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF / normFactor
+    return(list(VLF=VLFnorm,LF=LFnorm,HF=HFnorm,Time=Time))
+  }else{
+    return(list(LF=LFnorm,HF=HFnorm,Time=Time))
+  }
+  
 }

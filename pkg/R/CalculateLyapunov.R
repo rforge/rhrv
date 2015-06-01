@@ -69,7 +69,7 @@ CalculateMaxLyapunov <-
     # Calculates maximum Lyapunov exponent
     # -------------------------------------
         
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     if (HRVData$Verbose){
       cat("  --- Computing the divergence of the time series ---\n")  
@@ -122,7 +122,7 @@ EstimateMaxLyapunov <-
     # CalculateMaxLyapunovFunction
     # -------------------------------------
     
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$computations)){
       stop("  --- Error: maxLyapunov Object not found!! Calculate the divergence
            of the time series before estimate the Lyapunov exponent using CalculateMaxLyapunov()!! ---\n")
@@ -155,7 +155,7 @@ PlotMaxLyapunov <-
     # Plots divergence of the time series
     # -------------------------------------
         
-    checkingNonLinearIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis))
+    CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$computations)){
       stop(" Correlation Object not found!! Calculate the divergence of the time series
            before plotting it using CalculateMaxLyapunov()!!\n")

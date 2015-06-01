@@ -60,3 +60,10 @@ CheckPeriodogram =  function(HRVData, indexFreqAnalysis){
     stop(" --- PSD not found !!   ---\n   --- Use the CalculatePSD() function ---\n")
   }
 }
+
+# Check if the spectrogram has been computed
+CheckSpectrogram =  function(HRVData, indexFreqAnalysis){
+  if(is.null(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF)){
+    stop(" --- Spectrogram not found !!   ---\n   --- Use the CalculatePowerBand() function ---\n")
+  }
+}

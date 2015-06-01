@@ -3,9 +3,12 @@
 #' @description Add episodic information to the current plot
 #' @param HRVData Data structure that stores the beats register and information 
 #' related to it.
-#' @param Tag List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tag="all" plots all episodes 
-#' present in the data. 
+#' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
+#' in the data.
+#' @param Indexes List of indexes of episodes (see \code{\link{ListEpisodes}})
+#' to specify which episodes are included in the plot. 
+#' \emph{Indexes}="all" plots all episodes present in the data.
 #' @param epColorPalette Vector specifying the color of each of the episodes that
 #' will be plotted. The length of epColorPalette should be equal or greater than
 #' the number of different episodes to be plotted.
@@ -21,6 +24,8 @@
 #' @param epLegendCoords Two-component vector specifiying the coordinates where
 #' the legend should be placed. By defaul, the legend is placed on top of 
 #' the plot. 
+#' @param Tag Deprecated argument maintained for
+#' compatibility, use Tags instead.
 #' @param ... Other graphical parameters for the vertical lines limiting each
 #' episode. See \code{\link[graphics]{plot.default}}.
 #' @author C.A. Garcia
@@ -34,7 +39,7 @@
 #' # Add other type of episode for a more complete example (this episode does
 #' # not have any physiological meaning)
 #' HRVData <- AddEpisodes(HRVData,InitTimes=c(4500),Durations=c(1000), 
-#'                        Tags="Other", Values = 1)
+#'                        Tag="Other", Values = 1)
 #' HRVData <- BuildNIHR(HRVData)
 #' HRVData <- FilterNIHR(HRVData)
 #' HRVData <- InterpolateNIHR(HRVData)
@@ -61,28 +66,28 @@
 OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette = NULL,
                              eplim, lty= 2, markEpisodes = T, ymark,
                              showEpLegend = T, epLegendCoords = NULL, Tag=NULL, ...){
-
+  
   if (is.null(Tags) & !is.null(Tag)) {
     cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
     Tags <- Tag
   }
-
+  
   if (is.null(Tags) & is.null(Indexes)) {
     stop("  --- No episodes specified in OverplotEpisodes ---\n")
   }
-
-
+    
+  
   EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
-
+  
   EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,] 
-
+  
   
   # Data for representing episodes
   
   episodesInitTime = EpisodesToPlot$InitTime
   episodesEndTime = EpisodesToPlot$InitTime + EpisodesToPlot$Duration
   episodesType = EpisodesToPlot$Type
-
+  
   labels <- levels(factor(episodesType,levels=episodesType))
   
   if (HRVData$Verbose) {
@@ -92,7 +97,7 @@ OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette 
   if (is.null(epColorPalette)){
     epColorPalette = rainbow(length(labels))
   }
-    episodeColors = epColorPalette[match(episodesType, labels)]  
+  episodeColors = epColorPalette[match(episodesType, labels)]  
   
   
   if (markEpisodes){
