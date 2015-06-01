@@ -79,8 +79,6 @@ Biomedicine 103(1):39-50, july 2011.
 }
 \seealso{
 \code{\link{CalculatePowerBand}} for power calculation
-\code{\link{PlotSinglePowerBand}} for plotting a specific power band
-
 }
 \keyword{hplot}
 

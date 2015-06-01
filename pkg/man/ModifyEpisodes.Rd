@@ -2,7 +2,8 @@
 \alias{ModifyEpisodes}
 \title{ Modifies values of episodes}
 \usage{
-ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL, NewDurations=NULL ,NewValues=NULL)
+ModifyEpisodes(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL,
+NewTags=NULL, NewDurations=NULL ,NewValues=NULL)
 }
 \arguments{
   \item{HRVData}{ Data structure that stores the beats register and information related to it }

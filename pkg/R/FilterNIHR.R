@@ -46,7 +46,7 @@ function(HRVData, long=50, last=13, minbpm=25, maxbpm=200, mini=NULL, maxi=NULL,
 	ind=seq(from=0,to=0,length.out=n)
 	minbpm=25
 	maxbpm=200
-	#chamada a función para cargar os resultados en out
+	# call C function to load the results in out
 	out <-.C("filterhr",hr=as.double(HRVData$Beat$niHR),as.integer(n),as.integer(lon),as.integer(last),as.integer(minbpm),as.integer(maxbpm),ind=as.integer(ind))
 	#copiei a maneira que implmentou Leandro para actualizar a estructura HRVData$Beat
 	hr=HRVData$Beat$niHR[out$ind==1]

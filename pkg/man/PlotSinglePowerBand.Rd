@@ -93,14 +93,14 @@ HRVData = CalculatePowerBand(HRVData, indexFreqAnalysis = 1,
           size = 300, shift = 60, sizesp = 1024)
 
 layout(matrix(1:4, nrow = 2))
-PlotSinglePowerBand(HRVData, 1, "VLF", Tags = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "VLF", Tag = "APNEA", epColorPalette = "red",
                     epLegendCoords = c(2000,7500))
-PlotSinglePowerBand(HRVData, 1, "LF", Tags = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "LF", Tag = "APNEA", epColorPalette = "red",
                     eplim = c(0,6000),
                     markEpisodes = F, showEpLegend = FALSE)
-PlotSinglePowerBand(HRVData, 1, "HF", Tags = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "HF", Tag = "APNEA", epColorPalette = "red",
                     epLegendCoords = c(2000,1700))
-PlotSinglePowerBand(HRVData, 1, "LF/HF", Tags = "APNEA", epColorPalette = "red",
+PlotSinglePowerBand(HRVData, 1, "LF/HF", Tag = "APNEA", epColorPalette = "red",
                     eplim = c(0,20),
                     markEpisodes = F, showEpLegend = FALSE)
 # Reset layout

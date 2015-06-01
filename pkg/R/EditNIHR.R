@@ -160,7 +160,6 @@ function(HRVData,scale=1.0, verbose=NULL) {
 			}	
 		
 			if ((xClick>xMin*0.95)&&(xClick<xMax*1.1)&&(yClick>yMin*0.95)&&(yClick<yMax*1.1)) {
-				#cat("Punto en gráfica\n")
 				if (numCoords==0) {
 					numCoords <<- 1
 					#cat("Primer punto\n")
