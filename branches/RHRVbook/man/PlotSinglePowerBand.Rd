@@ -7,9 +7,10 @@
 PlotSinglePowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   band = c("ULF", "VLF", "LF", "HF", "LF/HF")[3], normalized = FALSE,
   main = paste(band, "Power Band"), xlab = "Time",
-  ylab = paste("Power in", band), type = "l", Tag = NULL, eplim = NULL,
-  epColorPalette = NULL, markEpisodes = TRUE, ymark = NULL,
-  showEpLegend = TRUE, epLegendCoords = NULL, ...)
+  ylab = paste("Power in", band), type = "l", Tags = NULL,
+  Indexes = NULL, eplim = NULL, epColorPalette = NULL,
+  markEpisodes = TRUE, ymark = NULL, showEpLegend = TRUE,
+  epLegendCoords = NULL, Tag = NULL, ...)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and
@@ -32,9 +33,13 @@ frequency analysis}
 \item{type}{1-character string giving the type of plot desired. See
 \code{\link[graphics]{plot.default}}.}
 
-\item{Tag}{List of tags to specify which episodes, as apnoea or oxygen
-desaturation, are included in the plot. Tag="all" plots all episodes present
-in the data.}
+\item{Tags}{List of tags to specify which episodes, as
+apnoea or oxygen desaturation, are included in the plot.
+\emph{Tags}="all" plots all episodes present in the data.}
+
+\item{Indexes}{List of indexes of episodes (see \code{\link{ListEpisodes}})
+to specify which episodes are included in the plot.
+\emph{Indexes}="all" plots all episodes present in the data.}
 
 \item{eplim}{Two-component vector specifying the y-range (min,max) for the
 vertical lines limiting each episode.}
@@ -55,6 +60,9 @@ included.}
 \item{epLegendCoords}{Two-component vector specifiying the coordinates where
 the legend should be placed. By defaul, the legend is placed on top of the
 plot.}
+
+\item{Tag}{Deprecated argument maintained for
+compatibility, use Tags instead}
 
 \item{...}{Other graphical parameters for plotting the power band. See
 \code{\link[graphics]{plot.default}}.}

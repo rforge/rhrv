@@ -24,16 +24,7 @@ LoadBeatRR <- function (HRVData, RecordName, RecordPath=".", scale = 1, datetime
     setwd(RecordPath)
 
     x = read.table(RecordName)
-    beatsaux = x$V1
-    beats=c()
-
-    limit=length(beatsaux)
-    acum=0
-    for(i in 1:limit)
-    {
-	acum=acum+beatsaux[i]
-	beats=c(beats,acum)
-    }
+    beats=cumsum(c(0,x$V1))
     
     datetimeaux = strptime(datetime, "%d/%m/%Y %H:%M:%S")
     if (is.na(datetimeaux)) {

@@ -3,9 +3,12 @@
 #' @description Add episodic information to the current plot
 #' @param HRVData Data structure that stores the beats register and information 
 #' related to it.
-#' @param Tag List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tag="all" plots all episodes 
-#' present in the data. 
+#' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
+#' in the data.
+#' @param Indexes List of indexes of episodes (see \code{\link{ListEpisodes}})
+#' to specify which episodes are included in the plot. 
+#' \emph{Indexes}="all" plots all episodes present in the data.
 #' @param epColorPalette Vector specifying the color of each of the episodes that
 #' will be plotted. The length of epColorPalette should be equal or greater than
 #' the number of different episodes to be plotted.
@@ -21,6 +24,8 @@
 #' @param epLegendCoords Two-component vector specifiying the coordinates where
 #' the legend should be placed. By defaul, the legend is placed on top of 
 #' the plot. 
+#' @param Tag Deprecated argument maintained for
+#' compatibility, use Tags instead.
 #' @param ... Other graphical parameters for the vertical lines limiting each
 #' episode. See \code{\link[graphics]{plot.default}}.
 #' @author C.A. Garcia
@@ -34,7 +39,7 @@
 #' # Add other type of episode for a more complete example (this episode does
 #' # not have any physiological meaning)
 #' HRVData <- AddEpisodes(HRVData,InitTimes=c(4500),Durations=c(1000), 
-#'                        Tags="Other", Values = 1)
+#'                        Tag="Other", Values = 1)
 #' HRVData <- BuildNIHR(HRVData)
 #' HRVData <- FilterNIHR(HRVData)
 #' HRVData <- InterpolateNIHR(HRVData)
@@ -58,34 +63,41 @@
 #'                  eplim=c(0,0.04), Tag="APNEA",
 #'                  epColorPalette = c("white"), lwd=3)
 #'}
-OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
+OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette = NULL,
                              eplim, lty= 2, markEpisodes = T, ymark,
-                             showEpLegend = T, epLegendCoords = NULL, ...){
+                             showEpLegend = T, epLegendCoords = NULL, Tag=NULL, ...){
+  
+  if (is.null(Tags) & !is.null(Tag)) {
+    cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
+    Tags <- Tag
+  }
+  
+  if (is.null(Tags) & is.null(Indexes)) {
+    stop("  --- No episodes specified in OverplotEpisodes ---\n")
+  }
     
-  if (tolower(Tag) == "all") {
-    Tag=levels(HRVData$Episodes$Type)
-  }
   
-  VerboseMessage(HRVData$Verbose, paste("Episodes in plot:",Tag))     
- 
+  EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
+  
+  EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,] 
+  
+  
   # Data for representing episodes
-  indx <- HRVData$Episodes$Type %in% Tag
   
-  episodesInitTime = HRVData$Episodes$InitTime[indx]
+  episodesInitTime = EpisodesToPlot$InitTime
+  episodesEndTime = EpisodesToPlot$InitTime + EpisodesToPlot$Duration
+  episodesType = EpisodesToPlot$Type
   
-  episodesEndTime = HRVData$Episodes$InitTime[indx] + 
-                         HRVData$Episodes$Duration[indx]
+  labels <- levels(factor(episodesType,levels=episodesType))
   
-  episodesType = HRVData$Episodes$Type[indx]
-
-  
-  VerboseMessage(HRVData$Verbose, 
-                 paste("No of episodes:",length(episodesInitTime)))     
-
-  if (is.null(epColorPalette)){
-    epColorPalette = rainbow(length(Tag))
+  if (HRVData$Verbose) {
+    cat("   No of episodes:",length(episodesInitTime),"\n")
   }
-    episodeColors = epColorPalette[match(episodesType, Tag)]  
+  
+  if (is.null(epColorPalette)){
+    epColorPalette = rainbow(length(labels))
+  }
+  episodeColors = epColorPalette[match(episodesType, labels)]  
   
   
   if (markEpisodes){
@@ -103,11 +115,11 @@ OverplotEpisodes <- function(HRVData, Tag = "all", epColorPalette = NULL,
   if (showEpLegend){
     if (is.null(epLegendCoords)){
       legend("top", 
-             legend=Tag, fill=episodeColors, cex=0.9, ncol = length(Tag), 
+             legend=labels, fill=episodeColors, cex=0.9, ncol = length(labels), 
              xjust=0.5, yjust=-0.2, bty="n")  
     }else{
       legend(x=epLegendCoords[1], epLegendCoords[2],
-             legend=Tag, fill=episodeColors, cex=0.9, ncol = length(Tag), 
+             legend=labels, fill=episodeColors, cex=0.9, ncol = length(labels), 
              xjust=0.5, yjust=-0.2, bty="n")  
     }
     

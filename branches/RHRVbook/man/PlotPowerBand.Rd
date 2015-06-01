@@ -6,7 +6,8 @@
 \usage{
 PlotPowerBand(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
   normalized = FALSE, hr = FALSE, ymax = NULL, ymaxratio = NULL,
-  ymaxnorm = 1, Tag = NULL, verbose = NULL)
+  ymaxnorm = 1, Tags = NULL, Indexes = NULL, Tag = NULL,
+  verbose = NULL)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and
@@ -26,9 +27,15 @@ unnormalized plots)}
 
 \item{ymaxnorm}{Maximum value for y axis (normalized plots)}
 
-\item{Tag}{Argument that allows to specify if episodes contained in Data are
-represented by means of coloured boxes, for example apnoea or oxygen
-desaturation, "ALL" for all episodes.}
+\item{Tags}{List of tags to specify which episodes, as apnoea or oxygen
+desaturation, are included in the plot. Tags="all" plots all episodes present
+in the data.}
+
+\item{Indexes}{List of indexes to specify which episodes (see ListEpisodes),
+are included in the plot. Indexes="all" plots all episodes present
+in the data.}
+
+\item{Tag}{Deprecated argument, use Tags instead}
 
 \item{verbose}{Deprecated argument maintained for compatibility, use
 setVerbose() instead}

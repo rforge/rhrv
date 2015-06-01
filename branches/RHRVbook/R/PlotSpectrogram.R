@@ -17,9 +17,12 @@
 #' use SetVerbose() instead 
 #' @param showLegend Logical argument. If true, a legend of the color map is 
 #' shown (default is TRUE)
-#' @param Tag List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tag="all" plots all episodes present
+#' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
 #' in the data.
+#' @param Indexes List of indexes of episodes (see ListEpisodes())
+#' to specify which episodes are included in the plot.
+#' \emph{Indexes}="all" plots all episodes present in the data.
 #' @param eplim Two-component vector specifying the y-range (min,max) for the
 #' vertical lines limiting each episode.
 #' @param epColorPalette Vector specifying the color of each of the episodes that 
@@ -40,6 +43,8 @@
 #' @param ylim Numeric vectors of length 2, giving the x and y coordinates 
 #' range. If freqRange is specified, ylim is overwriten by it because of backward
 #' compatibility.
+#' @param Tag Deprecated argument maintained for
+#' compatibility, use Tags instead.
 #' @param ... Other graphical parameters. See 
 #' \code{\link[graphics]{filled.contour}}.
 #' @note PlotSpectrogram with \emph{showLegend = TRUE} uses the layout function 
@@ -86,17 +91,16 @@
 #'                          ymark=c(0.001,0.002))
 #'}
 #'@keywords hplot 
-
 PlotSpectrogram <- function(HRVData, size, shift, sizesp = NULL,
                             freqRange = NULL, scale = "linear", verbose = NULL,
                             showLegend = TRUE, 
-                            Tag = NULL,
+                            Tags = NULL, Indexes = NULL,
                             eplim =NULL,  epColorPalette = NULL,
                             markEpisodes = TRUE, ymark = NULL,
                             showEpLegend = TRUE, epLegendCoords = NULL,                            
                             main="Spectrogram of the HR  series",
                             xlab = "Time (sec.)", ylab="Frequency (Hz.)",
-                            ylim = freqRange,                            
+                            ylim = freqRange, Tag = NULL,                           
                             ...){
   # -----------------
   # Plots spectrogram
@@ -108,6 +112,11 @@ PlotSpectrogram <- function(HRVData, size, shift, sizesp = NULL,
 	if (!is.null(verbose)) {
 		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
 		SetVerbose(HRVData,verbose)
+	}
+
+	if (is.null(Tags) & !is.null(Tag)) {
+		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
+		Tags <- Tag
 	}
 	
 	if (HRVData$Verbose) {
@@ -137,18 +146,15 @@ PlotSpectrogram <- function(HRVData, size, shift, sizesp = NULL,
 
   par.orig <- par(c("mar", "las", "mfrow"))
   on.exit(par(par.orig))
+
   
-  rhrv.filled.contour(time, frequency[indx], specgr[,indx],
-                      show.legend=showLegend,
-                      xlab = xlab, ylab = ylab, main =main,
-                      Tag = Tag, HRVData=HRVData,
-                      ...)  
+  rhrv.filled.contour(time, frequency[indx], specgr[,indx], show.legend=showLegend,xlab = xlab, ylab = ylab, main =main, ...)  
   
-  if (!is.null(Tag)){
+  if (!is.null(Tags) || !is.null(Indexes)){
     
     if (is.null(eplim)) eplim = c(ylim[1], 0.90 * ylim[2])
     if (is.null(ymark)) ymark = c(0.99 * eplim[2], eplim[2])
-    OverplotEpisodes(HRVData, Tag=Tag, eplim = eplim,
+    OverplotEpisodes(HRVData, Tags=Tags, Indexes=Indexes, eplim = eplim,
                      showEpLegend = showEpLegend,                     
                      epLegendCoords = epLegendCoords,
                      epColorPalette = epColorPalette,

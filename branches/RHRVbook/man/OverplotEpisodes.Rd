@@ -4,17 +4,21 @@
 \alias{OverplotEpisodes}
 \title{OverplotEpisodes}
 \usage{
-OverplotEpisodes(HRVData, Tag = "all", epColorPalette = NULL, eplim,
-  lty = 2, markEpisodes = T, ymark, showEpLegend = T,
-  epLegendCoords = NULL, ...)
+OverplotEpisodes(HRVData, Tags = NULL, Indexes = NULL,
+  epColorPalette = NULL, eplim, lty = 2, markEpisodes = T, ymark,
+  showEpLegend = T, epLegendCoords = NULL, Tag = NULL, ...)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and information
 related to it.}
 
-\item{Tag}{List of tags to specify which episodes, as apnoea or oxygen
-desaturation, are included in the plot. Tag="all" plots all episodes
-present in the data.}
+\item{Tags}{List of tags to specify which episodes, as apnoea or oxygen
+desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
+in the data.}
+
+\item{Indexes}{List of indexes of episodes (see \code{\link{ListEpisodes}})
+to specify which episodes are included in the plot.
+\emph{Indexes}="all" plots all episodes present in the data.}
 
 \item{epColorPalette}{Vector specifying the color of each of the episodes that
 will be plotted. The length of epColorPalette should be equal or greater than
@@ -38,6 +42,9 @@ included.}
 the legend should be placed. By defaul, the legend is placed on top of
 the plot.}
 
+\item{Tag}{Deprecated argument maintained for
+compatibility, use Tags instead.}
+
 \item{...}{Other graphical parameters for the vertical lines limiting each
 episode. See \code{\link[graphics]{plot.default}}.}
 }
@@ -54,7 +61,7 @@ HRVData <- LoadApneaWFDB(HRVData,RecordName="test_files/WFDB/a03")
 # Add other type of episode for a more complete example (this episode does
 # not have any physiological meaning)
 HRVData <- AddEpisodes(HRVData,InitTimes=c(4500),Durations=c(1000),
-                       Tags="Other", Values = 1)
+                       Tag="Other", Values = 1)
 HRVData <- BuildNIHR(HRVData)
 HRVData <- FilterNIHR(HRVData)
 HRVData <- InterpolateNIHR(HRVData)

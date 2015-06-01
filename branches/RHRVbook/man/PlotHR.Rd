@@ -4,20 +4,22 @@
 \alias{PlotHR}
 \title{Simple plot of interpolated heart rate}
 \usage{
-PlotHR(HRVData, Tag = NULL, verbose = NULL,
+PlotHR(HRVData, Tags = NULL, Indexes = NULL,
   main = "Interpolated instantaneous heart rate", xlab = "time (sec.)",
-  ylab = "HR (beats/min.)", type = "l", ylim = NULL, ...)
+  ylab = "HR (beats/min.)", type = "l", ylim = NULL, Tag = NULL,
+  verbose = NULL, ...)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and information
 related to it.}
 
-\item{Tag}{List of tags to specify which episodes, as apnoea or oxygen
-desaturation, are included in the plot. Tag="all" plots all episodes
-present in the data.}
+\item{Tags}{List of tags to specify which episodes, as apnoea or oxygen
+desaturation, are included in the plot. \emph{Tags}="all" plots all episodes present
+in the data.}
 
-\item{verbose}{Deprecated argument maintained for compatibility, use
-SetVerbose() instead.}
+\item{Indexes}{List of indexes of episodes (see \code{\link{ListEpisodes}})
+to specify which episodes are included in the plot.
+\emph{Indexes}="all" plots all episodes present in the data.}
 
 \item{main}{A main title for the plot.}
 
@@ -29,6 +31,12 @@ SetVerbose() instead.}
 \code{\link[graphics]{plot.default}}.}
 
 \item{ylim}{The y limits of the plot.}
+
+\item{Tag}{Deprecated argument maintained for
+compatibility, use \emph{Tags} instead.}
+
+\item{verbose}{Deprecated argument maintained for compatibility,
+use SetVerbose() instead}
 
 \item{...}{Other graphical parameters. See
 \code{\link[graphics]{plot.default}}.}

@@ -61,4 +61,13 @@ function if \emph{timeLag=1}. This function also allows the user to fit a ellips
 (by setting \emph{confidenceEstimation = TRUE}). In most cases, both approaches
 yield similar results.
 }
+\examples{
+\dontrun{
+ data(HRVProcessedData)
+ # rename for convenience
+ hd = HRVProcessedData
+ hd = CreateNonLinearAnalysis(hd)
+ hd = PoincarePlot(hd, doPlot = T)
+}
+}
 

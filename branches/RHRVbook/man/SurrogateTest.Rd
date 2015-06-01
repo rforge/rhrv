@@ -81,7 +81,7 @@ HRVData = CreateNonLinearAnalysis(HRVData)
 HRVData = SetVerbose(HRVData,TRUE)
 HRVData = SurrogateTest(HRVData, indexNonLinearAnalysis = 1,
                         significance = 0.05, oneSided = FALSE,
-                        K = 5, useFunction = timeAsymmetry)
+                        K = 5, useFunction = timeAsymmetry2)
 
 }
 }
