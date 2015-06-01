@@ -97,7 +97,7 @@ set.seed(1)
 # Testing 
 hrv.data = NonlinearityTests(hrv.data)
 hrv.data = SurrogateTest(hrv.data, significance = 0.05,
-    useFunction = timeReversibility, tau=4, doPlot = TRUE)
+    useFunction = timeAsymmetry2, tau=4, doPlot = TRUE)
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[h]
@@ -106,7 +106,7 @@ hrv.data = SurrogateTest(hrv.data, significance = 0.05,
   \caption{Surrogate data testing.\label{fig:surrogateData}}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-The \textit{SurrogateTest} uses the \textit{timeReversibility} function from the
+The \textit{SurrogateTest} uses the \textit{timeAsymmetry2} function from the
 \textit{nonlinearTseries} package. This function implements the third-order 
 statistic 
 $$\psi(\tau)=\frac{1}{N-\tau}\sum_{i=\tau+1}^N (s_n - s_{n-\tau})^3,$$ 
@@ -115,7 +115,7 @@ Since linear stochastic series are symmetric under time reversal, this statistic
 may be used for testing if the data was generated
 from a stationary linear stochastic process (the null hypothesis).  The 
 \textit{tau}
-parameter is a parameter of the \textit{timeReversibility} function that sets
+parameter is a parameter of the \textit{timeAsymmetry2} function that sets
 $\tau=tau$. It must be noted that the discrimination power of the time simmetry 
 test is low. We have use it here for illustrative purposes. Figure 
 \ref{fig:surrogateData} shows the results of the surrogate data testing.

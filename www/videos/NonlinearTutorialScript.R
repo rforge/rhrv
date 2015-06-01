@@ -12,7 +12,7 @@ hrv.data = CreateNonLinearAnalysis(hrv.data)
 #We check that the RR series is nonlinear
 hrv.data = NonlinearityTests(hrv.data)
 hrv.data = SurrogateTest(hrv.data, significance = 0.05,
-                         useFunction = timeReversibility, tau=4, doPlot = TRUE)
+                         useFunction = timeAsymmetry2, tau=4, doPlot = TRUE)
 
 #We estimate the time lag to be used in phase space reconstruction
 kTimeLag=CalculateTimeLag(hrv.data,method="first.e.decay",lagMax=100,doPlot=TRUE)
@@ -86,7 +86,7 @@ hrv.data = SetVerbose(hrv.data,TRUE)
 #We check that the RR series is nonlinear
 hrv.data = NonlinearityTests(hrv.data)
 hrv.data = SurrogateTest(hrv.data, significance = 0.05,
-                         useFunction = timeReversibility, tau=4, doPlot = TRUE)
+                         useFunction = timeAsymmetry2, tau=4, doPlot = TRUE)
 
 kTimeLag = CalculateTimeLag(hrv.data, method = "first.minimum", lagMax = 300)
 kEmbeddingDim = CalculateEmbeddingDim(hrv.data, numberPoints = 10000,
@@ -98,7 +98,7 @@ hrv.data = NonLinearNoiseReduction(hrv.data, embeddingDim = kEmbeddingDim)
 #We check that the RR series is nonlinear
 hrv.data = NonlinearityTests(hrv.data)
 hrv.data = SurrogateTest(hrv.data, significance = 0.05,
-                         useFunction = timeReversibility, tau=4, doPlot = TRUE)
+                         useFunction = timeAsymmetry2, tau=4, doPlot = TRUE)
 
 hrv.data = PoincarePlot(hrv.data, indexNonLinearAnalysis=1, timeLag=1, 
                         confidenceEstimation = TRUE,confidence = 0.9, doPlot=TRUE)

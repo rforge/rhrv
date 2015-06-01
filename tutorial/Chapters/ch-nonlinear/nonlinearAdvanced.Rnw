@@ -135,7 +135,7 @@ hrv.data = CalculateCorrDim(hrv.data,
 <<genCorrDimEst,fig=TRUE,pdf=TRUE,eps=FALSE,include=FALSE>>=
 hrv.data = EstimateCorrDim(hrv.data, indexNonLinearAnalysis = 1,
                             regressionRange=c(3*10^5,9*10^5),
-                            useEmbeddings = 13:14)
+                            useEmbeddings = kEmbeddingDim:(kEmbeddingDim + 2))
                   
 @
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
