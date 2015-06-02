@@ -22,7 +22,7 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "CalculateInfDim","EstimateInfDim","PlotInfDim",
        "RQA","RecurrencePlot","NonLinearNoiseReduction",
        "NonlinearityTests","SurrogateTest","OverplotEpisodes",
-       "Window","EstimatePSDSlope",
+       "ExtractTimeSegment","Window","EstimatePSDSlope",
        "ListEpisodes", "RemoveEpisodes", "ModifyEpisodes"
 )
 
