@@ -191,7 +191,7 @@ PlotPowerBand <-
       
       par(xpd=NA) 
       legend(timeAxis[lframes/2],ymaxratio,
-             legend=Tag,fill=Pal,cex=0.9,ncol=length(Tag),
+             legend=Tags,fill=Pal,cex=0.9,ncol=length(Tags),
              xjust=0.5,yjust=-0.2,bty="n")
       
     }
