@@ -1,0 +1,3136 @@
+%!TEX root = /Users/gs/projects/rforge/rhrv/gs/Rnw_out/recurrence.tex
+%$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/Rnw/recurrence.Rnw $
+% -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
+%
+%% Defunct. Master is in RHRV now. This is copied to  lectures/src/dataanalysis.
+%
+%  Adjust the path names below and run the R command to process this file
+%
+% setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
+%  cp <- tools::compactPDF("recurrence.pdf", gs_quality = "ebook")
+%
+
+\typeout{Clear R workspace??}
+%global flags for conditional builds
+%:flags
+\def\private{true}% comment out for public version
+\def\solutions{true}% comment out to hide solutions
+\def\usehyperref{true}% comment out to skip hyperref
+\errorcontextlines=4%default:2
+
+\documentclass[a4paper, english, utf8]{amsart}
+%\usepackage[applemac]{inputenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{url} % used by natbib
+\usepackage[square]{natbib} %[Azzalini & Bowman, 1990] 
+% for \bibliographystyle{natdin}
+
+%\usepackage{gssda}
+\usepackage{SIntro}
+
+%\usepackage{Rd}
+\newlength{\ldescriptionwidth}
+\newcommand{\ldescriptionlabel}[1]{%
+  \settowidth{\ldescriptionwidth}{{#1}}%
+  \ifdim\ldescriptionwidth>\labelwidth
+    {\parbox[b]{\labelwidth}%
+      {\makebox[0pt][l]{#1}\\[1pt]\makebox{}}}%
+  \else
+    \makebox[\labelwidth][l]{{#1}}%
+  \fi
+  \hfil\relax}
+\newenvironment{ldescription}[1][1in]%
+  {\begin{list}{}%
+    {\setlength{\labelwidth}{#1}%
+      \setlength{\leftmargin}{\labelwidth}%
+      \addtolength{\leftmargin}{\labelsep}%
+      \renewcommand{\makelabel}{\ldescriptionlabel}}}%
+  {\end{list}}
+
+\newenvironment{Rdsection}[1]{%
+  \ifx\@empty#1\else\subsubsection*{#1}\fi
+  \begin{list}{}{\setlength{\leftmargin}{0.25in}}\item}
+  {\end{list}}
+
+\newenvironment{Arguments}{%
+  \begin{Rdsection}{Arguments}}{\end{Rdsection}}
+\newenvironment{Description}{%
+  \begin{Rdsection}{Description}}{\end{Rdsection}}
+\newenvironment{Details}{%
+  \begin{Rdsection}{Details}}{\end{Rdsection}}
+\newenvironment{Value}{%
+  \begin{Rdsection}{Value}}{\end{Rdsection}}
+
+\newcommand{\HeaderA}[3]{%
+%  \vneed{1ex}
+%  \markboth{#1}{#1}
+%  \noindent
+%  \nopagebreak
+  \begin{center}
+%  \ifthenelse{\boolean{Rd@use@hyper}}%
+%    {\def\@currentHref{page.\thepage}
+%    \hypertarget{Rfn.#3}{\index{#1@\texttt{#1}}}%
+%    \myaddcontentsline{toc}{subsection}{#1}%
+%    \pdfbookmark[1]{#1}{Rfn.#3}}
+%    {\addcontentsline{toc}{subsection}{#1}
+%      \index{#1@\texttt{#1}|textbf}}
+    \hrule
+    \parbox{0.95\textwidth}{%
+      \begin{ldescription}[1.5in]
+       \item[\texttt{#1}] \emph{#2}
+      \end{ldescription}}
+    \hrule
+  \end{center}
+  \nopagebreak
+  }
+  
+\newenvironment{Usage}{%
+  \begin{Rdsection}{Usage}}{\end{Rdsection}}
+  
+%\usepackage{Sweave}%magic to avoid Sweave
+\usepackage[bookmarks, pdftex,
+pdftitle={recurrence plot},
+pdfauthor={G. Sawitzki}, 
+colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
+%\usepackage[author-year, backrefs]{amsrefs}	%for citelist. load after hyperref!
+
+
+\usepackage{gssda}
+\usepackage{colortbl}
+\usepackage{verbatim}        % small example code
+\usepackage{graphicx, fancyvrb, fancyref}
+%\graphicspath{{./}{./media/}{../media/}}%Graetzer, p. 420
+
+\newcommand{\figref}[1]{\Vref{#1}}
+
+%\includegraphics[width=1.0\linewidth]{recurrence-ch04diabetesrecurrence}
+
+\title{Statistical Data Analysis: \\Recurrence Plot}
+\author[G. Sawitzki]{G\"unther Sawitzki}
+\date{2013-11}
+\email{\url{gs@statlab.uni-heidelberg.de}}
+\address{\noindent G\"unther Sawitzki\newline
+\indent StatLab Heidelberg\newline
+\indent Im Neuenheimer Feld 294\newline
+\indent D 69120 Heidelberg\newline}%\\\bigskip\bigskip\bigskip\bigskip\bigskip \\ %
+\keywords{data analysis, distribution diagnostics, recurrence plot}
+\thanks{\emph{This waste book is a companion to   ``G. Sawitzki: Statistical Data Analysis''}\\
+\indent \emph{Typeset}, with minor revisions: \today\  from svn/cvs $Revision: 169 $\\
+\indent \url{gs@statlab.uni-heidelberg.de}
+}%\\
+
+%: layout
+\RequirePackage{layouts} %used for LaTeX info only
+\addtolength{\textheight}{12mm}
+\addtolength{\topmargin}{-9mm}   % still fits on US paper
+\addtolength{\textwidth}{10mm}   % still fits on US paper - 6.00612 in on A4
+\setlength{\oddsidemargin}{10mm}
+\setlength{\evensidemargin}{\oddsidemargin}
+
+%  ****************************************
+%  *           PARAGRAPHING               *
+%  ****************************************
+%
+\parskip 12pt plus .25pt
+\parindent 0pt %1em
+\partopsep 2pt plus 1pt minus 1pt
+
+%:Sweave
+\SweaveOpts{echo=TRUE}
+\newcommand\Stt[1]{\textsl{\texttt{#1}}}
+\renewcommand\urladdr[1]{\texttt{#1}}
+
+%\usepackage{a4wide}
+
+%%%%% from Sweave.sty
+\setkeys{Gin}{width=0.8\textwidth}
+
+\definecolor{sincol}{rgb}{0.0,0.0,0.8}% darkblue [r=0,   g=0,   b=.8]
+\definecolor{soutcol}{rgb}{0.0,0.3,0.1}% darkgreen r=0.0,   g=.6, b=0]
+
+\newcommand{\R}{{\normalfont\textsf{R}}{}}
+\newcommand\code[1]{\textsl{\texttt{#1}}}
+\newcommand\codex[1]{\textsl{\texttt{#1}}\index{#1@\texttt{#1}|textit}}
+
+%: task specific
+%:   plotrecurrence
+\newcommand\plotrecurrence[3][0.64]{
+See \figref{fig:recurrence-#2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=#1\linewidth]{recurrence-#2}
+\caption{Recurrence plot. #3}
+\label{fig:recurrence-#2}
+\end{center}
+\end{figure}
+}
+
+%:   plotrqa
+%! width should be adjusted to recurrence plot
+% [width] #2: label #3: caption
+\newcommand\plotrqa[3][0.64]{
+See \figref{fig:recurrence-#2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=#1\linewidth]{recurrence-#2}
+\caption{RQA. #3}
+\label{fig:recurrence-#2}
+\end{center}
+\end{figure}
+}
+
+%:   plotpairs
+\newcommand\plotpairs[3][0.64]{
+See \figref{fig:recurrence-#2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=#1\linewidth]{recurrence-#2}
+\caption{Takens states. #3}
+\label{fig:recurrence-#2}
+\end{center}
+\end{figure}
+}
+
+%:   plotco
+\newcommand\plotco[3][0.7]{
+See \figref{fig:recurrence-#2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=#1\linewidth]{recurrence-#2}
+\caption{State coplot. #3}
+\label{fig:recurrence-#2}
+\end{center}
+\end{figure}
+}
+
+\makeindex
+%\makenomenclature
+\listfiles
+%:{document}
+\begin{document}
+
+% content 
+\maketitle
+%
+{\centering
+\includegraphics[width=0.35\linewidth]{recurrence-chirpXXX}
+
+}
+{
+\parskip 0pt\small
+%\parindent 0pt %1em
+%\partopsep 12pt plus 1pt minus 1pt
+\tableofcontents
+}
+
+%
+
+
+\section{Background}
+
+\subsection{Takens' Recurrence States}
+\index{Takens state}
+
+Recurrence plots have been introduced in an attempt to understand near periodic behaviour in hydrodynamics, in particular the transition to turbulence. 
+On the one hand, and extended theory on dynamical systems was available, covering deterministic models. A fundamental concept is that at a certain time a system is in some state, and developing from this. Defining the proper state space is a critical step in modelling.
+
+The other toolkit is that of stochastics processes, in particular Markov models. Classical time series assumes stationarity, and this is obviously not the way to go. A fundamental idea for Markov models is that  the system state is seen in a temporal context: you have a Markov process, if you can define a (non-anticipating) state that has sufficient information for prediction: given this state, the future is independent from the past.
+
+Recurrence, coming back to some state, is often a key to understand a near periodic system. A classical field is the movement of celestial bodies.
+
+Hydrodynamics is a challenging problem. Understanding planetary motion is a historical challenge, and may be useful as an illustration.
+
+As a simple illustration, let $x=(x_i)$ be a sequence, maybe near periodic. For now, think of $i$ as a time index.
+
+Recurrence plots have two steps. The first was a bold step by Floris Takens. If you do not know the state space of a system, for a choice of ``dimension''  $d$, take the sequence of $d$ tuples taken from your data to define the states.
+$$ u_i = (x_i,\ldots , x_{i+(d-1)})$$
+This is Takens' delay embedding state (re)construction \cite{takens1981detecting}.
+\index{Takens state}
+\index{recurrence plot}
+\index{delay embedding}
+
+As a mere technical refinement: you may know that your data are a flattened representation of $m$ dimensional data. So you take
+$$ u_i = (x_i, x_{i+m}\ldots, x_{i+(d-1)*m}).$$
+This may be a relict of FORTRAN times, where it was common to flatten two-dimensional structures by case. 
+\todo{add support for higher dimensional signals}
+
+Conceptually, you define states by observed histories. For classical Markov setup, the state is defined by the previous information $x_{i-1}$, but for more complex situations you may have to step back in the past. Finding the appropriate $d$ is the challenge. So it may be appropriate to view the Takens states as a family, indexed by the time scope $d$. The rest is structural information how to arrange items.
+
+Of course it is possible to compress information here, sorting states and removing duplicates. Keeping the original definition as the advantage that we have the index $i$, so that $u_i$ is the state at index position $i$.
+
+But the states may have an inherent structure, which we may take into account or ignore. Since for this example, we are just in $4$-dimensional space, marginal scatterplots may give enough information.
+
+Takens states are vectors in $M$ dimensions. There are standard statistical techniques to visiualize aspects of $M$  dimensional vectors, at least for not too high dimension. One is the draftsman's plot, a scatterplot matrix by marginals. For Takens states, this is implemented as \code{statepairs()}. The other is coplots, a variant of scatterplot matrix by marginals, conditionend by one or two additional variables. For Takens states, this is implemented as \code{statecoplots()}
+
+To display the Takens state space, we us a variant of pairs().
+\todo{the takTakensens state plot may be critically affected by outliers. Find a good rescaling.}
+
+By convention, the states are defined using overlapping sliding windows. This imposes considerable dependence between the states: one state is the shifted previous states, with only the end sub-state replaced. As an option, the states can be subsampled, using only non-overlapping ranges.
+
+The Takens states may be stationary, that is asymptotically the states starting at $i$ do not depend on $i$. In this case, the first row (or column) contains all information, and pairs plot form an inclusion sequence by. In general, we will use state plots in 4 or 8 dimensions, where the limits are suggested by the print area.
+
+%
+\subsection{Recurrence Plots}
+
+\todo{consider dimension-adjusted radius}
+
+The next step, taken in \cite{eckmann1987recurrence} was to use a two dimensional display. Take a scatterplot with the Taken's states a marginal. Take a sliding window of your process data, and for each $i$, find the ``distance'' of $u_i$ from and to any of the collected states. If the distance is below some chosen threshold, mark the point (i, j) for which u(j) is in the ball of radius r(i) centred at u(i).
+
+The original publication  \cite{eckmann1987recurrence} actually used a nearest neighbourhood environment to cover about 10 data points.
+
+The construction has considerable arbitrary choices. The critical radius may depend on the point $i$. In practical applications, using a constant radius is a common first step. Using a dichotomous marking was what presumably was necessary when the idea was introduced. With todays technology, we can allow a markup on a finer scale, as has been seen in Orion-1.
+\todo{support distance instead of 0/1 indicators}
+
+We can gain additional freedom by using a correlation view: instead of looking from one axis, we can walk along the diagonal, using two reference axis. 
+
+Helpful hints how to interpret recurrence plots are in ``Recurrence Plots At A Glance''  \url{<http://www.recurrence-plot.tk/glance.php>}.
+
+\subsection{Recurrence Quantification Analysis}
+\label{sec:rqa}
+\index{RQA}
+\index{recurrence quantification analysis}
+While visual inspection is the prime way to assess recurrence plots, quantification of some aspects revealed of the plot may be helpful. A collection of indices is provided by a recurrence quantification analysis (RQA)
+\cite{zbilut2006recurrence},  \cite{webber2005recurrence}.
+
+See  \Vref{tab:rqa}.
+
+\begin{table}[htdp]
+\caption{Recurrence Quantification Analysis (RQA)}
+\begin{center}
+\begin{tabular}{|l|p{0.6\linewidth}|}
+\hline
+\code{REC}& Recurrence. Percentage of recurrence points in a recurrence Plot.\\
+\code{DET}& Determinism. Percentage of recurrence points that form diagonal lines.\\
+\code{LAM}& Percentage of recurrent points that form vertical lines.\\
+\code{RATIO}& Ratio between \code{DET} and \code{RR}.\\
+\code{Lmax}& Length of the longest diagonal line.\\
+\code{Lmean}& Mean length of the diagonal lines. \newline The main diagonal is not taken into account.\\
+\code{DIV}& Inverse of \code{Lmax}.\\
+\code{Vmax}& Longest vertical line.\\
+\code{Vmean}& Average length of the vertical lines. \newline This parameter is also referred to as the Trapping time.\\
+\code{ENTR}& Shannon entropy of the diagonal line lengths distribution\\
+\code{TREND}& Trend of the number of recurrent points \newline depending on the distance to the main diagonal\\
+\code{diagonalHistogram}& Histogram of the length of the diagonals.\\
+\code{recurrenceRate}& Number of recurrent points \newline depending on the distance to the main diagonal.\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab:rqa}
+\end{table}%
+
+\section{\R{} Setup}
+
+<<echo=FALSE,print=FALSE>>=
+graphics.off()
+quartz(width=11,height=11)
+# we need larger displays. change this for other displays
+
+<<>>=
+save.RNGseed <- 87149 #.Random.seed
+save.RNGkind <- RNGkind()
+set.seed(save.RNGseed, save.RNGkind[1])
+save.RNGkind
+@
+%:   function laptime
+<<>>=
+laptime <- function(){
+return(round(structure(proc.time() - chunk.time.start, class = "proc_time")[3],3))
+chunk.time.start <<- proc.time()
+}
+
+<<>>=
+# install.packages("sintro",repos="http://r-forge.r-project.org",type="source")
+library(sintro)
+
+library(nonlinearTseries)
+@
+
+\subsubsection{Takens States}
+
+Takens states are represented as a matrix, one state per row. The number of colums is the imbedding dimension. If present, the \code{time.lag} attribute is the lag parameter, \code{id} an identification string for the basic data set.
+
+\todo{improve choice of alpha}
+<<>>=
+alpha=0.5
+@
+%:  function statepairs: Takens states
+
+% R CMD Rdconv -t latex ../man/statepairs.Rd -o ../man/statepairs.tex
+\medskip
+\HeaderA{statepairs}{Show marginal scatterplots of Takens states}{statepairs!}
+%\keyword{\textbackslash{}textasciitilde{}kwd1}{statepairs}
+%\keyword{\textbackslash{}textasciitilde{}kwd2}{statepairs}
+%
+\begin{Usage}
+\begin{verbatim}
+statepairs(states, main, 
+	range  = NULL,
+	rank = FALSE, nooverlap = FALSE, 
+	col, \ldots)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{states}] A matrix: Takens states by dimension, one state per row.
+\item[\code{main}] Optional: the main header.
+\item[\code{range}] Optional: an interval selecting values to be displayd.
+\item[\code{rank}] An experimental variant. If \code{rank}, the values are rank transformed.
+\item[\code{nooverlap}] An experimental variant. If \code{nooverlap}, the cases are subsampled by dimension.
+\item[\code{col}]  The current choice is $rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$ 
+as a default.
+
+
+\end{ldescription}
+\end{Arguments}
+\hrule
+
+\todo{colour by time}
+
+%:  function statepairs
+<<statepairs, echo=TRUE, print=FALSE>>=
+statepairs <- function(states, main, 
+		rank=FALSE, nooverlap= FALSE, range=NULL, 
+		col = rgb(1,0,0, 1/sqrt(dim(states)[1])),  ...){
+	n <- dim(states)[1]; dim <-  dim(states)[2]
+	time.lag <- attr(states,"time.lag"); if (is.null(time.lag)) time.lag <- 1
+	
+	if (missing(main)) {
+        		stateid <- attr(states, "id")
+        		if (is.null(stateid)) stateid <- deparse(substitute(states))
+        		main <- paste("Takens states:", stateid, "\n",
+        			"n:", n," dim:", dim) 
+        		if (time.lag != 1) main <- paste(main, " time lag:", time.lag)
+		}
+		
+	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
+	main <- paste(main," no overlap")}
+	
+	if (!is.null(range)) { states[states[]< range[1]] <- NA; 
+		states[states[]> range[2]] <- NA
+		main <- paste(main," trimmed")}	
+		
+	if (rank) {states <- apply(states, 2, rank, ties.method="random")
+	main <- paste(main," ranked")}
+	
+	pairs(states, main=main,
+#	col=rgb(0,0,0, alpha), pch=19, ...)
+	col=	col, pch=19, ...)
+	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
+}
+@
+%:  function statecoplot
+% prompt(statecoplot)
+% R CMD Rdconv -t latex ../man/statepairs.Rd -o ../man/statepairs.tex
+
+Assuming the index is time, the \code{statecoplot()} is layed out to show the highest index as response,
+i.e. $ (x_{t-1}, x_t | x_{t-2}, x_{t-3})$.
+
+\todo{extend for low dimensions, extend parameters}
+
+\medskip
+\HeaderA{statecoplot}{Show conditioning marginal scatterplots of Takens states}{statecoplot!}
+%\keyword{\textbackslash{}textasciitilde{}kwd1}{statepairs}
+%\keyword{\textbackslash{}textasciitilde{}kwd2}{statepairs}
+%
+\begin{Usage}
+\begin{verbatim}
+statecoplot(states, main, 
+	range  = NULL,
+	rank = FALSE, nooverlap = FALSE, 
+	 col= rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$, 
+	number = c(5,5))
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{states}] A matrix: Takens states by dimension, one state per row.
+\item[\code{main}] Optional: the main header.
+\item[\code{range}] Optional: an interval selecting values to be displayd.
+\item[\code{rank}] An experimental variant. If \code{rank}, the values are rank transformed.
+\item[\code{nooverlap}] An experimental variant. If \code{nooverlap}, the cases are subsampled by dimension.
+\item[\code{alpha}] \item[\code{col}]  The current choice is $rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$, 
+as a default.
+\item[\code{number}] integer; the number of conditioning intervals, for a and b, possibly of length 2.
+\end{ldescription}
+\end{Arguments}
+\hrule
+
+
+<<statecoplot, echo=TRUE, print=FALSE>>=
+statecoplot <- function(states, main, 
+		rank = FALSE, nooverlap = FALSE, range = NULL, 
+		col = rgb(1,0,0, 1/sqrt(dim(states)[1])),  
+		number = c(5,5), ...){
+	n <- dim(states)[1]; dim <-  dim(states)[2]
+	time.lag <- attr(states,"time.lag")
+	if (is.null(time.lag)) time.lag <- 1
+	if (missing(main)) {
+	stateid <- attr(states, "id")
+	if (is.null(stateid)) stateid <- deparse(substitute(states))
+	main <- paste("Takens states:", stateid, "\n",
+		"n=", n," dim=", dim) 
+	if (time.lag != 1) main <- paste(main, " time lag=", time.lag)
+		}
+		
+	if (nooverlap) {states <- states[ seq(1,n, by=dim),]
+	main <- paste(main," no overlap")}
+
+	
+	if (!is.null(range)) { states[states[]< range[1]] <- NA; states[states[]> range[2]] <- NA
+	main <- paste(main," trimmed")}
+	
+	if (rank) {states <- apply(states, 2, rank, ties.method="random")
+	main <- paste(main," ranked")}
+	
+	coplot((states[,4]~states[,3]|states[,1]+ states[,2]), 
+	number=number, main=main,
+	col=rgb(0,0,0, alpha), pch=19, ...)
+	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
+}
+@
+
+\subsubsection{Local Bottleneck: Recurrence Plots}
+
+To allow experimental implementations, functions from \code{nonlinearTseries} are aliased here.
+<<>>=
+local.buildTakens <- function (time.series, 
+	embedding.dim, time.lag=1, 
+	id=deparse(substitute(time.series))) 
+{
+	takens <- nonlinearTseries:::buildTakens(time.series, embedding.dim, time.lag)
+	attr(takens,"time.lag") <- time.lag
+	attr(takens,"embedding.dim") <- embedding.dim
+	attr(takens,"id") <- id
+	return(takens)
+}
+@
+%local.findAllNeighbours <- nonlinearTseries:::findAllNeighbours
+<<>>=
+local.findAllNeighbours <- function (takens, radius, number.boxes = NULL) 
+{
+	allneighs <- nonlinearTseries:::findAllNeighbours(takens, radius, number.boxes = NULL) 
+	mostattributes(allneighs) <- attributes(takens)
+	attr(allneighs, "radius") <- radius
+	return(allneighs)
+}
+@
+\gsnote{minor cosmetics added to recurrencePlotAux}
+%<<>>=
+%#local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
+%local.recurrencePlotAux=function(neighs){
+%  ntakens=length(neighs)
+%  neighs.matrix = nonlinearTseries:::neighbourListSparseNeighbourMatrix(neighs,ntakens)
+%  # need a print because it is a trellis object!!
+%  print(
+%  	image(neighs.matrix,xlab="t", ylab="t", 
+%		main=paste("Recurrence Plot:", 
+%			deparse(substitute(neighs))
+%			)
+%		)
+%	)
+%}
+@
+\todo{propagate parameters from \code{buildTakens} and \code{findAllNeighbours} in a slot of the result, instead of using explicit parameters in recurrencePlotAux.}
+%:   function local.recurrencePlotAux
+<<recurrencePlotAuxNonSparse>>=
+#non-sparse variant
+#local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
+local.recurrencePlotAux = function(neighs, dim=NULL, lag=NULL, radius=NULL){
+
+	# just for reference. This function is inlined
+	neighbourListNeighbourMatrix  = function(){
+	  #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+	  return (neighs.matrix)
+	}
+
+  ntakens=length(neighs)
+  neighs.matrix <- matrix(nrow=ntakens, ncol=ntakens)
+  #neighbourListNeighbourMatrix()
+    #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	  	neighs.matrix[i,i] = 1 # do we want the diagonal fixed to 1
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+
+#! clean up. only one main id should be presentes
+	main <- paste("Recurrence Plot: ", 
+			deparse(substitute(neighs))
+			)
+	id <-  attr(neighs, "id"); if (!is.null(id)) main <- paste(main," id:",id)
+
+	more <- NULL
+	
+	more <- paste(more," n:",length(neighs))
+	
+	#use components of neights if available
+	embedding.dim <- attr(neighs, "embedding.dim")
+	if (is.null(embedding.dim)) embedding.dim <- dim
+	if (!is.null(dim)) {
+		if (embedding.dim != dim) warning(paste("Embedding dim:", embedding.dim,
+		" does not match dim argument=", dim))
+		more <- paste(more," dim:",dim)
+	}
+	
+	
+	attrradius <- attr(neighs, "radius")
+	if (!is.null(lag)) more <- paste(more," lag:",lag)
+	if (is.null(radius)) radius <- attrradius
+	if (!is.null(radius)) {
+		more <- paste(more," radius:",radius)
+		if (!is.null(attrradius) && (attrradius != radius)) warning(paste("Radius attribute:", attrradius,
+		" does not match radius argument=", radius))
+		}
+	# if (!is.null(attrradius)) more <- paste(more," radius attr:",attrradius)
+	if (!is.null(more)) main <- paste(main,"\n",more)
+
+  # need no print because it is not a trellis object!!
+  #print(
+  	image(x=1:ntakens, y=1:ntakens,
+		 z=neighs.matrix,xlab="i", ylab="j", 
+		col="black",
+		#xlim=c(1,ntakens), ylim=c(1,ntakens),
+		useRaster=TRUE,  #? is this safe??
+		main=main
+		)
+ #	)
+ 
+}
+@
+<<ecurrencePlotAuxNonSparse, echo=FALSE, print=FALSE>>=
+#non-sparse variant
+#local.recurrencePlotAux <- nonlinearTseries:::recurrencePlotAux
+local.recurrencePlotAuxXXX = function(neighs, dim=NULL, lag=NULL, radius=NULL, main){
+
+	# just for reference. This function is inlined
+	neighbourListNeighbourMatrix  = function(){
+	  #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+	  return (neighs.matrix)
+	}
+
+  ntakens=length(neighs)
+  neighs.matrix <- matrix(nrow=ntakens,ncol=ntakens)
+  #neighbourListNeighbourMatrix()
+    #neighs.matrix = Diagonal(ntakens)
+	  for (i in 1:ntakens){
+	  	neighs.matrix[i,i] = 1 # do we want the diagonal fixed to 1
+	    if (length(neighs[[i]])>0){
+	      for (j in neighs[[i]]){
+	        neighs.matrix[i,j] = 1
+	      }
+	    }
+	  }
+
+	main <- paste("Recurrence Plot: ", 
+			deparse(substitute(neighs))
+			)
+	more <- NULL
+	
+	#use componets of neights if available
+	more <- paste(more," n:",length(neighs))
+	if (!is.null(dim)) more <- paste(more," dim:",dim)
+	if (!is.null(lag)) more <- paste(more," lag:",lag)
+	if (!is.null(radius)) more <- paste(more," radius:",radius)
+	
+	if (!is.null(more)) main <- paste(main,"\n",more)
+
+  # need no print because it is not a trellis object!!
+  #print(
+  	image(x=1:ntakens, y=1:ntakens,
+		 z=neighs.matrix,xlab="i", ylab="j", 
+		col="black",
+		#xlim=c(1,ntakens), ylim=c(1,ntakens),
+		useRaster=TRUE,  #? is this safe??
+		#main=main
+		)
+ #	)
+ 
+}
+@
+\todo{improve feedback for data structures in \code{nonlinearTseries}}
+\subsubsection{Recurrence Plots: RQA Information}
+
+
+This is a hack to report RQA information. $dim=NULL$ is added to align calling with other functions.
+
+Needs improvement.
+
+\todo{improve to a full \code{show} method for class \code{rqa}.}
+
+%:   function showrqa
+<<showrqa>>=
+showrqa <- function(takens, dim=NULL, radius, 
+		digits=3,
+		do.hist = TRUE, rm.hist = TRUE, log = TRUE ,...)
+{
+	xxrqa <- rqa(takens=takens,radius=radius)
+	xxrqa$radius <- radius
+	id <- attr(takens,"id") 
+	if (is.null(id)) id <- deparse(substitute(takens))
+	xxrqa$id<- id
+	xxrqa$time.lag <- attr(takens,"time.lag") 
+	cat(id, " n:", dim(takens)[1], " Dim:", dim(takens)[2], "\n")
+	xxrqa$n <- dim(takens)[1]
+	xxrqa$dim <- dim(takens)[2]
+	#str(xxrqa)
+	#str(digits)
+	#browser()
+	cat(paste("Radius:", radius, 
+		" Recurrence coverage REC:", round(xxrqa$REC, digits), 
+		" log(REC)/log(R):", round(log(xxrqa$REC)/log(radius), digits), "\n"))
+	xxrqa$logratio <- log(xxrqa$REC)/log(radius)	
+	cat(paste("Determinism:", round(xxrqa$DET, digits), 
+		" Laminarity:",round(xxrqa$LAM, digits), "\n"))
+	cat(paste("DIV:", round(xxrqa$DIV, digits), "\n"))
+	cat(paste("Trend:", round(xxrqa$TREND, digits), 
+		" Entropy:",round(xxrqa$ENTR, digits), "\n"))
+	cat(paste("Diagonal lines max:", round(xxrqa$Lmax, digits),
+		 " Mean:",round(xxrqa$Lmean, digits), 
+		" Mean off main:",round(xxrqa$LmeanWithoutMain, digits), "\n"))
+	cat(paste("Vertical lines max:", round(xxrqa$Vmax, digits), 
+		" Mean:",round(xxrqa$Vmean, digits), "\n"))
+		# str(xxrqa[4:12])
+  
+	if (do.hist){
+	if (log==TRUE) log<-"y"
+	oldpar <- par(mfrow=c(2,1))
+	
+		xxrqa$diagonalHistogram[xxrqa$diagonalHistogram==0] <- NA # hack for log zero counts
+		dh<- xxrqa$diagonalHistogram
+		#if (log=="y")  {dh <- dh+1}
+		
+		id <- attr(takens,"id"); if (is.null(id) ) id <- deparse(substitute(takens))
+		pars <- paste("\n n=", dim(takens)[1], " Dim:", 
+			dim(takens)[2])
+		lag<- attr(takens,"time.lag")
+		  if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
+		plot(dh, type="h", main=paste( id, " Diagonal:", 
+			pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
+			xlab="length of diagonals",
+			log = log, ...)
+			
+	xxrqa$recurrenceRate[xxrqa$recurrenceRate==0] <- NA # hack for log zero counts
+	drR<- xxrqa$recurrenceRate
+		#if (log=="y")  {drR <- drR+1}
+		
+		id <- attr(takens,"id"); if (is.null(id) ) id <- deparse(substitute(takens))
+		pars <- paste("\n n=", dim(takens)[1], " Dim:", 
+			dim(takens)[2])
+		lag<- attr(takens,"time.lag")
+		  if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
+	plot(drR, type="h", 
+		 main=paste( id," Recurrence Rate",
+			pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
+			xlab="distance to diagonal",
+			#ylim=c(1,3),
+			log = log, ...)
+	par(oldpar)
+		}
+		
+	if (rm.hist) { xxrqa$recurrenceRate <- NULL; xxrqa$diagonalHistogram <- NULL }
+	invisible(xxrqa)
+}
+@
+%		barplot(dh, 
+%		main=paste(deparse(substitute(takens)), "Diagonal",
+%			"\n n=", dim(takens)[1], " Dim:", 
+%			dim(takens)[2], " Radius: ",radius),
+%			xlab="length of diagonals",
+%			log = log, ...)
+%			
+%	xxrqa$recurrenceRate[xxrqa$recurrenceRate==0] <- NA # hack for zero counts
+%	drR<- xxrqa$recurrenceRate
+%		if (log=="y")  {drR <- drR+1}
+%	barplot(drR, 
+%		main=paste(deparse(substitute(takens)),"Recurrence Rate",
+%			"\n n=", dim(takens)[1], " Dim:", 
+%			dim(takens)[2], " Radius: ",radius),
+%			xlab="distance to diagonal",
+%			ylim=c(1,3),
+%			log = log, ...)
+
+\clearpage
+
+\section{Test Signals}
+@
+We set up a small series of test signals. Some synthetic test signals are introduced here.
+More test cases used later are the Geyser data set (\Vref{sec:geyser}) and two examples of heart rate data sets (\Vref{sec:hrv} and \Vref{sec:hrv2}) from \code{library(rhrv)}.
+
+For convenience, some source code from other libraries is included to make this self-contained.
+
+As a global constant, we set up the length of the series to be used for test signals.
+%:  nsignal
+<<nsignal>>=
+#nsignal <- 256
+nsignal <- 1024
+#nsignal <- 4096
+system.time.start <- proc.time()
+
+@
+For signal representation, we use a common layout.
+%:   function plotsignal
+<<>>=
+plotsignal <- function(signal, main, ylab) {
+	#! alpha level should depend on expected number of overlaps
+	
+	if (missing(ylab)) { ylab <- deparse(substitute(signal)) }
+
+	par(mfrow = c(1, 
+		2))
+	plot(signal, 
+		main = "", xlab = "index",  ylab = ylab,
+		col = rgb(0, 0, 1, 0.3), pch = 20)
+
+	plot(signal, type = "l", 
+		main = "",  xlab = "index", ylab = ylab,
+		col = rgb(0, 0, 0, 0.4))
+	points(signal, 
+		col = rgb(0, 0, 1, 0.3), pch = 20)
+	if (missing(main)) { main = deparse(substitute(signal)) }
+	title(main = main, 
+		outer = TRUE, line = -2, cex.main = 1.2)
+}
+@
+
+\subsection{Sinus}
+
+<<sin10, fig=TRUE, include=FALSE, width=10, height=5 >>=
+sin10 <- function(n=nsignal) {sin( (1:n)/n* 2*pi*10)}
+plotsignal(sin10())
+@
+See \figref{fig:recurrence-sin10}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-sin10}
+\caption{Test case: sin10. Signal and linear interpolation.}
+\label{fig:recurrence-sin10}
+\end{center}
+\end{figure}
+
+\subsection{Uniform Random Numbers}
+
+<<unif, fig=TRUE, include=FALSE, width=10, height=5 >>=
+unif <- function(n=nsignal) {runif(n)}
+xunif<-unif()
+plotsignal(xunif)
+@
+See \figref{fig:recurrence-unif},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-unif}
+\caption{Test case: unif - uniform random numbers. Signal and linear interpolation.}
+\label{fig:recurrence-unif}
+\end{center}
+\end{figure}
+
+\subsection{Chirp Signal}
+
+<<chirp, fig=TRUE, include=FALSE, width=10, height=5 >>=
+chirp <- function(n=nsignal)       # this is copied from library(signal)
+{signal.chirp <- function(t, f0 = 0, t1 = 1, f1 = 100, 
+                  form = c("linear", "quadratic", "logarithmic"), 
+                  phase = 0){
+
+  form <- match.arg(form);  phase <- 2*pi*phase/360
+
+  switch(form,
+    "linear" = {
+        a <- pi*(f1 - f0)/t1;       b <- 2*pi*f0
+        cos(a*t^2 + b*t + phase)
+    },
+    "quadratic" = {
+        a <- (2/3*pi*(f1-f0)/t1/t1);        b <- 2*pi*f0
+        cos(a*t^3 + b*t + phase)
+    },
+    "logarithmic" = {
+        a <- 2*pi * t1 / log(f1 - f0);        b <- 2*pi * f0
+        x <- (f1-f0)^(1/t1)
+        cos(a*x^t + b*t + phase)
+    })
+}
+
+signal.chirp(seq(0, 0.6, len=nsignal))
+}
+plotsignal(chirp())
+@
+See \figref{fig:recurrence-chirp},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-chirp}
+\caption{Test case: chirp signal. Signal and linear interpolation.}
+\label{fig:recurrence-chirp}
+\end{center}
+\end{figure}
+%\clearpage
+\subsection{Doppler signal}
+@
+%  doppler {waveslim}}
+<<doppler, fig=TRUE, include=FALSE, width=10, height=5 >>=
+doppler <- function(n=nsignal) {
+
+dopplersignal  <- function(x) { sqrt(x*(1-x))* sin((2.1*pi)/(x+0.05))}
+dopplersignal((1:nsignal)/nsignal)
+}
+plotsignal(doppler())
+@
+See \figref{fig:recurrence-doppler},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-doppler}
+\caption{Test case: Doppler signal. Signal and linear interpolation.}
+\label{fig:recurrence-doppler}
+\end{center}
+\end{figure}
+
+\clearpage
+\section{nonlinearTseries Quick-Start}
+<<>>=
+#suppressMessages(library('nonlinearTseries'))library('plot3D')# by default, the simulation creates a RGL plot of the system's phase space
+@
+\subsection{Sinus}
+<<acfsin, fig=TRUE>>=
+sinN <- sin10()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(sinN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x)))))
+
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+@
+
+Note: fails. See Rnw source code.
+%        Rnw>  cat("tau.ami:",tau.ami) 
+%        tau.ami: NA
+%        Rnw>  par(oldpar) 
+%        tau.acf: 20Error in get.position.decays(fx, fx[1]/exp(1), technique) : 
+%          The ami function does not cross 0.802894698328813. Choose another "cross" value!
+%        
+%        tau.ami: NA21 : echo keep.source term verbatim pdf  (label = embedfsinN, recurrence.Rnw:937)
+%        
+%        Rnw>  if (is.numeric(tau.ami)) {
+%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
+%        +  max.embedding.dim = 15)}  else  {
+%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
+%        +  max.embedding.dim = 15)}  
+%        
+%        Error:  chunk 21 (label = embedfsinN) 
+%        Error in if ((embedding.dim == 0) && (E1.vector[[dimension - 2]] >= threshold) &&  : 
+%          missing value where TRUE/FALSE needed
+ 
+%<<embedfsinN, fig=TRUE>>=
+%if (is.numeric(tau.ami)) {
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,%max.embedding.dim = 15)}  else  {
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,%max.embedding.dim = 15)} 
+%cat("Estimated embedding dim:", emb.dim)
+%
+%<<takfsinN, fig=TRUE>>=
+%tak = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)%scatter3D(tak[,1], tak[,2], tak[,3],%main = paste("Reconstructed phase space",deparse(substitute(time.series))),%col = 1, type="o",cex = 0.3)
+
+@
+\subsection{Uniform Random Numbers}
+<<acfunif, fig=TRUE>>=
+unifN <- unif()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(unifN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(unifN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+
+cat("tau.ami:",tau.ami)
+par(oldpar)
+<<embedfunifN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfunifN, fig=TRUE>>=
+tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = paste("Reconstructed phase space",deparse(substitute(time.series))),col = 1, type="o",cex = 0.3)
+
+@
+
+\subsection{Chirp}
+<<acfchirp, fig=TRUE>>=
+chirpN <- chirp()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(chirpN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(chirpN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+<<embedfchirpN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfchirpN, fig=TRUE>>=
+tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = paste("Reconstructed phase space",deparse(substitute(time.series))),col = 1, type="o",cex = 0.3)
+
+@
+\subsection{Doppler}
+<<acfdoppler, fig=TRUE>>=
+dopplerN <- doppler()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(dopplerN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(dopplerN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+<<embedfdopplerN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfdopplerN, fig=TRUE>>=
+tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = "Reconstructed phase space \n doppler" ,col = 1, type="o",cex = 0.3)
+@
+\clearpage
+\section{Takens' States  for Test Signals}
+
+%: sin
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<sintakens, fig=TRUE, include=FALSE>>=
+sintakens <- local.buildTakens(time.series=sin10(), 
+	embedding.dim=4, time.lag=1)
+statepairs(sintakens) #4
+@
+\plotpairs{sintakens}{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+The states only catch the local behaviour, where ``local'' depends on the sampling rate and the variation of the signal. For the sinus signal, we get a better picture if we subsample the signal.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<sintakenslag16, fig=TRUE, include=FALSE>>=
+sintakenslag16 <- local.buildTakens(time.series=sin10(), 
+	embedding.dim=4, time.lag=16)
+statepairs(sintakenslag16) #4
+@
+\plotpairs{sintakenslag16}{Test case: sinus at time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+
+%See \figref{fig:sintakens}.
+%@
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.8\linewidth]{recurrence-sintakens}
+%\caption{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+%Time used: \Sexpr{laptime()} sec.
+%}
+%\label{fig:sintakens}
+%\end{center}
+%\end{figure}
+%
+%
+<<sintakensno, fig=TRUE, include=FALSE>>=
+statepairs(sintakens, nooverlap=TRUE) #dim=4
+@
+\plotpairs{sintakensno}{Test case: sinus, no overlap. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}%
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<sintakensco, fig=TRUE, include=FALSE>>=
+statecoplot(sintakens) #4
+@
+\plotco{sintakensco}{Test case: sinus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<sintakenslag16co, fig=TRUE, include=FALSE>>=
+statecoplot(sintakenslag16) #4
+@
+\plotco{sintakenslag16co}{Test case: sinus, time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+%: unif
+<<uniftakens, fig=TRUE, include=FALSE>>=
+uniftakens <- local.buildTakens( time.series=xunif,
+	embedding.dim=4, time.lag=1)
+statepairs(uniftakens) #dim=4
+@
+\plotpairs{uniftakens}{Test case: uniform random numbers. 
+Time used: \Sexpr{laptime()} sec.}
+
+%
+%
+<<uniftakensco, fig=TRUE, include=FALSE>>=
+statecoplot(uniftakens) #dim=4
+@
+\plotco{uniftakensco}{Test case: uniform random numbers. 
+Time used: \Sexpr{laptime()} sec.}
+
+%
+
+%
+<<uniftakensno, fig=TRUE, include=FALSE>>=
+statepairs(uniftakens, nooverlap=TRUE) #dim=4
+@
+\plotpairs{uniftakensno}{Test case: uniform random numbers. 
+Time used: \Sexpr{laptime()} sec.}
+%
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+\clearpage
+%: chirp
+<<chirptakens, fig=TRUE, include=FALSE>>=
+chirptakens <- local.buildTakens( time.series=chirp(),
+	embedding.dim=4,time.lag=1)
+statepairs(chirptakens) #dim=4
+@
+\plotpairs{chirptakens}{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+%
+%
+<<chirptakensco, fig=TRUE, include=FALSE>>=
+statecoplot(chirptakens) #dim=4
+@
+\plotco{chirptakensco}{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+%
+
+<<chirptakensno, fig=TRUE, include=FALSE>>=
+statepairs(chirptakens, nooverlap=TRUE) #dim=4
+@
+\plotpairs{chirptakensno}{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec-}
+%
+%: doppler
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakens, fig=TRUE, include=FALSE>>=
+dopplertakens <- local.buildTakens(time.series=doppler(), 
+	embedding.dim=4, time.lag=1)
+statepairs(dopplertakens) #4
+@
+\plotpairs{dopplertakens}{Test case: Doppler. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+The states only catch the local behaviour, where ``local'' depends on the sampling rate and the variation of the signal. For the doppler signal, we get a better picture if we subsample the signal.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakenslag16, fig=TRUE, include=FALSE>>=
+dopplertakenslag16 <- local.buildTakens(time.series=doppler(), 
+	embedding.dim=4, time.lag=16)
+statepairs(dopplertakenslag16) #4
+@
+\plotpairs{dopplertakenslag16}{Test case: doppler at time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+
+%See \figref{fig:dopplertakens}.
+%@
+%
+%\begin{figure}[htbp]
+%\begin{center}
+%\includegraphics[width=0.8\linewidth]{recurrence-dopplertakens}
+%\caption{Test case: dopplerus. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+%Time used: \Sexpr{laptime()} sec.
+%}
+%\label{fig:dopplertakens}
+%\end{center}
+%\end{figure}
+%
+%
+<<dopplertakensno, fig=TRUE, include=FALSE>>=
+statepairs(dopplertakens, nooverlap=TRUE) #dim=4
+@
+\plotpairs{dopplertakensno}{Test case: doppler, no overlap. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}%
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakensco, fig=TRUE, include=FALSE>>=
+statecoplot(dopplertakens) #4
+@
+\plotco{dopplertakensco}{Test case: Doppler. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<dopplertakenslag16co, fig=TRUE, include=FALSE>>=
+statecoplot(dopplertakenslag16) #4
+@
+\plotco{dopplertakenslag16co}{Test case: Doppler, time lag 16. Note that $2-dim$ marginal views of 1-dimensional circles in $d$ space generally appear as ellipses.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+@
+\clearpage
+@
+\section{Recurrence Plots for Test Signals}
+
+\subsubsection{Sinus  Recurrence Plots}
+
+%recurrencePlot(takens = NULL, time.series, embedding.dim,
+%    time.lag, radius)
+%<<sin10neighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<sin10rec, fig=TRUE, include=FALSE>>=
+sin10neighs <- local.findAllNeighbours(sintakens, radius=0.8)
+save(sin10neighs, file="sin10neighs.Rdata")
+# load(file="sin10neighs.RData")
+local.recurrencePlotAux(sin10neighs, dim=dim(sintakens)[2], radius=0.8)
+@
+\plotrecurrence{sin10rec}{Test case: sinus curve.
+Time used: \Sexpr{laptime()} sec.}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<sin10rqa, fig=TRUE, include=FALSE>>=
+sin10rqa <- showrqa(sintakens, radius=0.8, log=TRUE)
+@
+\plotrqa{sin10rqa}{Test case: sinus curve.
+Time used: \Sexpr{laptime()} sec.
+}
+
+%: sin lag 16
+<<sin10lag16rec, fig=TRUE, include=FALSE>>=
+sin10lag16neighs <- local.findAllNeighbours(sintakenslag16, radius=0.2)
+save(sin10lag16neighs, file="sin10lag16neighs.Rdata")
+# load(file="sin10lag16neighs.RData")
+local.recurrencePlotAux(sin10lag16neighs, dim=4, radius=0.2)
+@
+
+\plotrecurrence{sin10lag16rec}{Recurrence Plot. Test case: sinus curve, time lag 16.
+Time used: \Sexpr{laptime()} sec.}
+
+<<sin10lag16rqa, fig=TRUE, include=FALSE>>=
+sin10lag16rqa <- showrqa(sintakenslag16, radius=0.2)
+@
+\plotrqa{sin10lag16rqa}{Test case: sinus curve, time lag 16.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
+\subsubsection{Uniform Random Numbers  Recurrence Plots}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<unifrec, fig=TRUE, include=FALSE >>=
+unifneighs <- local.findAllNeighbours(uniftakens, radius=0.6)#0.4
+save(unifneighs, file="unifneighs.RData")
+# load(file="unifneighs.RData")
+local.recurrencePlotAux(unifneighs, radius=0.6)
+@
+\plotrecurrence{unifrec}{Test case: uniform random numbers.
+Time used: \Sexpr{laptime()} sec.
+}
+<<uniftakensrqa106, fig=TRUE, include=FALSE >>=
+showrqa(uniftakens, radius=0.6, log=TRUE)
+@
+\plotrqa{uniftakensrqa106}{Test case: uniform random numbers, radius=0.6.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
+
+\subsubsection{Chirp Signal  Recurrence Plots}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<chirprec, fig=TRUE, include=FALSE >>=
+chirpneighs <- local.findAllNeighbours(chirptakens, radius=0.6)
+save(chirpneighs, file="chirpneighs.RData")
+# load(file="chirpneighs.RData")
+local.recurrencePlotAux(chirpneighs, radius=0.6)
+@
+\plotrecurrence{chirprec}{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<chirprqa, fig=TRUE, include=FALSE>>=
+showrqa(chirptakens, radius=0.6)
+@
+\plotrqa{chirprqa}{Test case: chirp signal.
+Time used: \Sexpr{laptime()} sec.}
+
+\clearpage
+\subsubsection{Doppler Recurrence Plots}
+
+%doppler  <- function(x) { sqrt{x(1-x)} sin((2.1*pi)/(x+0.05))}
+
+%recurrencePlot(takens = NULL, time.series, embedding.dim,
+%    time.lag, radius)
+%<<sin10neighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+dopplerneighs <- local.findAllNeighbours(dopplertakens, radius=0.2)
+save(dopplerneighs, file="dopplerneighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerrec, fig=TRUE, include=FALSE>>=
+load(file="dopplerneighs.RData")
+local.recurrencePlotAux(dopplerneighs, dim=4, radius=0.2)
+@
+
+\plotrecurrence{dopplerrec}{Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<dopplerrqa, fig=TRUE, include=FALSE>>=
+showrqa(dopplertakens, radius=0.2)
+@
+\plotrqa{dopplerrqa}{Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.}
+
+%: doppler lag 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<dopplerlag16rec, fig=TRUE, include=FALSE>>=
+dopplerlag16neighs <- local.findAllNeighbours(dopplertakenslag16, radius=0.2)
+save(dopplerlag16neighs, file="dopplerlag16neighs.Rdata")
+# load(file="dopplerlag16neighs.RData")
+local.recurrencePlotAux(dopplerlag16neighs, dim=4, radius=0.2)
+@
+
+\plotrecurrence{dopplerlag16rec}{Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.}
+
+<<dopplerlag16rqa, fig=TRUE, include=FALSE>>=
+showrqa(dopplertakenslag16, radius=0.2)
+@
+\plotrqa{dopplerlag16rqa}{RQA. Test case: Doppler.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
+\section{Case Study: Geyser data}
+\label{sec:geyser}
+\index{Geyser}
+\todo{double check: \code{MASS:::geyser} should be used, not \code{faithful}}
+This is a classical data set with a two dimensional structure, $duration$ and $waiting$.
+
+The data structure asks for a variant of the recurence plot, adapted to a two dimensional series.
+\todo{Geyser: extended to two-dimensional data in \code{geyserlin}. Experimental only. Check.}
+<<>>=
+library(MASS)
+data(geyser)
+@
+
+\subsection{Geyser Eruption Durations}
+<<eruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(geyser$duration)
+@
+See \figref{fig:recurrence-eruptions},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptions}
+\caption{Example case: Old Faithful Geyser eruption durations. Signal and linear interpolation.}
+\label{fig:recurrence-eruptions}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<eruptionstakens41, fig=TRUE, include=FALSE>>=
+eruptionstakens4 <- 
+	local.buildTakens( time.series=geyser$duration, 
+		embedding.dim=4, time.lag=1)
+	statepairs(eruptionstakens4) #dim=4
+@
+
+\plotrecurrence{eruptionstakens41}{Example case: Old Faithful Geyser eruption durations.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+<<eruptionstakens4co, fig=TRUE, include=FALSE>>=
+	statecoplot(eruptionstakens4) #dim=4
+@
+
+\plotco{eruptionstakens4co}{Example case: Old Faithful Geyser eruption durations.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+
+%
+<<eruptionstakens4no1, fig=TRUE, include=FALSE>>=
+	statepairs(eruptionstakens4, nooverlap=TRUE) #dim=4
+@
+\plotrecurrence{eruptionstakens4no1}{Example case: Old Faithful Geyser eruption durations.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs4 <- local.findAllNeighbours(eruptionstakens4, radius=3*0.8)
+save(eruptionsneighs4, file="eruptionsneighs4.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec41, fig=TRUE, include=FALSE>>=
+#load(file="eruptionsneighs4.RData")
+local.recurrencePlotAux(eruptionsneighs4)
+@
+\plotrecurrence{eruptionsrec41}{Example case:  Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<eruptionstakens4rqa1, fig=TRUE, include=FALSE>>=
+showrqa(eruptionstakens4, radius=3*0.8)
+@
+\plotrqa{eruptionstakens4rqa1}{Example case:  Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.}
+
+\subsubsection{Geyser eruption durations. Dim=2}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<eruptionstakens2, fig=TRUE, include=FALSE>>=
+eruptionstakens2 <- 
+	local.buildTakens(time.series=geyser$duration, 
+		embedding.dim=2, time.lag=1)
+statepairs(eruptionstakens2) #dim=2
+@
+\plotrecurrence{eruptionstakens2}{Example case: Old Faithful Geyser eruption durations. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+%
+<<eruptionstakens2no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens2, nooverlap=TRUE) #dim=2
+@
+See \figref{fig:eruptionstakens2no}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-eruptionstakens2no}
+\caption{Example case: Old Faithful Geyser eruption durations. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens2no}
+\end{center}
+\end{figure}
+%
+
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec2, fig=TRUE, include=FALSE>>=
+eruptionsneighs2 <- local.findAllNeighbours(eruptionstakens2, 
+	radius=0.8)
+save(eruptionsneighs2, file="eruptionsneighs2.RData")
+# load(file="eruptionsneighs2.RData")
+local.recurrencePlotAux(eruptionsneighs2)
+@
+
+\plotrecurrence{eruptionsrec2}{Example case:  Old Faithful Geyser eruption durations. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<eruptionstakens2rqa, fig=TRUE, include=FALSE>>=
+showrqa(eruptionstakens2, radius=0.8)
+@
+\plotrqa{eruptionstakens2rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=2.
+Time used: \Sexpr{laptime()} sec.}
+
+
+\subsubsection{Geyser eruptions. Dim=4}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%
+<<eruptionstakens4, fig=TRUE, include=FALSE>>=
+eruptionstakens4 <- local.buildTakens( time.series=geyser$duration,
+	embedding.dim=4, time.lag=1)
+statepairs(eruptionstakens4) #dim=4
+@
+\plotrecurrence{eruptionstakens4}{Example case: Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+%
+<<eruptionstakens4no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens4, nooverlap=TRUE) #dim=4
+@
+\plotrecurrence{eruptionstakens4no}{Example case: Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+eruptionsneighs4 <- local.findAllNeighbours(eruptionstakens4, 
+	radius=0.8)
+save(eruptionsneighs4, file="eruptionsneighs4.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<eruptionsrec42, fig=TRUE, include=FALSE>>=
+load(file="eruptionsneighs4.RData")
+local.recurrencePlotAux(eruptionsneighs4)
+@
+\plotrecurrence{eruptionsrec42}{Example case:  Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<eruptionstakens4rqa, fig=TRUE, include=FALSE>>=
+showrqa(eruptionstakens4, radius=0.8)
+@
+\plotrecurrence{eruptionstakens4rqa}.{Example case:  Old Faithful Geyser eruption durations. Dim=4.
+Time used: \Sexpr{laptime()} sec.}
+
+\subsubsection{Geyser eruption durations. Dim=8}
+
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionstakens8, fig=TRUE, include=FALSE>>=
+eruptionstakens8 <- local.buildTakens( time.series=geyser$duration,
+	embedding.dim=8,time.lag=1)
+statepairs(eruptionstakens8) #dim=8
+@
+\plotrecurrence{eruptionstakens8}{Example case: Old Faithful Geyser eruption durations. Dim=8.
+Time used: \Sexpr{laptime()} sec.}
+%
+%
+@
+<<eruptionstakens8no, fig=TRUE, include=FALSE>>=
+statepairs(eruptionstakens8, nooverlap=TRUE) #dim=8
+@
+See \figref{fig:eruptionstakens8no}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.0\linewidth]{recurrence-eruptionstakens8no}
+\caption{Example case: Old Faithful Geyser eruption durations. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:eruptionstakens8no}
+\end{center}
+\end{figure}
+%
+
+%<<eruptionsneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<eruptionsrec8, fig=TRUE, include=FALSE>>=
+eruptionsneighs8 <- local.findAllNeighbours(eruptionstakens8, 
+	radius=2.6)
+save(eruptionsneighs8, file="eruptionsneighs8.RData")
+#load(file="eruptionsneighs8.RData")
+local.recurrencePlotAux(eruptionsneighs8)
+@
+\plotrecurrence{eruptionsrec8}{Example case:  Old Faithful Geyser eruption durations. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<eruptionstakens8rqa, fig=TRUE, include=FALSE>>=
+showrqa(eruptionstakens8, radius=2.6)
+@
+\plotrqa{eruptionstakens8rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+\subsubsection{Geyser eruption durations: Comparison by Dimension}
+
+For comparison, recurrence plots for the Geyser data with varying dimension are in \figref{fig:recurrence-eruptionsreccomp}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-eruptionsrec8}
+\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=2, 4, 6, 8.
+}
+\label{fig:recurrence-eruptionsreccomp}
+\end{center}
+\end{figure}
+
+
+\subsection{Geyser Waiting}
+<<waiting, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(geyser$waiting)
+@
+See \figref{fig:recurrence-waiting}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-waiting}
+\caption{Example case: Old Faithful Geyser waiting. Signal and linear interpolation.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-waiting}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<waitingtakens, fig=TRUE, include=FALSE>>=
+waitingtakens <- 
+	local.buildTakens( time.series=geyser$waiting, 
+		embedding.dim=4, time.lag=4)
+statepairs(waitingtakens) #dim=4
+@
+See \figref{fig:waitingtakens}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-waitingtakens}
+\caption{Example case: Old Faithful Geyser waiting. 
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:waitingtakens}
+\end{center}
+\end{figure}
+%<<waitingneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<>>=
+waitingneighs <- local.findAllNeighbours(waitingtakens, radius=16)
+save(waitingneighs, file="waitingneighs.Rdata")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<waitingneighsrqa, fig=TRUE, include=FALSE>>=
+showrqa(waitingtakens, radius=16)
+@
+\plotrqa{waitingneighsrqa}{Example case:  Old Faithful Geyser waiting.
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<waitingrec, fig=TRUE, include=FALSE>>=
+load(file="waitingneighs.RData")
+local.recurrencePlotAux(waitingneighs)
+@
+\plotrecurrence{waitingrec}{Recurrence Plot. Example case:  Old Faithful Geyser waiting.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\subsection{Geyser - linearized}
+
+The Geyser data is a bivariate series and asks for bivariate Takens states and recurrence plots.
+This is a first crude attempt and need improvement.
+
+So far, \code{nonlinearTseries} only handles multivariate data by FORTRAN conventions, using a lag parameter.
+
+As a hack, we transform the data to FORTRAN conventions.
+<<>>=
+geyserlin <- t(geyser)
+dim(geyserlin)<-NULL
+dimnames(geyserlin)<-NULL
+@
+Now duration and waiting are mixed. A $lag=2$ separates the dimension again. The Taken states iterate over the index, giving alternating a duration and waiting state.
+
+
+<<glineruptions, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(geyserlin)
+@
+See \figref{fig:recurrence-glineruptions}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-glineruptions}
+\caption{Example case: Old Faithful Geyser eruptions. Signal and linear interpolation.}
+\label{fig:recurrence-glineruptions}
+\end{center}
+\end{figure}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<glineruptionstakens4, fig=TRUE, include=FALSE>>=
+glineruptionstakens4 <- 
+	local.buildTakens( time.series=geyserlin, 
+		embedding.dim=4, time.lag=2)
+statepairs(glineruptionstakens4) #dim=4
+@
+See \figref{fig:glineruptionstakens4}.
+@
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-glineruptionstakens4}
+\caption{Example case: Old Faithful Geyser eruptions.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:glineruptionstakens4}
+\end{center}
+\end{figure}
+%<<glineruptionsneighs>>=
+%
+
+<<gl01>>=
+glineruptionsneighs4 <- local.findAllNeighbours(glineruptionstakens4, radius=0.8)
+save(glineruptionsneighs4, file="glineruptionsneighs4.RData")
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<glineruptionstakens4rqa, fig=TRUE, include=FALSE>>=
+showrqa(glineruptionstakens4, radius=0.8)
+@
+\plotrecurrence{glineruptionstakens4rqa}{Old Faithful Geyser - both. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+
+
+<<glineruptionsrec4, fig=TRUE, include=FALSE>>=
+load(file="glineruptionsneighs4.RData")
+local.recurrencePlotAux(glineruptionsneighs4)
+@
+\plotrecurrence{glineruptionsrec4}{Example case:  Old Faithful Geyser eruptions. Dim=4.
+Time used: \Sexpr{laptime()} sec.}
+
+\subsubsection{Geyser eruptions - linearized. Dim=2}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<glineruptionstakens2, fig=TRUE, include=FALSE>>=
+glineruptionstakens2 <- 
+	local.buildTakens(time.series=geyserlin, 
+		embedding.dim=2, time.lag=2)
+statepairs(glineruptionstakens2) #dim=2
+@
+See \figref{fig:glineruptionstakens2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-glineruptionstakens2}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:glineruptionstakens2}
+\end{center}
+\end{figure}
+%<<glineruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<glineruptionsrec2, fig=TRUE, include=FALSE>>=
+glineruptionsneighs2 <- local.findAllNeighbours(glineruptionstakens2, radius=0.8)
+save(glineruptionsneighs2, file="glineruptionsneighs2.RData")
+#load(file="glineruptionsneighs2.RData")
+local.recurrencePlotAux(glineruptionsneighs2)
+@
+\plotrecurrence{glineruptionsrec2}{Example case:  Old Faithful Geyser eruptions linearized. Dim=2.
+Time used: \Sexpr{laptime()} sec.
+}
+%	\subsubsection{Geyser eruptions - linearized. Dim=6}
+%	
+%	<<glprint=FALSE, echo=FALSE>>=
+%	chunk.time.start<- proc.time()
+%	@
+%	<<glineruptionstakens6, fig=TRUE, include=FALSE>>=
+%	glineruptionstakens6 <- local.buildTakens( time.series=geyserlin,
+%		embedding.dim=6,time.lag=2)
+%	statepairs(glineruptionstakens6) #dim=6
+%	@
+%	See \figref{fig:glineruptionstakens6}
+%	
+%	\begin{figure}[htbp]
+%	\begin{center}
+%	\includegraphics[width=0.8\linewidth]{recurrence-glineruptionstakens6}
+%	\caption{Example case: Old Faithful Geyser eruptions. Dim=6.
+%	Time used: \Sexpr{laptime()} sec.
+%	 }
+%	\label{fig:glineruptionstakens6}
+%	\end{center}
+%	\end{figure}
+%	%<<glineruptionsneighs>>=
+%	%
+%	<<glprint=FALSE, echo=FALSE>>=
+%	chunk.time.start<- proc.time()
+%	@
+%	<<gl03>>=
+%	eruptionsneighs6 <- local.findAllNeighbours(glineruptionstakens6, radius=0.8)
+%	save(eruptionsneighs6, file="eruptionsneighs6.RData")
+%	<<glprint=FALSE, echo=FALSE>>=
+%	chunk.time.start<- proc.time()
+%	@
+%	
+%	<<glineruptionsrec6, fig=TRUE, include=FALSE>>=
+%	load(file="eruptionsneighs6.RData")
+%	local.recurrencePlotAux(eruptionsneighs6)
+%	@
+%	See \figref{fig:recurrence-glineruptionsrec6}.
+%	
+%	\begin{figure}[htbp]
+%	\begin{center}
+%	\includegraphics[width=0.5\linewidth]{recurrence-glineruptionsrec6}
+%	\caption{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=6.
+%	Time used: \Sexpr{laptime()} sec.
+%	}
+%	\label{fig:recurrence-glineruptionsrec6}
+%	\end{center}
+%	\end{figure}
+
+\subsubsection{Geyser eruptions - linearized. Dim=8}
+
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<glineruptionstakens8, fig=TRUE, include=FALSE>>=
+glineruptionstakens8 <- local.buildTakens( time.series=geyserlin,
+	embedding.dim=8,time.lag=2)
+statepairs(glineruptionstakens8) #dim=8
+@
+See \figref{fig:glineruptionstakens8}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.0\linewidth]{recurrence-glineruptionstakens8}
+\caption{Example case: Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+ }
+\label{fig:glineruptionstakens8}
+\end{center}
+\end{figure}
+%<<glineruptionsneighs>>=
+%
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<gl04>>=
+glineruptionsneighs8 <- local.findAllNeighbours(glineruptionstakens8, 
+	radius=0.8)
+save(glineruptionsneighs8, file="glineruptionsneighs8.RData")
+<<glprint=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<glineruptionsrec8, fig=TRUE, include=FALSE>>=
+load(file="glineruptionsneighs8.RData")
+local.recurrencePlotAux(glineruptionsneighs8)
+
+@
+\plotrecurrence{glineruptionsrec8}{Recurrence Plot. Example case:  Old Faithful Geyser eruptions. Dim=8.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+
+\section{Case Study: HRV data example.beats}
+\index{heart rate}
+\index{hrv}
+\label{sec:hrv}
+\gsnote{Only \Sexpr{nsignal} data points used in recurrence plots in this section}
+
+<<>>=
+library(RHRV)
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVData.rda")
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVProcessedData.rda")
+
+###################################################
+### code chunk number 1: creation
+###################################################
+hrv.data  = CreateHRVData()
+hrv.data = SetVerbose(hrv.data, TRUE )
+
+###################################################
+### code chunk number 3: loading
+###################################################
+hrv.data = LoadBeatAscii(hrv.data, "example.beats",
+       RecordPath = "/users/gs/projects/rforge/rhrv/tutorial/beatsFolder")
+#       RecordPath = "beatsFolder")
+
+
+###################################################
+### code chunk number 4: derivating
+###################################################
+hrv.data = BuildNIHR(hrv.data)
+
+@
+<<hrvRR, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(hrv.data$Beat$RR)
+@
+See \figref{fig:recurrence-hrvRR}.
+\todo{We have outliers at approximately 2*RR. 
+Could this be an artefact of preprocessing, filtering out too many impulses?}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRR}
+\caption{RHRV tutorial example.beats. Signal and linear interpolation.}
+\label{fig:recurrence-hrvRR}
+\end{center}
+\end{figure}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRtakens4sp, fig=TRUE, include=FALSE>>=
+hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=4,time.lag=1)
+statepairs(hrvRRtakens4) #dim=4
+@
+\plotrecurrence{hrvRRtakens4sp}{RHRV tutorial example.beats. 
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<hrvRRtakens4rk, fig=TRUE, include=FALSE>>=
+statepairs(hrvRRtakens4, rank=TRUE) #dim=4
+@
+See \figref{fig:hrvRRtakens4rk}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRtakens4rk}
+\caption{RHRV tutorial example.beats. Ranked data.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrvRRtakens4rk}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<hrvRRtakens4co, fig=TRUE, include=FALSE>>=
+statecoplot(hrvRRtakens4) #dim=4
+@
+\plotco{hrvRRtakens4co}{RHRV tutorial example.beats.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+\plotrecurrence{hrvRRtakens4}{RHRV tutorial example.beats. 
+Time used: \Sexpr{laptime()} sec.
+}
+
+<<>>=
+hrvRRneighs4  <- local.findAllNeighbours(hrvRRtakens4, radius=16)
+save(hrvRRneighs4, file="hrvRRneighs4.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec4, fig=TRUE, include=FALSE>>=
+load(file="hrvRRneighs4.RData")
+local.recurrencePlotAux(hrvRRneighs4)
+@
+\plotrecurrence{hrvRRrec4}{Recurrence Plot. Example case:  RHRV tutorial example.beats. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+
+\clearpage
+\subsubsection{RHRV: example.beats - Comparison by Dimension}
+
+\gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
+% dim 2
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec2, fig=TRUE, include=FALSE>>=
+hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=2,time.lag=1)
+hrvRRneighs2  <- local.findAllNeighbours(hrvRRtakens2, radius=16)
+save(hrvRRneighs2, file="hrvRRneighs2.Rdata")
+# load(file="hrvRRneighs2.RData")
+local.recurrencePlotAux(hrvRRneighs2)
+showrqa(hrvRRtakens2, do.hist=FALSE, radius=16)
+@
+\plotrecurrence{hrvRRrec2}{Dim=2. Time used: \Sexpr{laptime()} sec.}
+
+%See \figref{fig:recurrence-hrvRRreccomp}.
+
+
+%: dim 6
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec6, fig=TRUE, include=FALSE>>=
+hrvRRtakens6 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=6,time.lag=1)
+hrvRRneighs6  <- local.findAllNeighbours(hrvRRtakens6, radius=16)
+save(hrvRRneighs6, file="hrvRRneighs6.Rdata")
+# load(file="hrvRRneighs6.RData")
+local.recurrencePlotAux(hrvRRneighs6)
+@
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+% dim 8
+<<hrvRRrec8, fig=TRUE, include=FALSE>>=
+hrvRRtakens8 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=8,time.lag=1)
+hrvRRneighs8  <- local.findAllNeighbours(hrvRRtakens8, radius=32)
+save(hrvRRneighs8, file="hrvRRneighs8.Rdata")
+# load(file="hrvRRneighs8.RData")
+local.recurrencePlotAux(hrvRRneighs8)
+@
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+% dim 12
+
+<<hrvRRrec12, fig=TRUE, include=FALSE>>=
+hrvRRtakens12 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=2,time.lag=1)
+hrvRRneighs12  <- local.findAllNeighbours(hrvRRtakens12, radius=16)
+save(hrvRRneighs12, file="hrvRRneighs12.Rdata")
+# load(file="hrvRRneighs12.RData")
+local.recurrencePlotAux(hrvRRneighs12)
+@
+Dim=12. Time used: \Sexpr{laptime()} sec.
+
+
+% dim 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRrec16, fig=TRUE, include=FALSE>>=
+hrvRRtakens16 <- local.buildTakens( 
+	time.series=hrv.data$Beat$RR[1:nsignal], 
+	embedding.dim=16,time.lag=1)
+hrvRRneighs16  <- local.findAllNeighbours(hrvRRtakens16, radius=32)
+save(hrvRRneighs16, file="hrvRRneighs16.Rdata")
+# load(file="hrvRRneighs16.RData")
+local.recurrencePlotAux(hrvRRneighs16)
+@
+
+Dim=16. Time used: \Sexpr{laptime()} sec.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec8}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec12}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRrec16}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example.beats. Dim=2, 4, 6, 8, 12, 16.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRreccomp}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsection{RHRV:  example.beats - Hart Rate Variation}
+
+\todo{This is an experimental proposal}
+Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
+
+%:   function BuildNIDHR
+<<BuildNIDHR>>=
+# source('/users/gs/projects/rforge/rhrv/pkg/R/BuildNIHR2.R', chdir = TRUE)
+BuildNIDHR <-
+function(HRVData, verbose=NULL) {
+#------------------------------------------------------ 
+# Obtains instantaneous heart rate variation from beats positions
+# D for difference. The scaled difference is recorded as variation HRRV
+#------------------------------------------------------ 
+	if (!is.null(verbose)) {
+		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n ",
+			"   --- See help for more information!! ---\n")
+		SetVerbose(HRVData,verbose)
+	}
+	
+	if (HRVData$Verbose) {
+		cat("** Calculating non-interpolated heart rate differences **\n")
+	}
+
+	if (is.null(HRVData$Beat$Time)) {
+		cat("   --- ERROR: Beats positions not present...",
+		" Impossible to calculate Heart Rate!! ---\n")
+		return(HRVData)
+	}
+	
+	NBeats=length(HRVData$Beat$Time)
+	if (HRVData$Verbose) {
+		cat("   Number of beats:",NBeats,"\n");
+	}
+	
+  # addition gs 
+   #using NA, not constant extrapolation as else in RHRV  
+   #drr=c(NA,NA,1000.0*	diff(HRVData$Beat$Time, lag=1 , differences=2))
+   HRVData$Beat$dRR=c(NA, NA, 
+   	1000.0*diff(HRVData$Beat$Time, lag=1, differences=2))
+
+   HRVData$Beat$avRR=(c(NA,HRVData$Beat$RR[-1])+HRVData$Beat$RR)/2
+   
+   HRVData$Beat$HRRV <- HRVData$Beat$dRR/HRVData$Beat$avRR
+	# end addition gs
+	return(HRVData)
+}
+
+@
+
+\gsnote{differences for HRV}
+<<hrv.data.HRRV>>=
+hrv.data <- BuildNIDHR(hrv.data)
+HRRV <- hrv.data$Beat$HRRV
+@
+
+These are the displays of the Takens state space we used before, now for HRRV:
+%%%%%
+\index{heart rate variation}
+
+
+@
+<<hrvRRV, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(HRRV)
+@
+See \figref{fig:recurrence-hrvRRV},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRV}
+\caption{RHRV tutorial example.beats. HRRV Signal and linear interpolation.}
+\label{fig:recurrence-hrvRRV}
+\end{center}
+\end{figure}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+\gsnote{Only \Sexpr{nsignal} data points used in this section}
+%:hrvRRVtakens4
+<<hrvRRVtakens4, fig=TRUE, include=FALSE>>=
+hrvRRVtakens4 <- 
+	local.buildTakens( time.series=HRRV[1:nsignal], 
+		embedding.dim=4,time.lag=1)
+statepairs(hrvRRVtakens4) #dim=4
+@
+See \figref{fig:hrvRRVtakens4}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRVtakens4}
+\caption{RHRV tutorial example.beats. HRRV
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrvRRVtakens4}
+\end{center}
+\end{figure}
+
+<<hrvRRVtakens4rk, fig=TRUE, include=FALSE>>=
+statepairs(hrvRRVtakens4, rank=TRUE) #dim=4
+@
+See \figref{fig:hrvRRVtakens4rk}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRVtakens4rk}
+\caption{RHRV tutorial example.beats. Ranked HRRV data.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrvRRVtakens4rk}
+\end{center}
+\end{figure}
+%<<hrvRRVneighs>>=
+%
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+\todo{findAllNeighbours does not handle NAs}
+<<>>=
+#use hack: findAllNeighbours does not handle NAs
+hrvRRVneighs4  <- local.findAllNeighbours(hrvRRVtakens4[-(1:2),], radius=0.125)
+save(hrvRRVneighs4, file="hrvRRVneighs4.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec4, fig=TRUE, include=FALSE>>=
+load(file="hrvRRVneighs4.RData")
+local.recurrencePlotAux(hrvRRVneighs4,dim=4, radius=0.125)
+@
+\todo{check. There seem to be strange artefacts.}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrvRRVrec4}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example.beats. HRRV Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRVrec4}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsubsection{RHRV:  example.beats - RR Variation: Comparison by Dimension}
+
+\gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
+%: dim 2
+\todo{fix default setting for radius. Eckmann uses nearest neighbours with NN=10}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec2, fig=TRUE, include=FALSE>>=
+hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], 
+	embedding.dim=2, time.lag=1)
+hrvRRVneighs2  <- local.findAllNeighbours(hrvRRVtakens2[-(1:2),], 
+	radius=0.125)
+save(hrvRRVneighs2, file="hrvRRVneighs2.Rdata")
+# load(file="hrvRRVneighs2.RData")
+local.recurrencePlotAux(hrvRRVneighs2, dim=2,  radius=0.125)
+showrqa(hrvRRVtakens2[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+Dim=2. Time used: \Sexpr{laptime()} sec.
+
+%: dim 6
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec6, fig=TRUE, include=FALSE>>=
+hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=6,time.lag=1)
+hrvRRVneighs6  <- local.findAllNeighbours(hrvRRVtakens6[-(1:2),], radius=0.125)
+save(hrvRRVneighs6, file="hrvRRVneighs6.Rdata")
+# load(file="hrvRRVneighs6.RData")
+local.recurrencePlotAux(hrvRRVneighs6, dim=6, radius=0.125)
+showrqa(hrvRRVtakens6[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%: dim 8
+<<hrvRRVrec8, fig=TRUE, include=FALSE>>=
+hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=8,time.lag=1)
+hrvRRVneighs8  <- local.findAllNeighbours(hrvRRVtakens8[-(1:2),], radius=0.125)
+save(hrvRRVneighs8, file="hrvRRVneighs8.Rdata")
+# load(file="hrvRRVneighs8.RData")
+local.recurrencePlotAux(hrvRRVneighs8, dim=8, radius=0.125)
+showrqa(hrvRRVtakens8[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+%: dim 12
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec12, fig=TRUE, include=FALSE>>=
+hrvRRVtakens12 <- 
+	local.buildTakens( time.series=HRRV[1:nsignal],
+		embedding.dim=12,time.lag=1)
+hrvRRVneighs12 <- 
+	local.findAllNeighbours(hrvRRVtakens12[-(1:2),], radius=3/16)
+save(hrvRRVneighs12, file="hrvRRVneighs12.Rdata")
+# load(file="hrvRRVneighs12.RData")
+local.recurrencePlotAux(hrvRRVneighs12, dim=12,  radius=3/16)
+showrqa(hrvRRVtakens12[-(1:2),], radius=3/16, do.hist=FALSE)
+@
+
+Dim=12: Time used: \Sexpr{laptime()} sec.
+
+%: dim 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec16, fig=TRUE, include=FALSE>>=
+hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=16,time.lag=1)
+hrvRRVneighs16  <- local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=3/16)
+save(hrvRRVneighs16, file="hrvRRVneighs16.Rdata")
+# load(file="hrvRRVneighs16.RData")
+local.recurrencePlotAux(hrvRRVneighs16, dim=16, radius=3/16)
+showrqa(hrvRRVtakens16[-(1:2),], radius=3/16, do.hist=FALSE)
+@
+Dim=16. Time used: \Sexpr{laptime()} sec.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec8}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec12}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec16}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example.beats variation. Dim=2, 4, 6, 8, 12, 16.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRVreccomp}
+\end{center}
+\end{figure}
+%:
+\clearpage
+
+%: example beats lag08
+\subsubsection{RHRV:  example.beats - RR Variation: Comparison by Dimension, Time.Lag = 8}
+
+%: dim 2
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec2Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens2Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal], 
+	embedding.dim=2, time.lag=8)
+hrvRRVneighs2Lag08  <- local.findAllNeighbours(hrvRRVtakens2Lag08[-(1:2),], 
+	radius=0.125)
+save(hrvRRVneighs2Lag08, file="hrvRRVneighs2Lag08.Rdata")
+# load(file="hrvRRVneighs2Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs2Lag08, dim=2,  radius=0.125)
+showrqa(hrvRRVtakens2Lag08[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+Dim=2. Time used: \Sexpr{laptime()} sec.
+
+%: dim 4
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec4Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens4Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal], 
+	embedding.dim=4, time.lag=8)
+hrvRRVneighs4Lag08  <- local.findAllNeighbours(hrvRRVtakens4Lag08[-(1:2),], 
+	radius=0.125)
+save(hrvRRVneighs4Lag08, file="hrvRRVneighs4Lag08.Rdata")
+# load(file="hrvRRVneighs4Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs4Lag08, dim=2,  radius=0.125)
+showrqa(hrvRRVtakens2Lag08[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+Dim=4. Time used: \Sexpr{laptime()} sec.
+
+<<sphrvRRVrec4Lag08, fig=TRUE, include=FALSE>>=
+statepairs(hrvRRVtakens4Lag08)
+@
+<<schrvRRVrec4Lag08, fig=TRUE, include=FALSE>>=
+statecoplot(hrvRRVtakens4Lag08)
+@
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-sphrvRRVrec4Lag08}\\
+\includegraphics[width=0.8\linewidth]{recurrence-schrvRRVrec4Lag08}
+\caption{Takens states. Example case:  RHRV tutorial example.beats variation. Dim=4, time.lag=8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:shrvRRVrec4Lag08}
+\end{center}
+\end{figure}
+
+<<sphrvRRVrec4Lag08tr, fig=TRUE, include=FALSE>>=
+statepairs(hrvRRVtakens4Lag08, range=c(-0.5, 0.5))
+@
+<<schrvRRVrec4Lag08tr, fig=TRUE, include=FALSE>>=
+statecoplot(hrvRRVtakens4Lag08, range=c(-0.5, 0.5))
+@
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-sphrvRRVrec4Lag08tr}\\
+\includegraphics[width=0.8\linewidth]{recurrence-schrvRRVrec4Lag08tr}
+\caption{Takens states. Example case:  RHRV tutorial example.beats variation, trimmed. Dim=4, time.lag=8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:shrvRRVrec4Lag08}
+\end{center}
+\end{figure}
+
+%: dim 6
+
+
+<<hrvRRVrec6Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens6Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=6,time.lag=8)
+hrvRRVneighs6Lag08  <- local.findAllNeighbours(hrvRRVtakens6Lag08[-(1:2),], radius=0.125)
+save(hrvRRVneighs6Lag08, file="hrvRRVneighs6Lag08.Rdata")
+# load(file="hrvRRVneighs6Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs6Lag08, dim=6, radius=0.125)
+showrqa(hrvRRVtakens6Lag08[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+%: dim 8
+<<hrvRRVrec8Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens8Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=8,time.lag=8)
+hrvRRVneighs8Lag08  <- local.findAllNeighbours(hrvRRVtakens8Lag08[-(1:2),], radius=0.125)
+save(hrvRRVneighs8Lag08, file="hrvRRVneighs8Lag08.Rdata")
+# load(file="hrvRRVneighs8Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs8Lag08, dim=8, radius=0.125)
+showrqa(hrvRRVtakens8Lag08[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+%: dim 12
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec12Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens12Lag08 <- 
+	local.buildTakens( time.series=HRRV[1:nsignal],
+		embedding.dim=12,time.lag=8)
+hrvRRVneighs12Lag08 <- 
+	local.findAllNeighbours(hrvRRVtakens12Lag08[-(1:2),], radius=3/16)
+save(hrvRRVneighs12Lag08, file="hrvRRVneighs12Lag08.Rdata")
+# load(file="hrvRRVneighs12Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs12Lag08, dim=12,  radius=3/16)
+showrqa(hrvRRVtakens12Lag08[-(1:2),], radius=3/16, do.hist=FALSE)
+@
+
+Dim=12: Time used: \Sexpr{laptime()} sec.
+
+%: dim 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrvRRVrec16Lag08, fig=TRUE, include=FALSE>>=
+hrvRRVtakens16Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=16,time.lag=8)
+hrvRRVneighs16Lag08  <- local.findAllNeighbours(hrvRRVtakens16Lag08[-(1:2),], radius=3/16)
+save(hrvRRVneighs16Lag08, file="hrvRRVneighs16Lag08.Rdata")
+# load(file="hrvRRVneighs16Lag08.RData")
+local.recurrencePlotAux(hrvRRVneighs16Lag08, dim=16, radius=3/16)
+showrqa(hrvRRVtakens16Lag08[-(1:2),], radius=3/16, do.hist=FALSE)
+@
+Dim=16. Time used: \Sexpr{laptime()} sec.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec2Lag08}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec4Lag08}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec6Lag08}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec8Lag08}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec12Lag08}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrvRRVrec16Lag08}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example.beats variation. Dim=2, 4, 6, 8, 12, 16. Time.lag=8.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrvRRVreccomp}
+\end{center}
+\end{figure}
+%:
+\clearpage
+
+\section{Case Study: HRV data example2.beats}
+\index{heart rate}
+\index{hrv}
+\label{sec:hrv2}
+% hrv2
+This is a copy of the previous section, now applied to HRV data example2.beats.
+<<>>=
+library(RHRV)
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVData.rda")
+load("/users/gs/projects/rforge/rhrv/pkg/data/HRVProcessedData.rda")
+
+###################################################
+### code chunk number 1: creation
+###################################################
+hrv2.data  = CreateHRVData()
+hrv2.data = SetVerbose(hrv2.data, TRUE )
+
+###################################################
+### code chunk number 3: loading
+###################################################
+hrv2.data = LoadBeatAscii(hrv2.data, "example2.beats",
+       RecordPath = "/users/gs/projects/rforge/rhrv/tutorial/beatsFolder")
+#       RecordPath = "beatsFolder")
+
+
+###################################################
+### code chunk number 4: derivating
+###################################################
+hrv2.data = BuildNIHR(hrv2.data)
+
+@
+<<hrv2RR, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(hrv2.data$Beat$RR)
+@
+See \figref{fig:recurrence-hrv2RR}.
+\todo{We have outliers at approximately 2*RR. 
+Could this be an artefact of preprocessing, filtering out too many impulses?}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RR}
+\caption{RHRV tutorial example2.beats. Signal and linear interpolation.}
+\label{fig:recurrence-hrv2RR}
+\end{center}
+\end{figure}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRtakens4, fig=TRUE, include=FALSE>>=
+hrv2RRtakens4 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
+	embedding.dim=4, time.lag=1)
+statepairs(hrv2RRtakens4) #dim=4
+@
+See \figref{fig:hrv2RRtakens4}.\gsnote{Only \Sexpr{nsignal} data points used in this plot}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRtakens4}
+\caption{RHRV tutorial example2.beats. 
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrv2RRtakens4}
+\end{center}
+\end{figure}
+
+<<hrv2RRtakens4rk, fig=TRUE, include=FALSE>>=
+statepairs(hrv2RRtakens4, rank=TRUE) #dim=4
+@
+See \figref{fig:hrv2RRtakens4rk}.
+\index{takens plot!hrv2}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRtakens4rk}
+\caption{RHRV tutorial example2.beats. Ranked data.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrv2RRtakens4rk}
+\end{center}
+\end{figure}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+<<hrv2RRtakens4co, fig=TRUE, include=FALSE>>=
+statecoplot(hrv2RRtakens4) #dim=4
+@
+\plotco{hrv2RRtakens4co}{RHRV tutorial example2.beats.
+Time used: \Sexpr{laptime()} sec.
+ }
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec4, fig=TRUE, include=FALSE>>=
+hrv2RRneighs4  <- local.findAllNeighbours(hrv2RRtakens4, radius=12*16)
+save(hrv2RRneighs4, file="hrv2RRneighs4.Rdata")
+# load(file="hrv2RRneighs4.RData")
+local.recurrencePlotAux(hrv2RRneighs4, radius=12*16)
+showrqa(hrv2RRtakens4[-(1:2),], radius=12*16, do.hist=FALSE)
+@
+Dim=4. Time used: \Sexpr{laptime()} sec.
+
+See \figref{fig:recurrence-hrv2RRrec4}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRrec4}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example2.beats. Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrv2RRrec4}
+\end{center}
+\end{figure}
+%: ***
+\clearpage
+\subsubsection{RHRV:  example2.beats, RR-intervals. Comparison by Dimension}
+
+\gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 is to be expected.}
+% dim 2
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec2, fig=TRUE, include=FALSE>>=
+hrv2RRtakens2 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
+	embedding.dim=2,time.lag=1)
+hrv2RRneighs2  <- local.findAllNeighbours(hrv2RRtakens2, radius=10*16)
+save(hrv2RRneighs2, file="hrv2RRneighs2.Rdata")
+# load(file="hrv2RRneighs2.RData")
+local.recurrencePlotAux(hrv2RRneighs2, radius=10*16)
+showrqa(hrv2RRtakens2[-(1:2),], radius=10*16, do.hist=FALSE)
+@
+
+Dim=2. Time used: \Sexpr{laptime()} sec.
+
+See \figref{fig:recurrence-hrv2RRreccomp}.
+
+
+%: dim 6
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec6, fig=TRUE, include=FALSE>>=
+hrv2RRtakens6 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
+	embedding.dim=6,time.lag=1)
+hrv2RRneighs6  <- local.findAllNeighbours(hrv2RRtakens6, radius=14*16)
+save(hrv2RRneighs6, file="hrv2RRneighs6.Rdata")
+# load(file="hrv2RRneighs6.RData")
+local.recurrencePlotAux(hrv2RRneighs6, radius=14*16)
+showrqa(hrv2RRtakens6[-(1:2),], radius=14*16, do.hist=FALSE)
+@
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+See \figref{fig:recurrence-hrv2RRreccomp}.
+
+
+%: dim 8
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec8, fig=TRUE, include=FALSE>>=
+hrv2RRtakens8 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
+	embedding.dim=8,time.lag=1)
+hrv2RRneighs8  <- local.findAllNeighbours(hrv2RRtakens8, radius=16*16)
+save(hrv2RRneighs8, file="hrv2RRneighs8.Rdata")
+# load(file="hrv2RRneighs8.RData")
+local.recurrencePlotAux(hrv2RRneighs8, radius=16*16)
+showrqa(hrv2RRtakens8[-(1:2),], radius=16*16, do.hist=FALSE)
+@
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+See \figref{fig:recurrence-hrv2RRreccomp}.
+
+
+%: dim 12
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec12, fig=TRUE, include=FALSE>>=
+hrv2RRtakens12 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
+	embedding.dim=12,time.lag=1)
+hrv2RRneighs12  <- local.findAllNeighbours(hrv2RRtakens12, radius=16*16)
+save(hrv2RRneighs12, file="hrv2RRneighs12.Rdata")
+# load(file="hrv2RRneighs12.RData")
+local.recurrencePlotAux(hrv2RRneighs12, radius=16*16)
+showrqa(hrv2RRtakens12[-(1:2),], radius=16*16, do.hist=FALSE)
+@
+Dim=12. Time used: \Sexpr{laptime()} sec.
+
+%: dim 16
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRrec16, fig=TRUE, include=FALSE>>=
+hrv2RRtakens16 <- local.buildTakens( 
+	time.series=hrv2.data$Beat$RR[1:nsignal], 
+	embedding.dim=16,time.lag=1)
+hrv2RRneighs16  <- local.findAllNeighbours(hrv2RRtakens16, radius=18*16)
+save(hrv2RRneighs16, file="hrv2RRneighs16.Rdata")
+# load(file="hrv2RRneighs16.RData")
+local.recurrencePlotAux(hrv2RRneighs16, radius=18*16)
+showrqa(hrv2RRtakens16[-(1:2),], radius=18*16, do.hist=FALSE)
+@
+Dim=16. Time used: \Sexpr{laptime()} sec.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec8}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec12}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRrec16}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example2.beats. Dim=2, 4, 6, 8, 12, 16.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrv2RRreccomp}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsection{RHRV:  example2.beats - Hart Rate Variation}
+
+\todo{Consider using differences}
+Since we are not interested in heart rate (or pulse), but in heart rate variation, a proposal is to use scaled differences.
+
+
+\gsnote{differences for HRV}
+<<hrv2.data.HRRV>>=
+hrv2.data <- BuildNIDHR(hrv2.data)
+HRRV <- hrv2.data$Beat$HRRV
+@
+
+These are the displays of the Takens state space we used before, now for HRRV:
+%%%%%
+\index{heart rate variation}
+
+
+@
+<<hrv2RRV, fig=TRUE, include=FALSE, width=10, height=5 >>=
+plotsignal(HRRV)
+@
+See \figref{fig:recurrence-hrv2RRV},
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRV}
+\caption{RHRV tutorial example2.beats. HRRV Signal and linear interpolation.}
+\label{fig:recurrence-hrv2RRV}
+\end{center}
+\end{figure}
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+\gsnote{Only \Sexpr{nsignal} data points used in these plots}
+%:hrv2RRVtakens4
+<<hrv2RRVtakens4, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens4 <- 
+	local.buildTakens( time.series=HRRV[1:nsignal], 
+		embedding.dim=4,time.lag=1)
+statepairs(hrv2RRVtakens4) #dim=4
+@
+\plotrecurrence{hrv2RRVtakens4}{RHRV tutorial example2.beats. HRRV
+Time used: \Sexpr{laptime()} sec.
+}
+%
+<<hrv2RRVtakens4co, fig=TRUE, include=FALSE>>=
+	statecoplot(hrv2RRVtakens4) #dim=4
+@
+
+\plotco{hrv2RRVtakens4co}{RHRV tutorial example2.beats. HRRV.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+
+<<hrv2RRVtakens4rk, fig=TRUE, include=FALSE>>=
+statepairs(hrv2RRVtakens4, rank=TRUE) #dim=4
+@
+See \figref{fig:hrv2RRVtakens4rk}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRVtakens4rk}
+\caption{RHRV tutorial example2.beats. Ranked HRRV data.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:hrv2RRVtakens4rk}
+\end{center}
+\end{figure}
+%<<hrv2RRVneighs>>=
+%
+%
+<<hrv2RRVtakens4l, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens4l <- hrv2RRVtakens4
+hrv2RRVtakens4l[hrv2RRVtakens4l < -1.5] <- NA
+hrv2RRVtakens4l[hrv2RRVtakens4l > 0.45] <- NA
+statepairs(hrv2RRVtakens4l) #dim=4
+@
+\plotrecurrence{hrv2RRVtakens4l}{RHRV tutorial example2.beats. HRRV
+Time used: \Sexpr{laptime()} sec.
+}
+%
+<<hrv2RRVtakens4lco, fig=TRUE, include=FALSE>>=
+	statecoplot(hrv2RRVtakens4l) #dim=4
+@
+
+\plotco{hrv2RRVtakens4lco}{RHRV tutorial example2.beats. HRRV.
+Time used: \Sexpr{laptime()} sec.
+ }
+%
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+\todo{findAllNeighbours does not handle NAs}
+<<>>=
+#use hack: findAllNeighbours does not handle NAs
+hrv2RRVneighs4  <- local.findAllNeighbours(hrv2RRVtakens4[-(1:2),], radius=0.125)
+save(hrv2RRVneighs4, file="hrv2RRVneighs4.Rdata")
+@
+Time used: \Sexpr{laptime()} sec.
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRVrec4, fig=TRUE, include=FALSE>>=
+load(file="hrv2RRVneighs4.RData")
+local.recurrencePlotAux(hrv2RRVneighs4,dim=4, radius=0.125)
+@
+\todo{check. There seem to be strange artefacts.}
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.8\linewidth]{recurrence-hrv2RRVrec4}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example2.beats. HRRV Dim=4.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrv2RRVrec4}
+\end{center}
+\end{figure}
+
+\clearpage
+\subsubsection{RHRV:  example2.beats - RR Variation: Comparison by Dimension}
+
+\gsnote{We should expect the breathing rhythm, so a time lag in the order of 10 beats is to be expected for the base signal.}
+%: dim 2
+
+\todo{fix default setting for radius. Eckmann uses nearest neighbours with NN=10}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+%<<hrv2RRVtakens2, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec2, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], 
+	embedding.dim=2, time.lag=1)
+hrv2RRVneighs2  <- local.findAllNeighbours(hrv2RRVtakens2[-(1:2),], 
+	radius=0.125)
+save(hrv2RRVneighs2, file="hrv2RRVneighs2.Rdata")
+# load(file="hrv2RRVneighs2.RData")
+local.recurrencePlotAux(hrv2RRVneighs2, dim=2,  radius=0.125)
+hrv2RRVrqa2 <- showrqa(hrv2RRVtakens2[-(1:2),], radius=0.125, do.hist=FALSE)
+@
+Time used: \Sexpr{laptime()} sec.
+
+%: dim 6
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRVrec6, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=6,time.lag=1)
+hrv2RRVneighs6  <- local.findAllNeighbours(hrv2RRVtakens6[-(1:2),], radius=0.125*1.5)
+save(hrv2RRVneighs6, file="hrv2RRVneighs6.Rdata")
+# load(file="hrv2RRVneighs6.RData")
+local.recurrencePlotAux(hrv2RRVneighs6, dim=6, radius=0.125*1.5)
+hrv2RRVrqa6 <- showrqa(hrv2RRVtakens6[-(1:2),], radius=0.125*1.5, do.hist=FALSE)
+@
+Dim=6. Time used: \Sexpr{laptime()} sec.
+
+%: dim 8
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRVrec8, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=8,time.lag=1)
+hrv2RRVneighs8  <- local.findAllNeighbours(hrv2RRVtakens8[-(1:2),], radius=3/16)
+save(hrv2RRVneighs8, file="hrv2RRVneighs8.Rdata")
+# load(file="hrv2RRVneighs8.RData")
+local.recurrencePlotAux(hrv2RRVneighs8, dim=8, radius=3/16)
+hrv2RRVrqa8 <- showrqa(hrv2RRVtakens8[-(1:2),], radius=3/16, do.hist=FALSE)
+@
+
+Dim=8. Time used: \Sexpr{laptime()} sec.
+
+%: dim 12
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRVrec12, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens12 <- 
+	local.buildTakens( time.series=HRRV[1:nsignal],
+		embedding.dim=12,time.lag=1)
+hrv2RRVneighs12 <- 
+	local.findAllNeighbours(hrv2RRVtakens12[-(1:2),], radius=3.5/16)
+save(hrv2RRVneighs12, file="hrv2RRVneighs12.Rdata")
+# load(file="hrv2RRVneighs12.RData")
+local.recurrencePlotAux(hrv2RRVneighs12, dim=12,  radius=3.5/16)
+hrv2RRVrqa12 <- showrqa(hrv2RRVtakens12[-(1:2),], radius=3.5/16, do.hist=FALSE)
+@
+Dim=12. Time used: \Sexpr{laptime()} sec.
+
+%: dim 16
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
+<<hrv2RRVrec16, fig=TRUE, include=FALSE>>=
+hrv2RRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],
+	embedding.dim=16,time.lag=1)
+hrv2RRVneighs16  <- local.findAllNeighbours(hrv2RRVtakens16[-(1:2),], radius=4/16)
+save(hrv2RRVneighs16, file="hrv2RRVneighs16.Rdata")
+# load(file="hrv2RRVneighs16.RData")
+local.recurrencePlotAux(hrv2RRVneighs16, dim=16, radius=4/16)
+hrv2RRVrqa16 <- showrqa(hrv2RRVtakens16[-(1:2),], radius=4/16, do.hist=FALSE)
+@
+Dim=16. Time used: \Sexpr{laptime()} sec.
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec2}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec4}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec6}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec8}
+\newline
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec12}\qquad
+\includegraphics[width=0.45\linewidth]{recurrence-hrv2RRVrec16}
+\caption{Recurrence Plot. Example case:  RHRV tutorial example2.beats. Dim=2, 4, 6, 8, 12, 16.
+Time used: \Sexpr{laptime()} sec.
+}
+\label{fig:recurrence-hrv2RRVreccomp}
+\end{center}
+\end{figure}
+
+
+
+%%%%%
+
+%:backmatter
+
+@
+%:Sweave examples
+%<<print=TRUE>>=
+%<<results=hide>>=
+%@
+%<<echo=TRUE,print=TRUE>>=
+%<<>>=
+%@
+%%\texttt{x} is 6.28318530717959, the
+%<<engine=R>>=
+%@ %def
+%\begin{figure}[htbp]
+%  \begin{center}
+%<<fig=TRUE>>=
+%@
+%    \caption{.}
+%  \end{center}
+%\end{figure}
+%<<engine=S4>>=
+%@
+%
+\clearpage
+%\bibliographystyle{alphadin}% bib/din1505/alphadin.bst
+%\bibliographystyle{alphadin}% bib/din1505/alphadin.bst
+%\bibliographystyle{harvard} % Eckmann et al. [1987]
+%\bibliographystyle{apalike}
+%\bibliographystyle{natbib}
+%\bibliographystyle{natdin}% Eckmann u.a.
+%\bibliographystyle{chicago}% No Url
+%\bibliographystyle{plainurl} % [1]
+%\bibliographystyle{pnas2009} % not natbib compatible
+\bibliographystyle{jss} % local
+%\bibliographystyle{biblatex} % not natbib compatible
+%\bibliographystyle{authordate3}% bib/din1505/alphadin.bst
+\bibliography{../pulse}
+%
+\clearpage
+
+\printindex
+
+%\clearpage
+%\renewcommand{\nomname}{Notation}
+%%cleardoublepage%see nomencl, p. 7
+%
+%\printnomenclature %Nomenclature, used for notation table
+
+\clearpage
+\R{} session info:
+
+<<echo=FALSE, print=FALSE>>=
+        SweaveTotal <- structure(proc.time() - system.time.start, class = "proc_time")       
+@
+Total Sweave time used: \Sexpr{round(SweaveTotal[3],3)} sec. at \Sexpr{date()}.
+<<echo=FALSE, print=FALSE>>=
+rm(SweaveTotal)
+@
+
+{\tiny
+<<echo=FALSE,  print = FALSE, results = tex>>=
+toLatex(sessionInfo())
+@
+}
+
+%\RequirePackage{layouts}
+\LaTeX{} information:
+{\tiny
+
+\currentpage 
+textwidth: \printinunitsof{in}\prntlen{\textwidth} \qquad 
+linewidth:\printinunitsof{in}\prntlen{\linewidth}\\
+textheight: \printinunitsof{in}\prntlen{\textheight}\\
+}
+@
+
+Bibliography style: jss
+
+CVS/Svn repository information:
+
+{\tiny%
+\noindent
+\verb+$Source: /u/math/j40/cvsroot/lectures/src/dataanalysis/Rnw/recurrence.Rnw,v $+\\
+copied to r-forge\\
+\verb!$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/Rnw/recurrence.Rnw $!\\
+\verb+$Revision: 169 $+\\
+\verb!$Date: 2014-08-24 15:33:21 +0200 (Sun, 24 Aug 2014) $!\\
+\verb+$Name:  $+\\
+\verb+$Author: gsawitzki $+
+}
+\typeout{**** $Id: recurrence.Rnw 169 2014-08-24 13:33:21Z gsawitzki $ done ****}
+\end{document}
+
+
