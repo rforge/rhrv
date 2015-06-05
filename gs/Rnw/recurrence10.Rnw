@@ -1052,10 +1052,12 @@ plot(cd)
     %  subscript out of bounds
 
 <<sEntropychirpN, fig=TRUE>>=
-se = sampleEntropy(cd, do.plot = F)
-se.est = estimate(se, do.plot = F,
+oldpar <- par(mfrow=c(1,2))
+se = sampleEntropy(cd, do.plot =T)
+se.est = estimate(se, do.plot = T,
 regression.range = c(8,15))
 cat("Sample entropy estimate: ", mean(se.est), "\n")
+par(oldpar)
 
 <<maxLyapchirpN, fig=TRUE>>=
 #sampling.period = diff(lor$time)[1]
@@ -1137,10 +1139,12 @@ plot(cd)
     %  subscript out of bounds
 
 <<sEntropydopplerN, fig=TRUE>>=
-se = sampleEntropy(cd, do.plot = F)
-se.est = estimate(se, do.plot = F,
+oldpar <- par(mfrow=c(1,2))
+se = sampleEntropy(cd, do.plot = T)
+se.est = estimate(se, do.plot = T,
 regression.range = c(8,15))
 cat("Sample entropy estimate: ", mean(se.est), "\n")
+par(oldpar)
 
 <<maxLyapdopplerN, fig=TRUE>>=
 #sampling.period = diff(lor$time)[1]
