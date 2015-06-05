@@ -1,4 +1,4 @@
-%!TEX root = /Users/gs/projects/rforge/rhrv/gs/Rnw_out/recurrence.tex
+%!TEX root = /Users/gs/projects/rforge/rhrv/gs/Rnw_out/recurrence10.tex
 %$HeadURL: svn+ssh://gsawitzki@scm.r-forge.r-project.org/svnroot/rhrv/gs/Rnw/recurrence.Rnw $
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %
@@ -6,7 +6,7 @@
 %
 %  Adjust the path names below and run the R command to process this file
 %
-% setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
+% setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence10.Rnw", output="recurrence10.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
 %  cp <- tools::compactPDF("recurrence.pdf", gs_quality = "ebook")
 %
 
@@ -913,7 +913,9 @@ See \figref{fig:recurrence-doppler},
 \clearpage
 \section{nonlinearTseries Quick-Start}
 <<>>=
-#suppressMessages(library('nonlinearTseries'))library('plot3D')# by default, the simulation creates a RGL plot of the system's phase space
+#suppressMessages(library('nonlinearTseries'))
+library('plot3D')
+# by default, the simulation creates a RGL plot of the system's phase space
 @
 \subsection{Sinus}
 <<acfsin, fig=TRUE>>=
@@ -955,12 +957,17 @@ Note: fails. See Rnw source code.
  
 %<<embedfsinN, fig=TRUE>>=
 %if (is.numeric(tau.ami)) {
-%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,%max.embedding.dim = 15)}  else  {
-%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,%max.embedding.dim = 15)} 
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
+%max.embedding.dim = 15)}  else  {
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
+%max.embedding.dim = 15)} 
 %cat("Estimated embedding dim:", emb.dim)
 %
 %<<takfsinN, fig=TRUE>>=
-%tak = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)%scatter3D(tak[,1], tak[,2], tak[,3],%main = paste("Reconstructed phase space",deparse(substitute(time.series))),%col = 1, type="o",cex = 0.3)
+%tak = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)
+%scatter3D(tak[,1], tak[,2], tak[,3],
+%main = paste("Reconstructed phase space",deparse(substitute(time.series))),
+%col = 1, type="o",cex = 0.3)
 
 @
 \subsection{Uniform Random Numbers}
@@ -980,12 +987,17 @@ cat("tau.ami:",tau.ami)
 par(oldpar)
 <<embedfunifN, fig=TRUE>>=
 if (is.numeric(tau.ami)) {
-emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
-emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,max.embedding.dim = 15)} 
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
 cat("Estimated embedding dim:", emb.dim)
 
 <<takfunifN, fig=TRUE>>=
-tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = paste("Reconstructed phase space",deparse(substitute(time.series))),col = 1, type="o",cex = 0.3)
+tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = paste("Reconstructed phase space",deparse(substitute(time.series))),
+col = 1, type="o",cex = 0.3)
 
 @
 
@@ -1006,12 +1018,72 @@ par(oldpar)
 
 <<embedfchirpN, fig=TRUE>>=
 if (is.numeric(tau.ami)) {
-emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
-emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,max.embedding.dim = 15)} 
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
 cat("Estimated embedding dim:", emb.dim)
 
 <<takfchirpN, fig=TRUE>>=
-tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = paste("Reconstructed phase space",deparse(substitute(time.series))),col = 1, type="o",cex = 0.3)
+tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = paste("Reconstructed phase space\n","Chirp"),
+col = 1, type="o",cex = 0.3)
+@
+
+<<corrDimchirpN, fig=TRUE>>=
+cd = corrDim(chirpN,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 5,
+time.lag = tau.ami,
+min.radius = 0.001, max.radius = 50,
+n.points.radius = 40,
+do.plot=FALSE)
+plot(cd)
+@
+%cd.est = estimate(cd, regression.range=c(0.75,3),
+%use.embeddings = 5:7)
+%#cat("expected: 2.05 estimate:",cd.est,"\n")
+%cat("expected: 2.05 estimate:",cd.est,"\n")
+%@
+   %cd.est = estimate(cd, regression.range=c(0.75,3),
+    %Error:  chunk 27 (label = corrDimchirpN) 
+    %Error in corr.matrix[as.character(use.embeddings), ] : 
+    %  subscript out of bounds
+
+<<sEntropychirpN, fig=TRUE>>=
+se = sampleEntropy(cd, do.plot = F)
+se.est = estimate(se, do.plot = F,
+regression.range = c(8,15))
+cat("Sample entropy estimate: ", mean(se.est), "\n")
+
+<<maxLyapchirpN, fig=TRUE>>=
+#sampling.period = diff(lor$time)[1]
+ml = maxLyapunov(chirpN,
+sampling.period=0.01,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 3,
+time.lag = tau.ami,
+radius=1,
+max.time.steps=1000,
+do.plot=FALSE)
+plot(ml,type="l", xlim = c(0,8))
+ml.est = estimate(ml, regression.range = c(0,3),
+do.plot = T,type="l")
+#cat("expected: 0.906 estimate:", ml.est,"\n")
+cat("estimate:", ml.est,"\n")
+
+<<surrogchirpN, fig=TRUE>>=
+st = surrogateTest(chirpN,significance = 0.05,one.sided = F,
+FUN = timeAsymmetry, do.plot=F)
+## Computing statistics
+##
+## Null Hypothesis: Data comes from a linear stochastic process
+## Reject Null hypothesis:
+## Original data's stat is significant larger than surrogates' stats
+plot(st)
+@
+\clearpage
 
 @
 \subsection{Doppler}
@@ -1030,13 +1102,74 @@ par(oldpar)
 
 <<embedfdopplerN, fig=TRUE>>=
 if (is.numeric(tau.ami)) {
-emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,max.embedding.dim = 15)}  else  {
-emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,max.embedding.dim = 15)} 
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
 cat("Estimated embedding dim:", emb.dim)
 
 <<takfdopplerN, fig=TRUE>>=
-tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)scatter3D(tak[,1], tak[,2], tak[,3],main = "Reconstructed phase space \n doppler" ,col = 1, type="o",cex = 0.3)
+tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = "Reconstructed phase space \n doppler" ,
+col = 1, type="o",cex = 0.3)
 @
+
+
+<<corrDimdopplerN, fig=TRUE>>=
+cd = corrDim(dopplerN,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 5,
+time.lag = tau.ami,
+min.radius = 0.001, max.radius = 50,
+n.points.radius = 40,
+do.plot=FALSE)
+plot(cd)
+@
+%cd.est = estimate(cd, regression.range=c(0.75,3),
+%use.embeddings = 5:7)
+%#cat("expected: 2.05 estimate:",cd.est,"\n")
+%cat("expected: 2.05 estimate:",cd.est,"\n")
+%@
+   %cd.est = estimate(cd, regression.range=c(0.75,3),
+    %Error:  chunk 27 (label = corrDimdopplerN) 
+    %Error in corr.matrix[as.character(use.embeddings), ] : 
+    %  subscript out of bounds
+
+<<sEntropydopplerN, fig=TRUE>>=
+se = sampleEntropy(cd, do.plot = F)
+se.est = estimate(se, do.plot = F,
+regression.range = c(8,15))
+cat("Sample entropy estimate: ", mean(se.est), "\n")
+
+<<maxLyapdopplerN, fig=TRUE>>=
+#sampling.period = diff(lor$time)[1]
+ml = maxLyapunov(dopplerN,
+sampling.period=0.01,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 3,
+time.lag = tau.ami,
+radius=1,
+max.time.steps=1000,
+do.plot=FALSE)
+plot(ml,type="l", xlim = c(0,8))
+ml.est = estimate(ml, regression.range = c(0,3),
+do.plot = T,type="l")
+#cat("expected: 0.906 estimate:", ml.est,"\n")
+cat("estimate:", ml.est,"\n")
+
+<<surrogdopplerN, fig=TRUE>>=
+st = surrogateTest(dopplerN,significance = 0.05,one.sided = F,
+FUN = timeAsymmetry, do.plot=F)
+## Computing statistics
+##
+## Null Hypothesis: Data comes from a linear stochastic process
+## Reject Null hypothesis:
+## Original data's stat is significant larger than surrogates' stats
+plot(st)
+@
+\clearpage
+
 \clearpage
 \section{Takens' States  for Test Signals}
 
@@ -1951,7 +2084,10 @@ Time used: \Sexpr{laptime()} sec.
 \label{sec:hrv}
 \gsnote{Only \Sexpr{nsignal} data points used in recurrence plots in this section}
 
+%:**** \end{document}
+\end{document}
 <<>>=
+stop("Stopping before RHRV")
 library(RHRV)
 load("/users/gs/projects/rforge/rhrv/pkg/data/HRVData.rda")
 load("/users/gs/projects/rforge/rhrv/pkg/data/HRVProcessedData.rda")
