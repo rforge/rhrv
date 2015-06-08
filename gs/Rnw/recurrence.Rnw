@@ -6,7 +6,8 @@
 %
 %  Adjust the path names below and run the R command to process this file
 %
-% setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
+%setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
+% setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence10.Rnw", output="recurrence10.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
 %  cp <- tools::compactPDF("recurrence.pdf", gs_quality = "ebook")
 %
 
@@ -196,7 +197,7 @@ See \figref{fig:recurrence-#2}.
 }
 
 %:   plotco
-\newcommand\plotco[3][0.8]{
+\newcommand\plotco[3][0.7]{
 See \figref{fig:recurrence-#2}.
 
 \begin{figure}[htbp]
@@ -355,7 +356,9 @@ library(nonlinearTseries)
 Takens states are represented as a matrix, one state per row. The number of colums is the imbedding dimension. If present, the \code{time.lag} attribute is the lag parameter, \code{id} an identification string for the basic data set.
 
 \todo{improve choice of alpha}
-
+<<>>=
+alpha=0.5
+@
 %:  function statepairs: Takens states
 
 % R CMD Rdconv -t latex ../man/statepairs.Rd -o ../man/statepairs.tex
@@ -369,7 +372,7 @@ Takens states are represented as a matrix, one state per row. The number of colu
 statepairs(states, main, 
 	range  = NULL,
 	rank = FALSE, nooverlap = FALSE, 
-	alpha)
+	col, \ldots)
 \end{verbatim}
 \end{Usage}
 %
@@ -380,7 +383,7 @@ statepairs(states, main,
 \item[\code{range}] Optional: an interval selecting values to be displayd.
 \item[\code{rank}] An experimental variant. If \code{rank}, the values are rank transformed.
 \item[\code{nooverlap}] An experimental variant. If \code{nooverlap}, the cases are subsampled by dimension.
-\item[\code{alpha}] The alpha value used for plotting. The current choice is $\sqrt{\frac{1}{nr\ states}}$ 
+\item[\code{col}]  The current choice is $rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$ 
 as a default.
 
 
@@ -394,7 +397,7 @@ as a default.
 <<statepairs, echo=TRUE, print=FALSE>>=
 statepairs <- function(states, main, 
 		rank=FALSE, nooverlap= FALSE, range=NULL, 
-		alpha, ...){
+		col = rgb(1,0,0, 1/sqrt(dim(states)[1])),  ...){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
 	time.lag <- attr(states,"time.lag"); if (is.null(time.lag)) time.lag <- 1
 	
@@ -412,15 +415,13 @@ statepairs <- function(states, main,
 	if (!is.null(range)) { states[states[]< range[1]] <- NA; 
 		states[states[]> range[2]] <- NA
 		main <- paste(main," trimmed")}	
-	
-	if (missing(alpha)) {alpha <- 1/sqrt(dim(states)[1])}
-	#cat("alpha=",alpha)
-	
+		
 	if (rank) {states <- apply(states, 2, rank, ties.method="random")
 	main <- paste(main," ranked")}
 	
 	pairs(states, main=main,
-	col=rgb(0,0,0, alpha), pch=19, ...)
+#	col=rgb(0,0,0, alpha), pch=19, ...)
+	col=	col, pch=19, ...)
 	#title(main=main, outer=TRUE, line=-2, cex.main=0.8)
 }
 @
@@ -443,7 +444,8 @@ i.e. $ (x_{t-1}, x_t | x_{t-2}, x_{t-3})$.
 statecoplot(states, main, 
 	range  = NULL,
 	rank = FALSE, nooverlap = FALSE, 
-	alpha, number = c(5,5))
+	 col= rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$, 
+	number = c(5,5))
 \end{verbatim}
 \end{Usage}
 %
@@ -454,7 +456,7 @@ statecoplot(states, main,
 \item[\code{range}] Optional: an interval selecting values to be displayd.
 \item[\code{rank}] An experimental variant. If \code{rank}, the values are rank transformed.
 \item[\code{nooverlap}] An experimental variant. If \code{nooverlap}, the cases are subsampled by dimension.
-\item[\code{alpha}] The alpha value used for plotting. The current choice is $\sqrt{\frac{1}{nr\ states}}$ 
+\item[\code{alpha}] \item[\code{col}]  The current choice is $rgb(0, 0, 0, \alpha = \sqrt{\frac{1}{nr\ states}})$, 
 as a default.
 \item[\code{number}] integer; the number of conditioning intervals, for a and b, possibly of length 2.
 \end{ldescription}
@@ -465,7 +467,8 @@ as a default.
 <<statecoplot, echo=TRUE, print=FALSE>>=
 statecoplot <- function(states, main, 
 		rank = FALSE, nooverlap = FALSE, range = NULL, 
-		alpha, number = c(5,5), ...){
+		col = rgb(1,0,0, 1/sqrt(dim(states)[1])),  
+		number = c(5,5), ...){
 	n <- dim(states)[1]; dim <-  dim(states)[2]
 	time.lag <- attr(states,"time.lag")
 	if (is.null(time.lag)) time.lag <- 1
@@ -483,10 +486,6 @@ statecoplot <- function(states, main,
 	
 	if (!is.null(range)) { states[states[]< range[1]] <- NA; states[states[]> range[2]] <- NA
 	main <- paste(main," trimmed")}
-
-		
-	if (missing(alpha)) {alpha <- 1/sqrt(dim(states)[1]/32)}
-	#cat("alpha=",alpha)
 	
 	if (rank) {states <- apply(states, 2, rank, ties.method="random")
 	main <- paste(main," ranked")}
@@ -698,10 +697,13 @@ showrqa <- function(takens, dim=NULL, radius,
 	cat(id, " n:", dim(takens)[1], " Dim:", dim(takens)[2], "\n")
 	xxrqa$n <- dim(takens)[1]
 	xxrqa$dim <- dim(takens)[2]
+	#str(xxrqa)
+	#str(digits)
+	#browser()
 	cat(paste("Radius:", radius, 
-		" Recurrence coverage REC:", round(xxrqa[1]$REC, digits), 
-		" log(REC)/log(R):", round(log(xxrqa[1]$REC)/log(radius), digits), "\n"))
-	xxrqa$logratio <- log(xxrqa[1]$REC)/log(radius)	
+		" Recurrence coverage REC:", round(xxrqa$REC, digits), 
+		" log(REC)/log(R):", round(log(xxrqa$REC)/log(radius), digits), "\n"))
+	xxrqa$logratio <- log(xxrqa$REC)/log(radius)	
 	cat(paste("Determinism:", round(xxrqa$DET, digits), 
 		" Laminarity:",round(xxrqa$LAM, digits), "\n"))
 	cat(paste("DIV:", round(xxrqa$DIV, digits), "\n"))
@@ -728,7 +730,7 @@ showrqa <- function(takens, dim=NULL, radius,
 		lag<- attr(takens,"time.lag")
 		  if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
 		plot(dh, type="h", main=paste( id, " Diagonal:", 
-			pars," Radius: ",radius, " REC:", round(xxrqa[1]$REC, digits)),
+			pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
 			xlab="length of diagonals",
 			log = log, ...)
 			
@@ -743,7 +745,7 @@ showrqa <- function(takens, dim=NULL, radius,
 		  if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
 	plot(drR, type="h", 
 		 main=paste( id," Recurrence Rate",
-			pars," Radius: ",radius, " REC:", round(xxrqa[1]$REC, digits)),
+			pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
 			xlab="distance to diagonal",
 			#ylim=c(1,3),
 			log = log, ...)
@@ -753,7 +755,6 @@ showrqa <- function(takens, dim=NULL, radius,
 	if (rm.hist) { xxrqa$recurrenceRate <- NULL; xxrqa$diagonalHistogram <- NULL }
 	invisible(xxrqa)
 }
-
 @
 %		barplot(dh, 
 %		main=paste(deparse(substitute(takens)), "Diagonal",
@@ -909,6 +910,270 @@ See \figref{fig:recurrence-doppler},
 \label{fig:recurrence-doppler}
 \end{center}
 \end{figure}
+
+\clearpage
+\section{nonlinearTseries Quick-Start}
+<<>>=
+#suppressMessages(library('nonlinearTseries'))
+library('plot3D')
+# by default, the simulation creates a RGL plot of the system's phase space
+@
+\subsection{Sinus}
+<<acfsin, fig=TRUE>>=
+sinN <- sin10()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(sinN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x)))))
+
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+@
+
+Note: fails. See Rnw source code.
+%        Rnw>  cat("tau.ami:",tau.ami) 
+%        tau.ami: NA
+%        Rnw>  par(oldpar) 
+%        tau.acf: 20Error in get.position.decays(fx, fx[1]/exp(1), technique) : 
+%          The ami function does not cross 0.802894698328813. Choose another "cross" value!
+%        
+%        tau.ami: NA21 : echo keep.source term verbatim pdf  (label = embedfsinN, recurrence.Rnw:937)
+%        
+%        Rnw>  if (is.numeric(tau.ami)) {
+%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
+%        +  max.embedding.dim = 15)}  else  {
+%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
+%        +  max.embedding.dim = 15)}  
+%        
+%        Error:  chunk 21 (label = embedfsinN) 
+%        Error in if ((embedding.dim == 0) && (E1.vector[[dimension - 2]] >= threshold) &&  : 
+%          missing value where TRUE/FALSE needed
+ 
+%<<embedfsinN, fig=TRUE>>=
+%if (is.numeric(tau.ami)) {
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
+%max.embedding.dim = 15)}  else  {
+%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
+%max.embedding.dim = 15)} 
+%cat("Estimated embedding dim:", emb.dim)
+%
+%<<takfsinN, fig=TRUE>>=
+%tak = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)
+%scatter3D(tak[,1], tak[,2], tak[,3],
+%main = paste("Reconstructed phase space",deparse(substitute(time.series))),
+%col = 1, type="o",cex = 0.3)
+
+@
+\subsection{Uniform Random Numbers}
+<<acfunif, fig=TRUE>>=
+unifN <- unif()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(unifN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(unifN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+
+cat("tau.ami:",tau.ami)
+par(oldpar)
+<<embedfunifN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfunifN, fig=TRUE>>=
+tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = paste("Reconstructed phase space",deparse(substitute(time.series))),
+col = 1, type="o",cex = 0.3)
+
+@
+
+\subsection{Chirp}
+<<acfchirp, fig=TRUE>>=
+chirpN <- chirp()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(chirpN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(chirpN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+<<embedfchirpN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfchirpN, fig=TRUE>>=
+tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = paste("Reconstructed phase space\n","Chirp"),
+col = 1, type="o",cex = 0.3)
+@
+
+<<corrDimchirpN, fig=TRUE>>=
+cd = corrDim(chirpN,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 5,
+time.lag = tau.ami,
+min.radius = 0.001, max.radius = 50,
+n.points.radius = 40,
+do.plot=FALSE)
+plot(cd)
+@
+%cd.est = estimate(cd, regression.range=c(0.75,3),
+%use.embeddings = 5:7)
+%#cat("expected: 2.05 estimate:",cd.est,"\n")
+%cat("expected: 2.05 estimate:",cd.est,"\n")
+%@
+   %cd.est = estimate(cd, regression.range=c(0.75,3),
+    %Error:  chunk 27 (label = corrDimchirpN) 
+    %Error in corr.matrix[as.character(use.embeddings), ] : 
+    %  subscript out of bounds
+
+<<sEntropychirpN, fig=TRUE>>=
+oldpar <- par(mfrow=c(1,2))
+se = sampleEntropy(cd, do.plot =T)
+se.est = estimate(se, do.plot = T,
+regression.range = c(8,15))
+cat("Sample entropy estimate: ", mean(se.est), "\n")
+par(oldpar)
+
+<<maxLyapchirpN, fig=TRUE>>=
+#sampling.period = diff(lor$time)[1]
+ml = maxLyapunov(chirpN,
+sampling.period=0.01,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 3,
+time.lag = tau.ami,
+radius=1,
+max.time.steps=1000,
+do.plot=FALSE)
+plot(ml,type="l", xlim = c(0,8))
+ml.est = estimate(ml, regression.range = c(0,3),
+do.plot = T,type="l")
+#cat("expected: 0.906 estimate:", ml.est,"\n")
+cat("estimate:", ml.est,"\n")
+
+<<surrogchirpN, fig=TRUE>>=
+st = surrogateTest(chirpN,significance = 0.05,one.sided = F,
+FUN = timeAsymmetry, do.plot=F)
+## Computing statistics
+##
+## Null Hypothesis: Data comes from a linear stochastic process
+## Reject Null hypothesis:
+## Original data's stat is significant larger than surrogates' stats
+plot(st)
+@
+\clearpage
+
+@
+\subsection{Doppler}
+<<acfdoppler, fig=TRUE>>=
+dopplerN <- doppler()
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(dopplerN, technique = "acf", do.plot = T,
+main=paste("acf\n",deparse(substitute(x))))
+cat("tau.acf:",tau.acf)
+# taudelay estimation based on the mutual information function
+tau.ami = timeLag(dopplerN, technique = "ami", do.plot = T,
+main=paste("ami\n",deparse(substitute(x))))
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+<<embedfdopplerN, fig=TRUE>>=
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,
+max.embedding.dim = 15)}  else  {
+emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,
+max.embedding.dim = 15)} 
+cat("Estimated embedding dim:", emb.dim)
+
+<<takfdopplerN, fig=TRUE>>=
+tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(tak[,1], tak[,2], tak[,3],
+main = "Reconstructed phase space \n doppler" ,
+col = 1, type="o",cex = 0.3)
+@
+
+
+<<corrDimdopplerN, fig=TRUE>>=
+cd = corrDim(dopplerN,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 5,
+time.lag = tau.ami,
+min.radius = 0.001, max.radius = 50,
+n.points.radius = 40,
+do.plot=FALSE)
+plot(cd)
+@
+%cd.est = estimate(cd, regression.range=c(0.75,3),
+%use.embeddings = 5:7)
+%#cat("expected: 2.05 estimate:",cd.est,"\n")
+%cat("expected: 2.05 estimate:",cd.est,"\n")
+%@
+   %cd.est = estimate(cd, regression.range=c(0.75,3),
+    %Error:  chunk 27 (label = corrDimdopplerN) 
+    %Error in corr.matrix[as.character(use.embeddings), ] : 
+    %  subscript out of bounds
+
+<<sEntropydopplerN, fig=TRUE>>=
+oldpar <- par(mfrow=c(1,2))
+se = sampleEntropy(cd, do.plot = T)
+se.est = estimate(se, do.plot = T,
+regression.range = c(8,15))
+cat("Sample entropy estimate: ", mean(se.est), "\n")
+par(oldpar)
+
+<<maxLyapdopplerN, fig=TRUE>>=
+#sampling.period = diff(lor$time)[1]
+ml = maxLyapunov(dopplerN,
+sampling.period=0.01,
+min.embedding.dim = emb.dim,
+max.embedding.dim = emb.dim + 3,
+time.lag = tau.ami,
+radius=1,
+max.time.steps=1000,
+do.plot=FALSE)
+plot(ml,type="l", xlim = c(0,8))
+ml.est = estimate(ml, regression.range = c(0,3),
+do.plot = T,type="l")
+#cat("expected: 0.906 estimate:", ml.est,"\n")
+cat("estimate:", ml.est,"\n")
+
+<<surrogdopplerN, fig=TRUE>>=
+st = surrogateTest(dopplerN,significance = 0.05,one.sided = F,
+FUN = timeAsymmetry, do.plot=F)
+## Computing statistics
+##
+## Null Hypothesis: Data comes from a linear stochastic process
+## Reject Null hypothesis:
+## Original data's stat is significant larger than surrogates' stats
+plot(st)
+@
+\clearpage
 
 \clearpage
 \section{Takens' States  for Test Signals}
@@ -1824,7 +2089,10 @@ Time used: \Sexpr{laptime()} sec.
 \label{sec:hrv}
 \gsnote{Only \Sexpr{nsignal} data points used in recurrence plots in this section}
 
+%:**** \end{document}
+%\end{document}
 <<>>=
+#stop("Stopping before RHRV")
 library(RHRV)
 load("/users/gs/projects/rforge/rhrv/pkg/data/HRVData.rda")
 load("/users/gs/projects/rforge/rhrv/pkg/data/HRVProcessedData.rda")
@@ -2908,6 +3176,7 @@ Time used: \Sexpr{laptime()} sec.
 \label{fig:recurrence-hrv2RRVreccomp}
 \end{center}
 \end{figure}
+
 
 
 %%%%%
