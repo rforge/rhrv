@@ -25,7 +25,7 @@ function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
     maxRR=max(HRVData$Beat$RR)
     if (!is.null(numofbins)){
       interval = (maxRR-minRR)/(numofbins-2)
-      vecthist = seq(minRR-interval/2,maxRR+interval/2,len=numofbins)
+      vecthist = seq(minRR-interval/2,maxRR+interval/2,len=numofbins+1)
     }else{
       medRR=(min(HRVData$Beat$RR)+max(HRVData$Beat$RR))/2.0
       lowhist=medRR-interval*ceiling((medRR-minRR)/interval)
@@ -81,20 +81,18 @@ function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
    	HRVData$TimeAnalysis[[num+1]]$SDNNIDX=mean(RRWindowSD) 
 
    	# pNN50
-	  NRRs=length(HRVData$Beat$RR)
    	RRDiffs = diff(HRVData$Beat$RR)
    	RRDiffs50=RRDiffs[abs(RRDiffs)>50]
    	HRVData$TimeAnalysis[[num+1]]$pNN50=100.0*length(RRDiffs50)/length(RRDiffs)
 
-    # SDSD
-    HRVData$TimeAnalysis[[num+1]]$SDSD = sd(RRDiffs)
+    	# SDSD
+   	HRVData$TimeAnalysis[[num+1]]$SDSD = sd(RRDiffs)
 
    	# rMSSD
    	HRVData$TimeAnalysis[[num+1]]$rMSSD=sqrt(mean(RRDiffs^2))
 
    	# IRRR
-   	RRQuant=quantile(RRDiffs)
-   	HRVData$TimeAnalysis[[num+1]]$IRRR=RRQuant[[4]]-RRQuant[[2]]
+      	HRVData$TimeAnalysis[[num+1]]$IRRR=IQR(HRVData$Beat$RR)
 
    	# MADRR
    	HRVData$TimeAnalysis[[num+1]]$MADRR=median(abs(RRDiffs))
@@ -103,7 +101,7 @@ function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
    	h = hist(HRVData$Beat$RR, breaks=vecthist, plot=FALSE)
    	area=length(HRVData$Beat$RR)*interval
    	maxhist=max(h$counts)
-   	HRVData$TimeAnalysis[[num+1]]$TINN=area/maxhist
+   	HRVData$TimeAnalysis[[num+1]]$TINN=area/maxhist*2
    	HRVData$TimeAnalysis[[num+1]]$HRVi=length(HRVData$Beat$RR)/maxhist
 
 
@@ -112,7 +110,7 @@ function(HRVData, size=300, numofbins=NULL, interval=7.8125, verbose=NULL ) {
       	cat("   Data has now",num+1,"time analyses\n")
       	cat("      SDNN:",HRVData$TimeAnalysis[[num+1]]$SDNN,"msec. \n")
       	cat("      SDANN:",HRVData$TimeAnalysis[[num+1]]$SDANN,"msec. \n")
-     	  cat("      SDNNIDX:",HRVData$TimeAnalysis[[num+1]]$SDNNIDX,"msec. \n")
+     	cat("      SDNNIDX:",HRVData$TimeAnalysis[[num+1]]$SDNNIDX,"msec. \n")
       	cat("      pNN50:",HRVData$TimeAnalysis[[num+1]]$pNN50,"%\n")
       	cat("      SDSD:",HRVData$TimeAnalysis[[num+1]]$SDSD,"msec.\n")
       	cat("      r-MSSD:",HRVData$TimeAnalysis[[num+1]]$rMSSD,"msec.\n")
