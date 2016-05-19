@@ -85,8 +85,10 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 				{
 					if(code==59 && time==0)
 					{
-						for(i in 1:2)
-							value = readBin(con,"integer",n=1,size=2,signed=FALSE)
+					  tmp1 = readBin(con,"integer",n=1,size=2,signed=FALSE)
+					  tmp2 = readBin(con,"integer",n=1,size=2,signed=FALSE)
+					  time = tmp1*(2**16)+tmp2
+					  acumulator=acumulator+time
 					}
 					else
 						if(code!=60 && code!=61 && code!=62 && code!=22 && code!=0)
