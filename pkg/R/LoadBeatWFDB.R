@@ -41,26 +41,8 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 	{
 		value = readBin(con,"integer",n=1,size=2,signed=FALSE)
 
-		binaryValue = intToBinary(value)
-
-		while(length(binaryValue)<16)
-			binaryValue = c(0,binaryValue)
-
-		code = NULL
-		time = NULL
-
-		for(i in 1:6)
-		{
-			code=c(code,binaryValue[i])
-		}
-
-		for(i in 7:16)
-		{
-			time=c(time,binaryValue[i])
-		}
-
-		code=binaryToInt(code)
-		time=binaryToInt(time)
+		code = bitwShiftR(value,10)
+		time = value %% 1024
 
 		if(code==0 && time==0)
 			break
