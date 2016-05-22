@@ -73,7 +73,10 @@ LoadApneaWFDB <-
       if (code==8 && !inApnea) {
         #cat("Onset: ", accumulator, "\n")
         inApnea = TRUE
-        initT = c(initT,accumulator-30)
+        if (accumulator > 30)
+          initT = c(initT,accumulator-30)
+        else
+          initT = c(initT, accumulator)
       }
 
       if (code==1 && inApnea) {
