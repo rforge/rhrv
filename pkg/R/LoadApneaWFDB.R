@@ -1,83 +1,110 @@
 LoadApneaWFDB <-
-function(HRVData, RecordName, RecordPath=".", Tag="APNEA", verbose=NULL) {
-#--------------------------------------- 
-# Loads apnea episodes from an wfdb file
-#	Uses rdann from wfdbtools
-#---------------------------------------
-#	RecordName -> record containing beat positions
-#	RecordPath -> path
-#  Tag -> tag to include in episodes
-
-	if (!is.null(verbose)) {
-		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-		SetVerbose(HRVData,verbose)
-	}
-	
-	if (HRVData$Verbose) {
-		cat("** Loading apnea episodes for record:",RecordName,"**\n")
-	}
-	
-	dir=getwd()
-  on.exit(setwd(dir))
-
-	if (HRVData$Verbose) {
-		cat("   Path:",RecordPath,"\n")
-	}
-	setwd(RecordPath)
-
-   # Reads header, verbose=FALSE
-   if (is.null(HRVData$datetime)) {
+  function(HRVData, RecordName, RecordPath=".", Tag="APNEA", verbose=NULL) {
+    #--------------------------------------- 
+    # Loads apnea episodes from an wfdb file
+    #---------------------------------------
+    #	RecordName -> record containing beat positions
+    #	RecordPath -> path
+    #  Tag -> tag to include in episodes
+    
+    if (!is.null(verbose)) {
+      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
+      SetVerbose(HRVData,verbose)
+    }
+    
+    if (HRVData$Verbose) {
+      cat("** Loading apnea episodes for record:",RecordName,"**\n")
+    }
+    
+    dir=getwd()
+    on.exit(setwd(dir))
+    
+    if (HRVData$Verbose) {
+      cat("   Path:",RecordPath,"\n")
+    }
+    setwd(RecordPath)
+    
+    # Reads header, verbose=FALSE
+    if (is.null(HRVData$datetime)) {
       if (HRVData$Verbose) {
-         cat("   Reading header info for:",RecordName,"\n")
+        cat("   Reading header info for:",RecordName,"\n")
       }
       HRVData = LoadHeaderWFDB(HRVData,RecordName,RecordPath)
-   } else {
+    } else {
       if (HRVData$Verbose) {
-         cat("   Header info already present for:",RecordName,"\n")
+        cat("   Header info already present for:",RecordName,"\n")
       }
-   }
+    }
+    
+    auxHeader = readLines(paste(RecordName,".hea",sep=""),1)
+    splitAuxHeader = strsplit(auxHeader," ")
+    
+    if(length(splitAuxHeader[[1]])>2)
+      samplingFrequency = splitAuxHeader[[1]][3]
+    else
+      samplingFrequency = "250"
+    
+    samplingFrequency = as.numeric(samplingFrequency)
+    
+    if (HRVData$Verbose) {
+      cat("   Sampling frequency for apnea annotations:",samplingFrequency,"\n")
+    }
+    
+    inApnea = FALSE
+    accumulator = 0
+    initT = c()
+    endT = c()
+    con = file(paste(RecordName,".apn",sep=""),"rb")
+    repeat {
+      value = readBin(con,"integer",n=1,size=1,signed=FALSE)+256*readBin(con,"integer",n=1,size=1,signed=FALSE)
 
-   # Calls rdann to read apnea annotations
-	command=paste("rdann -r",RecordName,"-a apn")
-	if (HRVData$Verbose) {
-		cat("   Command:",command,"\n")
-	}
-	x1=system(command,intern=TRUE)
-   xlabels=substring(x1,27,27)
-   xtimes=seq(from=60,to=60*length(xlabels),length.out=length(xlabels))
+      #cat("value:",value,"\n")
 
-   if (HRVData$Verbose) {
-      cat("   Number of labels:",length(xlabels),"\n")
-   }
+      code = bitwShiftR(value,10)
+      #cat("code:",code,"\n")
 
-   index=c(TRUE,xlabels[2:length(xlabels)]!=xlabels[1:(length(xlabels)-1)])
+      time = value %% 1024
 
-   ylabels=xlabels[index]
-   ytimes=xtimes[index]
-   # Detects changes between labels "A" and "N"
+      #cat("time:",time,"\n")
 
-   if (tail(ylabels,1)=="A") {
-      ylabels=c(ylabels,"N")
-      ytimes=c(ytimes,60*length(xlabels)+30)
-   } # If the last point is "A", an "N" is added
+      if(code==0 && time==0)
+        break
 
-   if (head(ylabels,1)=="N") {
-      l=length(ylabels)
-      ylabels=ylabels[2:l]
-      ytimes=ytimes[2:l]
-   } # If the first point is "N", it is removed
+      if (code==8 && !inApnea) {
+        #cat("Onset: ", accumulator, "\n")
+        inApnea = TRUE
+        initT = c(initT,accumulator-30)
+      }
 
-	
-	 indexInit=seq(from=1,to=length(ytimes)-1,by=2) # Odd elements
-   indexEnd=seq(from=2,to=length(ytimes),by=2) # Even elements
+      if (code==1 && inApnea) {
+        #cat("End: ",accumulator, "\n")
+        inApnea = FALSE
+        endT = c(endT,accumulator-30)
+      }
 
-   HRVData=AddEpisodes(HRVData,
-      InitTimes=ytimes[indexInit]-30,
-      Tags=Tag,
-      Durations=ytimes[indexEnd]-ytimes[indexInit],
-      Values=0
-   )
+      if (code==59) {
+        interval = (readBin(con,"integer",n=1,size=1,signed=FALSE)+readBin(con,"integer",n=1,size=1,signed=FALSE)*256)*65536+(readBin(con,"integer",n=1,size=1,signed=FALSE)+readBin(con,"integer",n=1,size=1,signed=FALSE)*256)
+        accumulator = accumulator + interval/samplingFrequency
+        next
+      }
 
-   return(HRVData)
-}
+    }
+
+    if (inApnea) {
+      endT = c(endT,accumulator)
+      #cat("End: ",accumulator, "\n")
+    }
+
+    close(con)
+    
+    HRVData = AddEpisodes(
+      HRVData,
+      InitTimes = initT,
+      Tags = Tag,
+      Durations = endT-initT,
+      Values = 0
+    ) 
+    
+    return(HRVData)
+  }
 
