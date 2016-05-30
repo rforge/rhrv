@@ -100,14 +100,15 @@ LoadApneaWFDB <-
 
     close(con)
     
-    HRVData = AddEpisodes(
-      HRVData,
-      InitTimes = initT,
-      Tags = Tag,
-      Durations = endT-initT,
-      Values = 0
-    ) 
-    
+    if (length(initT) > 0) { 
+      HRVData = AddEpisodes(
+        HRVData,
+        InitTimes = initT,
+        Tags = Tag,
+        Durations = endT-initT,
+        Values = 0
+      ) 
+    }
     return(HRVData)
-  }
+}
 
