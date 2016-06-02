@@ -40,45 +40,24 @@ PlotNIHR <-
     #    "all" includes all types
     
     
-    if (!is.null(verbose)) {
-      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-      SetVerbose(HRVData,verbose)
-    }
+    HRVData = HandleVerboseArgument(HRVData, verbose)
+    Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
     
-    if (is.null(Tags) & !is.null(Tag)) {
-      cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-      Tags <- Tag
-    }
+    VerboseMessage(HRVData$Verbose, 
+                   "Plotting non-interpolated instantaneous heart rate")
+    CheckBeats(HRVData)
+    CheckNIHR(HRVData)
+    Tags = CheckTags(Tags, HRVData$Episodes)
+    Indexes = CheckIndexes(Indexes, HRVData$Episodes)
+    VerboseMessage(HRVData$Verbose,
+                   paste("Number of points:", length(HRVData$Beat$Time)))
     
-    if (HRVData$Verbose) {
-      cat("** Plotting non-interpolated instantaneous heart rate **\n");
-    }
+    HRMin = min(HRVData$Beat$niHR)
+    HRMax = max(HRVData$Beat$niHR)
+    HRDiff = HRMax - HRMin
     
-    
-    if ((!is.null(Tags) || !is.null(Indexes)) & is.null(HRVData$Episodes)) {
-      stop("  --- Episodes not present ---\n    --- Quitting now!! ---\n")
-    }
-    
-    if (is.null(HRVData$Beat$Time)) { 
-      stop("  --- Beats not present ---\n    --- Quitting now!! ---\n")
-    }
-    
-    if (is.null(HRVData$Beat$niHR)) { 
-      stop("  --- Non-interpolated heart rate not present ---\n    --- Quitting now!! ---\n")
-    }
-    
-    if (HRVData$Verbose) {
-      cat("   Number of points:",length(HRVData$Beat$Time),"\n");
-    }
-    
-    HRMin=min(HRVData$Beat$niHR)
-    HRMax=max(HRVData$Beat$niHR)
-    HRDiff=HRMax-HRMin
-    
-    
-    
-    if (is.null(ylim)){
-      ylim <- c(HRMin-0.1*HRDiff,HRMax)
+    if (is.null(ylim)) {
+      ylim <- c(HRMin - 0.1 * HRDiff, HRMax)
     }
     
     plot(HRVData$Beat$Time,HRVData$Beat$niHR,type=type,
@@ -102,10 +81,10 @@ PlotNIHR <-
       Pal=rainbow(length(labels))
       Bor=Pal[match(EpisodesAuxType,labels)]
       
-      if (HRVData$Verbose) {
-        cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
-        cat("   No of classes of episodes:",length(Pal),"\n")
-      }
+      VerboseMessage(HRVData$Verbose, 
+                     paste("No of episodes:",length(EpisodesAuxLeft)))
+      VerboseMessage(HRVData$Verbose, 
+                     paste("No of classes of episodes:",length(Pal)))
       
       if (length(EpisodesAuxLeft)==1) {
         rect(EpisodesAuxLeft,EpisodesAuxBottom[1],EpisodesAuxRight,EpisodesAuxTop[1],border=Bor,col=Bor)

@@ -3,16 +3,13 @@ function(HRVData, Data, m, tau) {
 # -------------------------------------
 # Calculates Takens expanded vectors
 # -------------------------------------
-  warning(paste("--- Warning: BuildTakensVector() is deprecated ---",
-                "  --- Use BuildTakens() instead ---",
-                "  --- See help for more information!! ---",
-                sep="\n"))
-	if (HRVData$Verbose) {
-		cat("** Creating Takens expanded vectors **\n")
-		cat("   m: ", m, " Tau: ", tau, "\n", sep="")
-	}
+  .Deprecated("BuildTakens")
 	
-	N = length(Data)
+  VerboseMessage(HRVData$Verbose, paste("Creating Takens expanded vectors"))
+  VerboseMessage(HRVData$Verbose, paste("m:", m, "Tau:", tau))
+  
+  
+  N = length(Data)
 	jump = tau
 	maxjump = (m-1)*jump
 	jumpsvect = seq(0,maxjump,jump)
@@ -21,9 +18,9 @@ function(HRVData, Data, m, tau) {
 	DataExp = matrix(nrow=numelem,ncol=numjumps)
 	
 	for (i in 1:numelem) {
-		DataExp[i,1:numjumps] = Data[jumpsvect+i]
+	  DataExp[i,1:numjumps] = Data[jumpsvect+i]
 	}
-
+	
 	return(DataExp)
 }
 

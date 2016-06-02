@@ -4,12 +4,12 @@
 %%%% Author & title page info %%%%
 \def\tutorialVersion{2.0}
 \def\rhrvTitle{Getting started with RHRV\\ \normalsize{Version \tutorialVersion}}
-
 \title{\rhrvTitle}
 %\subtitle{Version \tutorialVersion}
 \submitted{\today}  
 \copyrightyear{2013}  
-\author{} 
+\author{Constantino A. Garc\'ia*, Abraham Otero, Xos\'e Vila, Arturo M\'endez,
+Leandro Rodr\'iguez-Li\~nares and Mar\'ia Jos\'e Lado} 
     % General parameters, for ALL pages:
     \renewcommand{\topfraction}{0.85}	% max fraction of floats at top
     \renewcommand{\bottomfraction}{0.6}	% max fraction of floats at bottom

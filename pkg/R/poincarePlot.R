@@ -48,13 +48,14 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   # -------------------------------------
   # Poincare plot and SD1 and SD2 index
   # -------------------------------------
-  CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
+  CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis), 
+                     "nonlinear")
   
   VerboseMessage(HRVData$Verbose, "Calculating SD1 and SD2 parameters")  
   CheckNIHR(HRVData)
   
-  if ( (confidence < 0) || (confidence >1) ){
-    stop("   --- Confidence must be in the [0,1] interval  ---\n    --- Quitting now!! ---\n")
+  if ( (confidence < 0) || (confidence > 1) ) {
+    stop("Confidence must be in the [0,1] interval.")
   }
   
   rrSeries = HRVData$Beat$RR
@@ -70,10 +71,9 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   sd1Direction = SD$direction[,2]
   sd2Direction = SD$direction[,1]
   # plot if necessary
-  if (doPlot){
-    if (HRVData$Verbose){
-      cat(" --- Creating Poincare Plot with time lag = ",timeLag," ---\n")
-    }
+  if (doPlot) {
+    VerboseMessage(HRVData$Verbose,   
+                   paste("Creating Poincare Plot with time lag = ",timeLag))
     # get 2D-phase space
     takens = buildTakens(rrSeries, embedding.dim=2, time.lag = timeLag)
     mu = c(mean(takens[,1]),mean(takens[,2]))
@@ -87,19 +87,17 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
                 mu=mu)
     drawArrows(mu = mu, a = sd2*cv, b = sd1*cv, aVector = sd2Direction,
                bVector = sd1Direction, maxLen = maxLen )
-    legend("bottomright",c("SD1","SD2"),col=c(3,4),lty=c(1,1),lwd=c(2,2))
+    legend("bottomright", c("SD1","SD2"),
+           col = c(3,4), lty = c(1,1), lwd = c(2,2))
   }
   
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PoincarePlot$SD1 = sd1
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PoincarePlot$SD2 = sd2
   
-  if (HRVData$Verbose){
-    cat(" --- SD1 = ",sd1," ---\n")
-    cat(" --- SD2 = ",sd2," ---\n")
-  }
+  VerboseMessage(HRVData$Verbose, paste("SD1 = ", round(sd1,4)))
+  VerboseMessage(HRVData$Verbose, paste("SD2 = ", round(sd2,4)))
   
   return(HRVData)
-  
 }
 
 computeSD <- function(timeSeries, timeLag, confidenceEstimation, confidence){

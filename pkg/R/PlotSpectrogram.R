@@ -81,7 +81,7 @@
 #' spctr <- PlotSpectrogram(HRVData, size = 120, shift = 10, sizesp = 1024,
 #'          freqRange=c(0,0.14), color.palette = topo.colors)
 #'          
-#' spctr <- PlotSpectrogram(HRVData,size=120, shift=60, Tag="all", 
+#' spctr <- PlotSpectrogram(HRVData,size=120, shift=60, Tags="all", 
 #'                          ylim=c(0,0.1),
 #'                          showLegend=T, 
 #'                          eplim = c(0,0.06),
@@ -108,30 +108,22 @@ PlotSpectrogram <- function(HRVData, size, shift, sizesp = NULL,
   #    size, disp: size and displacement of window (sec.)
   #    sizesp: seconds for calculating spectrogram (zero padding)
   #	   scale: linear or logarithmic
-
-	if (!is.null(verbose)) {
-		cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-		SetVerbose(HRVData,verbose)
-	}
-
-	if (is.null(Tags) & !is.null(Tag)) {
-		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-		Tags <- Tag
-	}
-	
-	if (HRVData$Verbose) {
-    	cat("** Plotting spectrogram **\n")
-	}
-	
-	specgr=CalculateSpectrogram(HRVData,size,shift,sizesp)
   
-	if(scale=="logarithmic"){
+  HRVData = HandleVerboseArgument(HRVData, verbose)
+  
+  Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
+  
+  VerboseMessage(HRVData$Verbose, "Plotting spectrogram")
+  
+  specgr=CalculateSpectrogram(HRVData,size,shift,sizesp)
+  
+  if(scale=="logarithmic"){
     specgr=log(specgr)
-	}
-	
+  }
+  
   frequency = seq(from=0,to=HRVData$Freq_HR/2,length.out=ncol(specgr))
   time = seq(from=head(HRVData$Beat$Time,1),to=tail(HRVData$Beat$Time,1),length.out = nrow(specgr))
- 
+  
   if (is.null(freqRange)){
     if (is.null(ylim)){
       freqRange = range(frequency)  
@@ -162,9 +154,8 @@ PlotSpectrogram <- function(HRVData, size, shift, sizesp = NULL,
                      ymark = ymark)
   }
   
-	if (HRVData$Verbose) {
-		cat("   Spectrogram plotted\n")
-	}
+  VerboseMessage(HRVData$Verbose, "Spectrogram plotted")
+	
   return(specgr)
 }
 

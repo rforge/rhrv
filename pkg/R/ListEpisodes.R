@@ -4,9 +4,7 @@ ListEpisodes <-
     # Lists episodes included in a RHRV record
     # ----------------------------------------
     
-    if (is.null(HRVData$Episodes)) {
-      stop("no episodes found in data")
-    }
+    CheckEpisodes(HRVData)
     
     charsep <- "     "
     
@@ -17,23 +15,23 @@ ListEpisodes <-
       nummins <- floor((HRVData$Episodes$InitTime - numhours*3600)/60)
       numsecs <- HRVData$Episodes$InitTime - numhours*3600 - nummins*60
       InitTime <- ifelse(numhours!=0,
-        sprintf("%s%2dh %02dm %04.1fs", charsep, numhours, nummins, numsecs),
-        ifelse(nummins!=0,
-               sprintf("%s%2dm %04.1fs", charsep, nummins, numsecs),
-               sprintf("%s%4.1fs", charsep, numsecs)
-        )
-        
+                         sprintf("%s%2dh %02dm %04.1fs", charsep, numhours, nummins, numsecs),
+                         ifelse(nummins!=0,
+                                sprintf("%s%2dm %04.1fs", charsep, nummins, numsecs),
+                                sprintf("%s%4.1fs", charsep, numsecs)
+                         )
+                         
       )
       
       numhours <- floor(HRVData$Episodes$Duration/3600)
       nummins <- floor((HRVData$Episodes$Duration - numhours*3600)/60)
       numsecs <- HRVData$Episodes$Duration - numhours*3600 - nummins*60
       Duration <- ifelse(numhours!=0,
-        sprintf("%s%2dh %02dm %04.1fs", charsep, numhours, nummins, numsecs),
-        ifelse(nummins!=0,
-          sprintf("%s%2dm %04.1fs", charsep, nummins, numsecs),
-          sprintf("%s%4.1fs", charsep, numsecs)
-        )
+                         sprintf("%s%2dh %02dm %04.1fs", charsep, numhours, nummins, numsecs),
+                         ifelse(nummins!=0,
+                                sprintf("%s%2dm %04.1fs", charsep, nummins, numsecs),
+                                sprintf("%s%4.1fs", charsep, numsecs)
+                         )
       )
       
     } else {

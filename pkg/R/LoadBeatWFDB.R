@@ -9,13 +9,11 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 
 	samplingFrequency = ""
 
-	if (!is.null(verbose)) {
-        	cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-        	SetVerbose(HRVData, verbose)
-    	}
-    	if (HRVData$Verbose) {
-        	cat("** Loading beats positions for record:", RecordName,"**\n")
-    	}
+	HRVData = HandleVerboseArgument(HRVData, verbose)
+	
+	VerboseMessage(HRVData$Verbose, 
+	               paste("Loading beats positions for record:", RecordName))
+	
 
 	dir = getwd() 
 	setwd(RecordPath)
@@ -83,15 +81,11 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 	}
 
 	beats = unique(beats)
-
 	HRVData$Beat = data.frame(Time = beats)
-
-       	HRVData = LoadHeaderWFDB(HRVData, RecordName, RecordPath=".")
-
-	if (HRVData$Verbose) {
-        	cat("   Number of beats:", length(beats), "\n")
-    	}
-
+	HRVData = LoadHeaderWFDB(HRVData, RecordName, RecordPath=".")
+	VerboseMessage(HRVData$Verbose, paste("Number of beats:", length(beats)))
+	
+	
 	close(con)
 	setwd(dir)
 	return(HRVData)

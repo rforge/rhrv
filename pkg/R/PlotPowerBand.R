@@ -1,24 +1,3 @@
-# Private Function for RHRV functions use only
-checkPlotPowerBandOpts <- function(HRVData, indexFreqAnalysis, Tags, Indexes){
-  
-  if ((length(HRVData$FreqAnalysis) < indexFreqAnalysis) || (indexFreqAnalysis<1) ) {
-    stop("  --- Frequency analysis no.", indexFreqAnalysis," not present!! ---\n    --- Quitting now!! ---\n")
-  }
-  
-  if ((!is.null(Tags) || !is.null(Indexes)) & is.null(HRVData$Episodes)) {
-      stop("  --- Episodes not present ---\n    --- Quitting now!! ---\n")
-  }
-  
-  if (is.null(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF)) {
-    stop("   --- Power per band not present!! ---\n")
-    return(HRVData)
-  }
-  
-}
-
-
-
-
 #' PlotPowerBand
 #' @title Plots power determined by CalculatePowerBand function 
 #' @description Plots the power of the heart rate signal at different bands 
@@ -87,22 +66,17 @@ PlotPowerBand <-
     #	Indexes -> Indexes of episodes to include in the plot
     #    "all" includes all episodes
     
+    HRVData = HandleVerboseArgument(HRVData, verbose)
+    Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
+    CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis), 
+                       "frequency")
+    Tags = CheckTags(Tags, HRVData$Episodes)
+    Indexes = CheckIndexes(Indexes, HRVData$Episodes)
+    CheckPowerBand(HRVData, indexFreqAnalysis)
     
-    if (!is.null(verbose)) {
-      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-      SetVerbose(HRVData,verbose)
-    }
-
-    if (is.null(Tags) & !is.null(Tag)) {
-		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-		Tags <- Tag
-	}
+    VerboseMessage(HRVData$Verbose, 
+                   "Plotting power per band")
     
-    if (HRVData$Verbose) {
-      cat("** Plotting power per band **\n")
-    }
-
-    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tags, Indexes)
     # if (is.null(ymax)) {
     # 	ymax = max(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$ULF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$VLF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF) , max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF) )
     # }
@@ -115,9 +89,9 @@ PlotPowerBand <-
       HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LF))
       HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$HF))
       # HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF=(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF))/(max(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF)-min(HRVData$FreqAnalysis[[indexFreqAnalysis]]$LFHF))
-      if (HRVData$Verbose) {
-        cat("   Power per band normalized\n")
-      }
+      VerboseMessage(HRVData$Verbose, 
+                     "Power per band normalized")
+      
     }
     
     
@@ -135,7 +109,7 @@ PlotPowerBand <-
     if (!is.null(Tags) || !is.null(Indexes)) {
       
       EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
-	  EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
+      EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
       
       
       
@@ -145,14 +119,14 @@ PlotPowerBand <-
       EpisodesAuxRight=EpisodesToPlot$InitTime + EpisodesToPlot$Duration
       # EpisodesAuxRightFrame=EpisodesAuxRight*lframes/(tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)) # Beg of episodes (frames)
       EpisodesAuxType=EpisodesToPlot$Type
-      if (HRVData$Verbose) {
-        cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
-      }
+      VerboseMessage(HRVData$Verbose,
+                     paste("No of episodes:", length(EpisodesAuxLeft)))
+      
       
       labels <- levels(factor(EpisodesAuxType))
-
-	  Pal=rainbow(length(labels))
-	  Bor=Pal[match(EpisodesAuxType,labels)]
+      
+      Pal=rainbow(length(labels))
+      Bor=Pal[match(EpisodesAuxType,labels)]
       
       
       EpisodesLeft=HRVData$Episodes$InitTime # Beg of episodes (seconds)
@@ -195,9 +169,8 @@ PlotPowerBand <-
              xjust=0.5,yjust=-0.2,bty="n")
       
     }
-    if (HRVData$Verbose) {
-      cat("   Plotted LF/HF\n")
-    }
+    VerboseMessage(HRVData$Verbose,  
+                   "Plotted LF/HF")
     
     # ---------- ULF ----------
     if (normalized==TRUE) {
@@ -220,9 +193,7 @@ PlotPowerBand <-
               c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
       }
     }
-    if (HRVData$Verbose) {
-      cat("   Plotted ULF\n")
-    }
+    VerboseMessage(HRVData$Verbose, "Plotted ULF")
     
     # ---------- VLF ----------
     if (normalized==TRUE) {
@@ -245,9 +216,8 @@ PlotPowerBand <-
               c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
       }
     }
-    if (HRVData$Verbose) {
-      cat("   Plotted VLF\n")
-    }
+    VerboseMessage(HRVData$Verbose, "Plotted VLF")
+    
     
     # ---------- LF ----------
     if (normalized==TRUE) {
@@ -269,9 +239,7 @@ PlotPowerBand <-
               c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
       }
     }
-    if (HRVData$Verbose) {
-      cat("   Plotted LF\n")
-    }
+    VerboseMessage(HRVData$Verbose, "Plotted LF")
     
     # ---------- HF ----------
     if (normalized==TRUE) {
@@ -294,9 +262,8 @@ PlotPowerBand <-
               c(ymaxv[1],ymaxv[2]),lty=2,col=Bor[i])
       }
     }
-    if (HRVData$Verbose) {
-      cat("   Plotted HF\n")
-    } 
+    VerboseMessage(HRVData$Verbose, "Plotted HF")
+    
     
     # ---------- HR ----------
     if (numfilas==6) {
@@ -305,9 +272,8 @@ PlotPowerBand <-
       lsecs=tail(HRVData$Beat$Time,1)-head(HRVData$Beat$Time,1)
       plot(seq(head(HRVData$Beat$Time,1),tail(HRVData$Beat$Time,1),by=1/HRVData$Freq_HR),
            HRVData$HR,type='l',xlab="Time (sec.)",ylab="HR (bps)")
-      if (HRVData$Verbose) {
-        cat("   Plotted HRV\n")
-      }
+      VerboseMessage(HRVData$Verbose,"Plotted HRV")
+      
       
       if (!is.null(Tags) || !is.null(Indexes)) {
         for (i in 1:length(EpisodesAuxLeft)) {
@@ -321,8 +287,8 @@ PlotPowerBand <-
       # --------------------
     }
     
-    if (HRVData$Verbose &  (!is.null(Tags) || !is.null(Indexes)) ) {
-      cat("   Episodes plotted\n")
+    if ( !is.null(Tags) || !is.null(Indexes) ) {
+      VerboseMessage(HRVData$Verbose, "Episodes plotted")
     }
     
     
@@ -335,15 +301,14 @@ PlotPowerBand <-
     else
       title(main="Power bands of HRV",outer=TRUE)
     
-    if (HRVData$Verbose) {
-      cat("   Power per band plotted\n")
-    }	 
+    VerboseMessage(HRVData$Verbose, "Power per band plotted")
+    
     #restore previous graphical parameters
     par(mfrow=previousPar$mfrow, omi=previousPar$omi, mai=previousPar$mai,
         mar=previousPar$mar,oma=previousPar$oma,mgp=previousPar$mgp)
     
     
-}
+  }
 
 
 
@@ -412,14 +377,14 @@ PlotPowerBand <-
 #'           size = 300, shift = 60, sizesp = 1024)
 #'           
 #' layout(matrix(1:4, nrow = 2))
-#' PlotSinglePowerBand(HRVData, 1, "VLF", Tag = "APNEA", epColorPalette = "red",
+#' PlotSinglePowerBand(HRVData, 1, "VLF", Tags = "APNEA", epColorPalette = "red",
 #'                     epLegendCoords = c(2000,7500))
-#' PlotSinglePowerBand(HRVData, 1, "LF", Tag = "APNEA", epColorPalette = "red",
+#' PlotSinglePowerBand(HRVData, 1, "LF", Tags = "APNEA", epColorPalette = "red",
 #'                     eplim = c(0,6000),
 #'                     markEpisodes = F, showEpLegend = FALSE)
-#' PlotSinglePowerBand(HRVData, 1, "HF", Tag = "APNEA", epColorPalette = "red",
+#' PlotSinglePowerBand(HRVData, 1, "HF", Tags = "APNEA", epColorPalette = "red",
 #'                     epLegendCoords = c(2000,1700))
-#' PlotSinglePowerBand(HRVData, 1, "LF/HF", Tag = "APNEA", epColorPalette = "red",
+#' PlotSinglePowerBand(HRVData, 1, "LF/HF", Tags = "APNEA", epColorPalette = "red",
 #'                     eplim = c(0,20),
 #'                     markEpisodes = F, showEpLegend = FALSE)
 #' # Reset layout
@@ -427,7 +392,7 @@ PlotPowerBand <-
 #' }
 PlotSinglePowerBand <- 
   function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
-           band = c("ULF","VLF","LF","HF","LF/HF")[3],
+           band = c("LF","HF","ULF","VLF","LF/HF"),
            normalized = FALSE,  main = paste(band, "Power Band"), xlab ="Time",
            ylab = paste("Power in",band), type = "l",
            Tags = NULL, Indexes = NULL,
@@ -436,33 +401,19 @@ PlotSinglePowerBand <-
            showEpLegend = TRUE, epLegendCoords = NULL, Tag = NULL,
            ...){
     
+    VerboseMessage(HRVData$Verbose, "Plotting power per band")
 
-    if (HRVData$Verbose) {
-      cat("** Plotting power per band **\n")
-    }
-
-    if (is.null(Tags) & !is.null(Tag)) {
-		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-		Tags <- Tag
-	}
-    
+    Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
     checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tags, Indexes)
-    
-    if (!(band %in% c("ULF","VLF","LF","HF","LF/HF"))){
-      stop ( paste("** Invalid Frequency band name **",
-                   "** Allowed values are ULF, VLF, LF, HF and LF/HF **",
-                   sep="\n"))
+    band = match.arg(band)
+    if (band == "LF/HF") {
+      band = "LFHF"
     }
-    
-    if (band == "LF/HF"){band = "LFHF"}
     
     bandData = HRVData$FreqAnalysis[[indexFreqAnalysis]][[band]]
     if (normalized) {
-      bandData = bandData/(max(bandData) - min(bandData))
-      
-      if (HRVData$Verbose) {
-        cat("   Power per band normalized\n")
-      }
+      bandData = bandData / (max(bandData) - min(bandData))
+      VerboseMessage(HRVData$Verbose, "Power per band normalized")
     }
     
     timeAxis = HRVData$FreqAnalysis[[indexFreqAnalysis]]$Time

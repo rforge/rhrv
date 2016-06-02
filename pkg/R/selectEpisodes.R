@@ -4,7 +4,7 @@ function(Episodes, Tags, Indexes) {
 # select Episodes from record
 #-----------------------------
 #	Tags -> Vector containing types of episodes
-#	Indexes -> Vector containing indexes of episodes
+  #	Indexes -> Vector containing indexes of episodes
 #    It adds a new column Episodes$selected
 #    After using remove the column with HRVData$Episodes$selected <- NULL
 
@@ -34,12 +34,12 @@ function(Episodes, Tags, Indexes) {
    	if (!is.null(Indexes)) {
    		Indexes <- Indexes[Indexes<=length(Episodes$Type)]
    		if (length(Indexes) != 0) {
-   			Episodes[Indexes,]$selected <- TRUE
+   		  Episodes[Indexes,]$selected <- TRUE
    		}
    	}
-	
-
-
+   	
+   	
+   	
    	return(Episodes)
 }
 

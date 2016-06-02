@@ -29,98 +29,82 @@
 #' @author M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila, C.A. Garcia
 #' @keywords aplot
 PlotHR <-
-function(HRVData, Tags=NULL, Indexes=NULL,
-         main = "Interpolated instantaneous heart rate",
-         xlab="time (sec.)", ylab="HR (beats/min.)",type="l",ylim=NULL,
-         Tag=NULL, verbose=NULL, ...) {
-# -----------------------------
-# Plots interpolated Heart Rate
-# -----------------------------
-#	Tags -> Tags of episodes to include in the plot
-#    "all" includes all types
-
-
-	if (!is.null(verbose)) {
-      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-      SetVerbose(HRVData,verbose)
+  function(HRVData, Tags=NULL, Indexes=NULL,
+           main = "Interpolated instantaneous heart rate",
+           xlab="time (sec.)", ylab="HR (beats/min.)",type="l",ylim=NULL,
+           Tag=NULL, verbose=NULL, ...) {
+    # -----------------------------
+    # Plots interpolated Heart Rate
+    # -----------------------------
+    #	Tags -> Tags of episodes to include in the plot
+    #    "all" includes all types
+    
+    HRVData = HandleVerboseArgument(HRVData, verbose)
+    Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
+    CheckInterpolation(HRVData)
+    Tags = CheckTags(Tags, HRVData$Episodes)
+    Indexes = CheckIndexes(Indexes, HRVData$Episodes)
+    
+    VerboseMessage(HRVData$Verbose, 	
+                   "Plotting interpolated instantaneous heart rate")
+    
+    npoints = length(HRVData$HR)
+    VerboseMessage(HRVData$Verbose, 	
+                   paste("Number of points:", npoints))
+    
+    first = head(HRVData$Beat$Time,1)
+    last = tail(HRVData$Beat$Time,1)
+    x = seq(first, last, length.out = npoints)
+    
+    HRMin = min(HRVData$HR)
+    HRMax = max(HRVData$HR)
+    HRDiff = HRMax - HRMin
+    
+    
+    if (is.null(ylim)) {
+      ylim = c(HRMin - 0.1 * HRDiff, HRMax)
     }
-
-	if (is.null(Tags) & !is.null(Tag)) {
-		cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-		Tags <- Tag
-	}
-
-	if (HRVData$Verbose) {
-		cat("** Plotting interpolated instantaneous heart rate **\n");
-	}
-   
-   if ((!is.null(Tags) || !is.null(Indexes)) & is.null(HRVData$Episodes)) {
-      stop("  --- Episodes not present ---\n    --- Quitting now!! ---\n")
-   }
-
-	if (is.null(HRVData$HR)) { 
-      stop("  --- Interpolated heart rate not present ---\n    --- Quitting now!! ---\n")
-	}
-	
-	npoints = length(HRVData$HR)
-	if (HRVData$Verbose) {
-		cat("   Number of points:",npoints,"\n");
-	}
-
-	
-	first = head(HRVData$Beat$Time,1)
-	last = tail(HRVData$Beat$Time,1)
-	x=seq(first,last,length.out=npoints)
-
-	HRMin=min(HRVData$HR)
-	HRMax=max(HRVData$HR)
-	HRDiff=HRMax-HRMin
-
-
-  if (is.null(ylim)){
-    ylim = c(HRMin-0.1*HRDiff,HRMax)
+    plot(x, HRVData$HR, type = type, xlab = xlab, ylab = ylab,
+         ylim = ylim, ...)
+    grid()
+    
+    if (!is.null(Tags) || !is.null(Indexes)) {
+      # Data for representing episodes
+      EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
+      EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
+      
+      # Data for representing episodes
+      EpisodesAuxLeft <- EpisodesToPlot$InitTime
+      EpisodesAuxBottom <- c(HRMin-0.09*HRDiff,HRMin-0.04*HRDiff)
+      EpisodesAuxRight <- EpisodesToPlot$InitTime + EpisodesToPlot$Duration
+      EpisodesAuxTop <- c(HRMin-0.07*HRDiff,HRMin-0.02*HRDiff)
+      EpisodesAuxType <- EpisodesToPlot$Type
+      
+      labels <- levels(factor(EpisodesAuxType))
+      
+      Pal=rainbow(length(labels))
+      Bor=Pal[match(EpisodesAuxType,labels)]
+      
+      VerboseMessage(HRVData$Verbose, 	
+                     paste("No of episodes:",length(EpisodesAuxLeft)))
+      VerboseMessage(HRVData$Verbose, 	
+                     paste("No of classes of episodes:", length(Pal)))
+      
+      if (length(EpisodesAuxLeft)==1) {
+        rect(EpisodesAuxLeft,EpisodesAuxBottom[1],EpisodesAuxRight,EpisodesAuxTop[1],border=Bor,col=Bor)
+      } else {
+        rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
+      }
+      
+      for (i in 1:length(EpisodesAuxLeft)) {
+        lines(rep(EpisodesAuxLeft[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
+        lines(rep(EpisodesAuxRight[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
+      }
+      
+      legend("topright",inset=0.01,legend=labels,fill=Pal,cex=0.6,horiz=FALSE,bg='white')
+    }
+    
+    title(main=main)
+    
   }
-	plot(x,HRVData$HR,type=type, xlab=xlab, ylab=ylab,
-       ylim=ylim, ...)
-	grid()
-	
-	if (!is.null(Tags) || !is.null(Indexes)) {
-		# Data for representing episodes
-		EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
-		EpisodesToPlot <- EpisodesToPlot[EpisodesToPlot$selected,]
-
-		# Data for representing episodes
-		EpisodesAuxLeft <- EpisodesToPlot$InitTime
-		EpisodesAuxBottom <- c(HRMin-0.09*HRDiff,HRMin-0.04*HRDiff)
-		EpisodesAuxRight <- EpisodesToPlot$InitTime + EpisodesToPlot$Duration
-		EpisodesAuxTop <- c(HRMin-0.07*HRDiff,HRMin-0.02*HRDiff)
-		EpisodesAuxType <- EpisodesToPlot$Type
-
-		labels <- levels(factor(EpisodesAuxType))
-
-	 	Pal=rainbow(length(labels))
-	 	Bor=Pal[match(EpisodesAuxType,labels)]
-
-	 	if (HRVData$Verbose) {
-			cat("   No of episodes:",length(EpisodesAuxLeft),"\n")
-			cat("   No of classes of episodes:",length(Pal),"\n")
-		}
-
-		if (length(EpisodesAuxLeft)==1) {
-			rect(EpisodesAuxLeft,EpisodesAuxBottom[1],EpisodesAuxRight,EpisodesAuxTop[1],border=Bor,col=Bor)
-		} else {
-			rect(EpisodesAuxLeft,EpisodesAuxBottom,EpisodesAuxRight,EpisodesAuxTop,border=Bor,col=Bor)
-		}
-
-		for (i in 1:length(EpisodesAuxLeft)) {
-			lines(rep(EpisodesAuxLeft[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
-			lines(rep(EpisodesAuxRight[i],times=2),c(HRMin-0.1*HRDiff,HRMax),lty=2,col=Bor[i])
-		}
-
-		legend("topright",inset=0.01,legend=labels,fill=Pal,cex=0.6,horiz=FALSE,bg='white')
-	}
-
-	title(main=main)
-
-}
 

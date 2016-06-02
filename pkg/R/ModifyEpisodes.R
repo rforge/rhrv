@@ -9,27 +9,21 @@ function(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL, NewD
 #	NewTags -> Vector containing new types of episodes
 #	NewDurations -> Vector containing new durations in seconds
 #	NewValues -> Vector containing new numerical values for episodes
+	
+  VerboseMessage(HRVData$Verbose, "Modifying episodes")
 
-
-	if (HRVData$Verbose) {
-		cat("** Modifying episodes **\n")
-	}
-
-	if (is.null(NewInitTimes) & is.null(NewTags) & is.null(NewDurations)
-		& is.null(NewValues)) {
-		if (HRVData$Verbose) {
-			cat("   No change made\n")
-		}
-		return(HRVData)
+	if (is.null(NewInitTimes) & is.null(NewTags) &
+	    is.null(NewDurations) & is.null(NewValues)) {
+	  VerboseMessage(HRVData$Verbose, "No change made")
+	  return(HRVData)
 	}
 
 	HRVData$Episodes <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
 
 	epToMod <- length(HRVData$Episodes$InitTime[HRVData$Episodes$selected])
 
-	if (HRVData$Verbose) {
-		cat("   Number of episodes to modify:",epToMod,"\n")
-	}
+	VerboseMessage(HRVData$Verbose,
+	               paste("Number of episodes to modify:",epToMod))
 
 	if (epToMod == 0) {
 		HRVData$Episodes$selected <- NULL
@@ -64,10 +58,11 @@ function(HRVData, Tags=NULL, Indexes=NULL, NewInitTimes=NULL, NewTags=NULL, NewD
 	EpAfterMod <- length(HRVData$Episodes$InitTime)
 
 	if (EpBeforeMod != EpAfterMod) {
-		if (HRVData$Verbose) {
-			cat("   Removing",EpBeforeMod-EpAfterMod,"duplicated episodes\n")
-			cat("   Number of episodes:",EpAfterMod,"\n")
-		}
+	  VerboseMessage(HRVData$Verbose, 
+	                 paste("Removing", EpBeforeMod - EpAfterMod,
+	                       "duplicated episodes"))
+	  VerboseMessage(HRVData$Verbose, 
+	                 paste("Number of episodes:", EpAfterMod))
 	}
 
 	return(HRVData)

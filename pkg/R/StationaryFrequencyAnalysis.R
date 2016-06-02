@@ -60,15 +60,15 @@
 CalculatePSD =
   function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
            method=c("pgram","ar","lomb"), doPlot=T, ...){
-
+    
     CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis),
-                          "frequency")
+                       "frequency")
     
     switch(match.arg(method),
            pgram = spec.pgramAdapter(HRVData,indexFreqAnalysis,doPlot,...),
            ar = spec.arAdapter(HRVData,indexFreqAnalysis,doPlot,...),
            lomb = lombAdapter(HRVData,indexFreqAnalysis,doPlot,...))
-}
+  }
 # Private Function for CalculatePSD. Performs periodogram 
 # estimation using AR modelling. It is just an adapter of the
 # spec.ar function from the stats package
@@ -79,9 +79,8 @@ spec.arAdapter = function(HRVData, indexFreqAnalysis, doPlot = TRUE,
                           ...){
   CheckInterpolation(HRVData)
   
-  if (HRVData$Verbose) {
-    cat("** Calculating Periodogram using AR modelling **\n")
-  }
+  VerboseMessage(HRVData$Verbose,  "Calculating Periodogram using AR modelling")
+  
   # Compute the spectrogram using RR data
   x = ts(1000.0/(HRVData$HR/60.0),frequency = HRVData$Freq_HR,
          start=HRVData$Beat$Time[[1]])
@@ -103,16 +102,15 @@ spec.pgramAdapter = function(HRVData, indexFreqAnalysis,doPlot = TRUE,
   
   CheckInterpolation(HRVData)
   
-  if (HRVData$Verbose) {
-    cat("** Calculating Periodogram using DFT + Daniell smoothers **\n")
-  }
+  VerboseMessage(HRVData$Verbose, 
+                 "Calculating Periodogram using DFT + Daniell smoothers")
   
   # Compute the spectrogram using RR data
   x = ts(1000.0/(HRVData$HR/60.0),frequency = HRVData$Freq_HR,
          start=HRVData$Beat$Time[[1]])
   periodogram = stats::spec.pgram(x, spans, kernel, taper,
-                           pad, fast, demean, detrend,
-                           plot = FALSE, na.action)
+                                  pad, fast, demean, detrend,
+                                  plot = FALSE, na.action)
   
   HRVData$FreqAnalysis[[indexFreqAnalysis]]$periodogram=periodogram
   if (doPlot){
@@ -130,9 +128,8 @@ lombAdapter = function(HRVData,indexFreqAnalysis,doPlot=TRUE,
   
   CheckNIHR(HRVData)
   
-  if (HRVData$Verbose) {
-    cat("** Calculating Periodogram using Lomb periodogram **\n")
-  }
+  VerboseMessage(HRVData$Verbose, 
+                 "Calculating Periodogram using Lomb periodogram")
   
   # Compute the spectrogram using RR data
   lombper = lomb::lsp(x=HRVData$Beat$RR,times=HRVData$Beat$Time,
@@ -343,15 +340,17 @@ plotFrequencyBands = function(freq,spect,
 # Private function for highlightning the area under a curve
 plotUnderCurve = function(x,y,xlim,ylim,col){
   # if some member of xlim is null => length(xlim) < 2
-  if ( length(xlim) == 2){
+  if ( length(xlim) == 2) {
     index = which(x >= xlim[[1]] & x <= xlim[[2]])
-    if (length(index)==0) stop("Band out of bounds\n")
+    if (length(index) == 0) {
+      stop("Band out of bounds")
+    }
     coordPolX =  x[index]
     coordPolY = y[index]
     # Close the polygon
     coordPolX = c(coordPolX[[1]], coordPolX, tail(coordPolX,1))
     coordPolY = c(min(ylim), coordPolY, min(ylim))
-    polygon(coordPolX,coordPolY,col=col)
+    polygon(coordPolX ,coordPolY, col = col)
   }
 }
 
@@ -540,7 +539,7 @@ EstimatePSDSlope = function(HRVData,
 checkRegressionRange = function(freqRange, regressionRange){
   if ( (freqRange[[1]] > regressionRange[[1]]) ||
          (freqRange[[2]] < regressionRange[[2]])){
-    stop(" --- Invalid Regression range !!   ---")
+    stop("Invalid Regression range !!")
   }
 }
 

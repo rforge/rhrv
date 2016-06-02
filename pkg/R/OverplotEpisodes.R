@@ -39,7 +39,7 @@
 #' # Add other type of episode for a more complete example (this episode does
 #' # not have any physiological meaning)
 #' HRVData <- AddEpisodes(HRVData,InitTimes=c(4500),Durations=c(1000), 
-#'                        Tag="Other", Values = 1)
+#'                        Tags="Other", Values = 1)
 #' HRVData <- BuildNIHR(HRVData)
 #' HRVData <- FilterNIHR(HRVData)
 #' HRVData <- InterpolateNIHR(HRVData)
@@ -60,21 +60,19 @@
 #' sp <- PlotSpectrogram(HRVData, size=600, shift=60, freqRange=c(0,0.05),
 #'                       showLegend=F);
 #' OverplotEpisodes(HRVData, markEpisodes=T, ymark=c(0.04,0.0401),
-#'                  eplim=c(0,0.04), Tag="APNEA",
+#'                  eplim=c(0,0.04), Tags="APNEA",
 #'                  epColorPalette = c("white"), lwd=3)
 #'}
 OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette = NULL,
                              eplim, lty= 2, markEpisodes = T, ymark,
                              showEpLegend = T, epLegendCoords = NULL, Tag=NULL, ...){
   
-  if (is.null(Tags) & !is.null(Tag)) {
-    cat("  --- Warning: deprecated argument Tag, using Tags instead ---\n")
-    Tags <- Tag
-  }
+  Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
   
-  if (is.null(Tags) & is.null(Indexes)) {
-    stop("  --- No episodes specified in OverplotEpisodes ---\n")
+  if (is.null(Tags) && is.null(Indexes)) {
+    stop("No episodes specified in OverplotEpisodes")
   }
+  CheckEpisodes(HRVData)
     
   
   EpisodesToPlot <- selectEpisodes(HRVData$Episodes,Tags,Indexes)
@@ -90,9 +88,7 @@ OverplotEpisodes <- function(HRVData, Tags = NULL, Indexes=NULL, epColorPalette 
   
   labels <- levels(factor(episodesType,levels=episodesType))
   
-  if (HRVData$Verbose) {
-    cat("   No of episodes:",length(episodesInitTime),"\n")
-  }
+  VerboseMessage(HRVData$Verbose, paste("No of episodes:",length(episodesInitTime)))
   
   if (is.null(epColorPalette)){
     epColorPalette = rainbow(length(labels))

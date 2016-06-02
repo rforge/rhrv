@@ -44,10 +44,11 @@ CalculateSampleEntropy <-
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     ## obtaining corrDim if possible
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations)){
-      stop(" Correlation Object not found!! Calculate the correlation
-             sum before estimate the sample entropy using CalculateCorrDim()!!\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "correlation",
+      MissingNonLinearObjectMessage("Correlation object", "CalculateCorrDim()",
+                                    "CalculateSampleEntropy()")
+    )
     corrDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations
     
     ## Computing sample entropy
@@ -84,24 +85,29 @@ EstimateSampleEntropy <-
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     ## obtaining sampleEntropy Object
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$sampleEntropy$computations)){
-      stop(" Sample Entropy calculations not found!! run CalculateSampleEntropy()
-           before using this function!!\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "sampleEntropy",
+      MissingNonLinearObjectMessage("Sample Entropy calculations", 
+                                    "CalculateSampleEntropy()",
+                                    "EstimateSampleEntropy()")
+    )
+    
     sampleEntropyObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$sampleEntropy$computations
     
     ## Estimating
     VerboseMessage(HRVData$Verbose,"Computing the sample entropy")
-  
-    sampleEntropyEstimate = estimate(sampleEntropyObject,regression.range=regressionRange,
-                                     use.embeddings = useEmbeddings, do.plot=doPlot)
+    
+    sampleEntropyEstimate = estimate(sampleEntropyObject,
+                                     regression.range = regressionRange,
+                                     use.embeddings = useEmbeddings,
+                                     do.plot = doPlot)
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$sampleEntropy$statistic = sampleEntropyEstimate
-
+    
     VerboseMessage(HRVData$Verbose,
                    paste("Sample entropy=",
                          round(mean(sampleEntropyEstimate),4)))
     return(HRVData)
-}
+  }
 
 
 ############################## PlotSampleEntropy ##########################
@@ -113,19 +119,21 @@ PlotSampleEntropy <-
     # -------------------------------------
     # Plot sample entropy
     # -------------------------------------
-      
+    
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
     ## obtaining sampleEntropy Object
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$sampleEntropy$computations)){
-      stop(" Sample Entropy calculations not found!! run CalculateSampleEntropy()
-           before using this function!!\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "sampleEntropy",
+      MissingNonLinearObjectMessage("Sample Entropy calculations", 
+                                    "CalculateSampleEntropy()",
+                                    "PlotSampleEntropy()")
+    )
     sampleEntropyObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$sampleEntropy$computations
     
     plot(sampleEntropyObject, ...)
-    par(mfrow=c(1,1))
+    par(mfrow = c(1,1))
     
-}
+  }
 
 

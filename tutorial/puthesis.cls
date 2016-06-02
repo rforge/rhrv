@@ -49,6 +49,7 @@
 \newcommand*{\makefrontmatter}{
 \bodyspacing
 \frontmatter\maketitlepage
+
 %\makecopyrightpage
 %\makeabstract
 %\vspace*{1.5in}
@@ -75,20 +76,13 @@
 \long\def\acknowledgements#1{\gdef\@acknowledgements{#1}}
 \def\dedication#1{\gdef\@dedication{#1}}
 \newcommand{\maketitlepage}{{
-
   \thispagestyle{empty}
   \sc
   \vspace*{0in}
-   \begin{center}
-  %   Centro Singular de Investigaci\'{o}n en Tecnolox\'{i}as da Informaci\'{o}n (CITIUS),\\
-  %          University of Santiago de Compostela, \\15782, Santiago de Compostela, Spain.\\
-  %              Tel.: +34 8818 16391.\\
-  %			  Fax: +34 8818 16405.\\
-%              \href{mailto:constantinoantonio.garcia@usc.es}    {constantinoantonio.garcia@usc.es}.  
-  \end{center}
- \begin{center}
+  \begin{center}
     \LARGE \@title
   \end{center}     
+
 \begin{figure}[ht]
 \begin{center}
 \includegraphics[scale=0.05]{figures/Rlogo.pdf}%%escala y el fichero a meter
@@ -96,17 +90,12 @@
 \end{figure}
 
   
-  \vspace{.4in}
+   \vspace{.4in}
   \begin{center}
     \@author \\
      \href{mailto:constantinoantonio.garcia@usc.es}{$^*$constantinoantonio.garcia@usc.es}
   \end{center}
   
-%  \vspace{.3in}
-%  \extravspace{.3in}
- %\begin{center}
- %Advisers: \@adviser
- %\end{center}
   \vspace{.3in}
   %\extravspace{.1in}
   \begin{center}

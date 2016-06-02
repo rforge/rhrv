@@ -70,12 +70,10 @@ CalculateTimeLag <-
     # Calculates optimum time lag for embedding
     # -------------------------------------
     kMaxLag = 100
-        
+    
     VerboseMessage(HRVData$Verbose,"Calculating optimum time lag")
     
-    if (is.null(HRVData$Beat$RR)){
-      stop("RR time series not present\n")
-    }
+    CheckNIHR(HRVData)
     
     timeLagEstimate = timeLag(time.series=HRVData$Beat$RR,
                               technique = technique,
@@ -85,7 +83,7 @@ CalculateTimeLag <-
     VerboseMessage(HRVData$Verbose,paste("Time Lag =", timeLagEstimate))
     
     if (timeLagEstimate > kMaxLag){
-      warning(paste("Time lag is too high!! We recommend using time lag <=",kMaxLag,"\n"))
+      warning(paste("Time lag is too high!! We recommend using time lag <=",kMaxLag))
     }
     return(timeLagEstimate)
   }
@@ -119,11 +117,11 @@ automaticTimeLag <-function(HRVData){
   }
   
   if (length(time.lags)==0){
-    stop("--- The estimation of the time lag failed! Please provide a time lag manually ---\n")
+    stop("The estimation of the time lag failed! Please provide a time lag manually")
   }else{
     return(median(time.lags))
   }
-        
+  
 }
 
 #private function
@@ -201,21 +199,19 @@ CalculateEmbeddingDim <-
     # -------------------------------------
     VerboseMessage(HRVData$Verbose,"Estimating embedding dimension")
     
-    if (is.null(HRVData$Beat$RR)){
-      stop("RR time series not present\n")
-    }
+    CheckNIHR(HRVData)
     
     len.RR = length(HRVData$Beat$RR)
     if (is.null(numberPoints) || (numberPoints > len.RR) ){
       numberPoints = len.RR
     }
     embeddingDim = estimateEmbeddingDim(time.series=HRVData$Beat$RR,
-                      number.points = numberPoints, 
-                      time.lag=timeLag,max.embedding.dim=maxEmbeddingDim,
-                      threshold=threshold,
-                      max.relative.change = maxRelativeChange,
-                      do.plot=doPlot)
+                                        number.points = numberPoints, 
+                                        time.lag=timeLag,max.embedding.dim=maxEmbeddingDim,
+                                        threshold=threshold,
+                                        max.relative.change = maxRelativeChange,
+                                        do.plot=doPlot)
     
     VerboseMessage(HRVData$Verbose,paste("Embedding Dimension =",embeddingDim))
     return(embeddingDim)
-}
+  }

@@ -17,14 +17,8 @@
 NonlinearityTests <-function(HRVData, indexNonLinearAnalysis =length(HRVData$NonLinearAnalysis)){
   
   CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
-  
-  if (is.null(HRVData$Beat$RR)){
-    stop("RR time series not present\n")
-  }
-  
-  if (HRVData$Verbose){
-    cat("  --- Performing nonlinearity tests ---\n")  
-  }
+  CheckNIHR(HRVData)
+  VerboseMessage(HRVData$Verbose, "Performing nonlinearity tests")  
   
   tseries = HRVData$Beat$RR
   # apply all tests
@@ -99,22 +93,18 @@ SurrogateTest <- function(HRVData,
                           significance = 0.05, oneSided=FALSE,
                           alternative = c("smaller","larger"), K=1,
                           useFunction,
-                          xlab="Values of the statistic",ylab="",
+                          xlab="Values of the statistic", ylab="",
                           main="Surrogate data testing on the RR intervals",
                           doPlot = TRUE, ...){
   
   CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
-  
-  if (is.null(HRVData$Beat$RR)){
-    stop("RR time series not present\n")
-  }
-  
+  CheckNIHR(HRVData)
   tseries = HRVData$Beat$RR
   # apply all tests
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$SurrogateTest = 
     surrogateTest(time.series = tseries, significance = significance,
                   one.sided = oneSided,alternative = alternative,
-                  K = K,xlab=xlab,ylab=ylab,main=main,
+                  K = K, xlab = xlab, ylab = ylab, main = main,
                   verbose = HRVData$Verbose, 
                   do.plot = doPlot, FUN = useFunction, ...)  
   

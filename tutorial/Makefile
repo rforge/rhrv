@@ -10,4 +10,5 @@ pdf: tutorial.tex
 tex: tutorial.Rnw
 	R CMD Sweave tutorial.Rnw
 
-	
+view: 
+	okular tutorial.pdf

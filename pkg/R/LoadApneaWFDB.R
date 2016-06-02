@@ -7,33 +7,28 @@ LoadApneaWFDB <-
     #	RecordPath -> path
     #  Tag -> tag to include in episodes
     
-    if (!is.null(verbose)) {
-      cat("  --- Warning: deprecated argument, using SetVerbose() instead ---\n    --- See help for more information!! ---\n")
-      SetVerbose(HRVData,verbose)
-    }
+    HRVData = HandleVerboseArgument(HRVData, verbose)
     
-    if (HRVData$Verbose) {
-      cat("** Loading apnea episodes for record:",RecordName,"**\n")
-    }
+    
+    VerboseMessage(HRVData$Verbose,
+                   paste("Loading apnea episodes for record:", RecordName))
+    
     
     dir=getwd()
     on.exit(setwd(dir))
     
-    if (HRVData$Verbose) {
-      cat("   Path:",RecordPath,"\n")
-    }
+    VerboseMessage(HRVData$Verbose, paste("Path:", RecordPath))
+    
     setwd(RecordPath)
     
     # Reads header, verbose=FALSE
     if (is.null(HRVData$datetime)) {
-      if (HRVData$Verbose) {
-        cat("   Reading header info for:",RecordName,"\n")
-      }
+      VerboseMessage(HRVData$Verbose, 
+                     paste("Reading header info for:", RecordName))
       HRVData = LoadHeaderWFDB(HRVData,RecordName,RecordPath)
     } else {
-      if (HRVData$Verbose) {
-        cat("   Header info already present for:",RecordName,"\n")
-      }
+      VerboseMessage(HRVData$Verbose,  
+                     paste("Header info already present for:",RecordName))
     }
     
     auxHeader = readLines(paste(RecordName,".hea",sep=""),1)
@@ -46,9 +41,9 @@ LoadApneaWFDB <-
     
     samplingFrequency = as.numeric(samplingFrequency)
     
-    if (HRVData$Verbose) {
-      cat("   Sampling frequency for apnea annotations:",samplingFrequency,"\n")
-    }
+    VerboseMessage(HRVData$Verbose, 
+                   paste("Sampling frequency for apnea annotations:",
+                         samplingFrequency))
     
     inApnea = FALSE
     accumulator = 0
@@ -57,47 +52,47 @@ LoadApneaWFDB <-
     con = file(paste(RecordName,".apn",sep=""),"rb")
     repeat {
       value = readBin(con,"integer",n=1,size=1,signed=FALSE)+256*readBin(con,"integer",n=1,size=1,signed=FALSE)
-
-      #cat("value:",value,"\n")
-
+      
+      #message(paste("value:",value))
+      
       code = bitwShiftR(value,10)
-      #cat("code:",code,"\n")
-
+      #message(paste("code:",code))
+      
       time = value %% 1024
-
-      #cat("time:",time,"\n")
-
+      
+      #message(paste("time:",time))
+      
       if(code==0 && time==0)
         break
-
+      
       if (code==8 && !inApnea) {
-        #cat("Onset: ", accumulator, "\n")
+        #message(paste("Onset: ", accumulator))
         inApnea = TRUE
         if (accumulator > 30)
           initT = c(initT,accumulator-30)
         else
           initT = c(initT, accumulator)
       }
-
+      
       if (code==1 && inApnea) {
-        #cat("End: ",accumulator, "\n")
+        #message(paste("End: ",accumulator))
         inApnea = FALSE
         endT = c(endT,accumulator-30)
       }
-
+      
       if (code==59) {
         interval = (readBin(con,"integer",n=1,size=1,signed=FALSE)+readBin(con,"integer",n=1,size=1,signed=FALSE)*256)*65536+(readBin(con,"integer",n=1,size=1,signed=FALSE)+readBin(con,"integer",n=1,size=1,signed=FALSE)*256)
         accumulator = accumulator + interval/samplingFrequency
         next
       }
-
+      
     }
-
+    
     if (inApnea) {
       endT = c(endT,accumulator)
-      #cat("End: ",accumulator, "\n")
+      #message(paste("End: ",accumulator))
     }
-
+    
     close(con)
     
     if (length(initT) > 0) { 
@@ -110,5 +105,5 @@ LoadApneaWFDB <-
       ) 
     }
     return(HRVData)
-}
+  }
 

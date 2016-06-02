@@ -80,12 +80,10 @@ CalculateCorrDim <-
     # -------------------------------------
     # Calculates generalized Correlation Dimension
     # -------------------------------------
-        
+    
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
-    if (is.null(HRVData$Beat$RR)){
-      stop("RR time series not present\n")
-    }
+    CheckNIHR(HRVData)
     
     estimations = automaticEstimation(HRVData,timeLag,minEmbeddingDim)
     timeLag = estimations[[1]]
@@ -96,26 +94,23 @@ CalculateCorrDim <-
     }
     #
     
-    if (HRVData$Verbose){
-      if (corrOrder==2){
-        cat("  --- Computing the Correlation sum ---\n")  
-      }else{
-        cat("  --- Computing the generalized Correlation sum of order",corrOrder,"---\n")
-      }
-    }
-    
+    VerboseMessage(HRVData$Verbose,
+                   ifelse(corrOrder == 2,
+                          "Computing the Correlation sum",  
+                          paste("Computing the generalized Correlation sum of order", corrOrder))
+    )
     
     corrDimObject = corrDim( HRVData$Beat$RR, min.embedding.dim = minEmbeddingDim,
-                                   max.embedding.dim = maxEmbeddingDim, time.lag = timeLag, 
-                                   min.radius = minRadius, max.radius = maxRadius,
-                                   corr.order = corrOrder, n.points.radius = pointsRadius,
-                                   theiler.window = theilerWindow, do.plot = doPlot, 
-                                   number.boxes = NULL)
+                             max.embedding.dim = maxEmbeddingDim, time.lag = timeLag, 
+                             min.radius = minRadius, max.radius = maxRadius,
+                             corr.order = corrOrder, n.points.radius = pointsRadius,
+                             theiler.window = theilerWindow, do.plot = doPlot, 
+                             number.boxes = NULL)
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations=corrDimObject
     
     return(HRVData)
-}
+  }
 
 ############################## EstimateCorrDim ##########################
 # @param HRVData Data structure that stores the beats register and information related to it
@@ -141,35 +136,34 @@ EstimateCorrDim <-
     # -------------------------------------
     
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations)){
-        stop("  --- Error: Correlation Object not found!! Calculate the correlation
-             sum before estimate the Correlation Dimension using CalculateCorrDim!! ---\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "correlation",
+      MissingNonLinearObjectMessage("Correlation object", "CalculateCorrDim()",
+                                    "EstimateCorrDim()")
+    )
     
     corrDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations
-    
-    if (HRVData$Verbose){
-      if (nlOrder(corrDimObject)==2){
-        cat("  --- Estimating the Correlation dimension ---\n")  
-      }else{
-        cat("  --- Estimating the generalized Correlation dimension of order", nlOrder(corrDimObject) ,"---\n")
-      }
-    }
+    VerboseMessage(HRVData$Verbose, 
+                   ifelse(nlOrder(corrDimObject) == 2,
+                          "Estimating the Correlation dimension",
+                          paste("Estimating the generalized Correlation dimension of order", 
+                                nlOrder(corrDimObject))
+                   )
+    )
     
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic = 
       estimate(corrDimObject,regression.range=regressionRange,
                use.embeddings=useEmbeddings, do.plot=doPlot,
                xlab="radius r", ylab="log(C(r))",main="Radius (r) Vs Correlation Sum (r)")
     
-    if (HRVData$Verbose){
-      if (nlOrder(corrDimObject)==2){
-        cat("  --- Correlation dimension =", HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic,"---\n")  
-      }else{
-        cat("  --- Generalized Correlation dimension of order", nlOrder(corrDimObject) ,"=",HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic,"---\n")
-      }
-    }
+    print_value = round(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$statistic, 4)
+    VerboseMessage(HRVData$Verbose,
+                   ifelse(nlOrder(corrDimObject) == 2, 
+                          paste("Correlation dimension =", print_value),
+                          paste("Generalized Correlation dimension of order",
+                                nlOrder(corrDimObject), "=", print_value)))
     return(HRVData)
-}
+  }
 
 
 ############################## PlotCorrDim ##########################
@@ -185,17 +179,13 @@ PlotCorrDim <-
     # -------------------------------------
           
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations)){
-      stop(" Correlation Object not found!! Calculate the correlation
-             sum before estimate the Correlation Dimension using CalculateCorrDim()!!\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "correlation",
+      MissingNonLinearObjectMessage("Correlation object", "CalculateCorrDim()",
+                                    "PlotCorrDim()")
+    )
     
     corrDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$correlation$computations
     
     plot(corrDimObject, ...)
-}
-
-
-
-################################################################################
-################################################################################
+  }

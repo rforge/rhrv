@@ -62,9 +62,7 @@ CalculateInfDim <-
     VerboseMessage(HRVData$Verbose, "Computing the Information dimension")  
     
     
-    if (is.null(HRVData$Beat$RR)){
-      stop("RR time series not present\n")
-    }
+    CheckNIHR(HRVData)
     
     estimations = automaticEstimation(HRVData,timeLag,minEmbeddingDim)
     timeLag = estimations[[1]]
@@ -76,15 +74,15 @@ CalculateInfDim <-
     
     
     infDimObject = infDim(time.series = HRVData$Beat$RR, min.embedding.dim = minEmbeddingDim, 
-                           max.embedding.dim =  maxEmbeddingDim, 
-                           time.lag = timeLag, min.fixed.mass=minFixedMass, 
-                           max.fixed.mass=maxFixedMass,
-                           number.fixed.mass.points=numberFixedMassPoints,
-                           radius=radius,increasing.radius.factor=increasingRadiusFactor,
-                           number.reference.vectors=numberPoints,kMax=kMax,
-                           theiler.window=theilerWindow,do.plot=doPlot,
-                           number.boxes=NULL)
-        
+                          max.embedding.dim =  maxEmbeddingDim, 
+                          time.lag = timeLag, min.fixed.mass=minFixedMass, 
+                          max.fixed.mass=maxFixedMass,
+                          number.fixed.mass.points=numberFixedMassPoints,
+                          radius=radius,increasing.radius.factor=increasingRadiusFactor,
+                          number.reference.vectors=numberPoints,kMax=kMax,
+                          theiler.window=theilerWindow,do.plot=doPlot,
+                          number.boxes=NULL)
+    
     HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations=infDimObject
     
     return(HRVData)
@@ -114,10 +112,11 @@ EstimateInfDim <-
     # -------------------------------------
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
     
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
-      stop("  --- Error: Correlation Object not found!! Run the CalculateInfDim routine before estimating
-           the Information Dimension!! ---\n")
-    }
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "infDim",
+      MissingNonLinearObjectMessage("Correlation object", "CalculateInfDim()",
+                                    "EstimateInfDim()")
+    )
     
     infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations
   
@@ -149,15 +148,12 @@ PlotInfDim <-
     # -------------------------------------
     
     CheckAnalysisIndex(indexNonLinearAnalysis, length(HRVData$NonLinearAnalysis),"nonlinear")
-    if (is.null(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations)){
-      stop(" Information Dimension Object not found!! Run the CalculateInfDim routine!!\n")
-    }    
+    CheckNonLinearComputations(
+      HRVData, indexNonLinearAnalysis, "infDim",
+      MissingNonLinearObjectMessage("Correlation object", "CalculateInfDim()",
+                                    "PlotInfDim()")
+    ) 
     infDimObject = HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$infDim$computations
     
     plot(infDimObject, ...)
   }
-
-
-
-################################################################################
-################################################################################

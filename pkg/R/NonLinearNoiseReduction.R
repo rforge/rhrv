@@ -36,18 +36,13 @@ NonLinearNoiseReduction <- function(HRVData, embeddingDim = NULL, radius = NULL 
   kSdDenoising = 3
   kthreshold = 1e-06
   
-  if (HRVData$Verbose) {
-    cat("** Denoising RR time series using nonlinear techniques **\n")
-  }
-  if (is.null(HRVData$Beat$RR)) {
-    stop("RR time series not present!! Quitting now!\n")
-  }
+  VerboseMessage(HRVData$Verbose, "Denoising RR time series using nonlinear techniques")
+  CheckNIHR(HRVData)
   
   estimations = automaticEstimation(HRVData,timeLag=1,embeddingDim)
   embeddingDim = estimations[[2]]
   
-  
-  if (is.null(ECGsamplingFreq)){
+  if (is.null(ECGsamplingFreq)) {
     # Compute the RRresolution
     RRresolution = diff(unique(sort(HRVData$Beat$RR)))
     # unique() let pass small values close to zero...
@@ -58,11 +53,8 @@ NonLinearNoiseReduction <- function(HRVData, embeddingDim = NULL, radius = NULL 
     }
     # Let Ts be in milliseconds
     Ts = median(RRresolution)
-    if (HRVData$Verbose) {
-      cat(paste("** Estimated ECG resolution is ",round(Ts,digits = 3)," ms ","**\n"))
-      
-    }
-  }else{
+    VerboseMessage(HRVData$Verbose, paste("Estimated ECG resolution is ", round(Ts,digits = 4)," ms"))
+  }else {
     # Transform Ts to milliseconds
     Ts = 1000 / ECGsamplingFreq
   }
