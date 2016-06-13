@@ -57,7 +57,6 @@
 #' hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1, 
 #'                                regressionRange=c(1,10))
 #' }
-#' @author Constantino A. Garcia
 #' @rdname CalculateMaxLyapunov
 #' @seealso \code{\link[nonlinearTseries]{maxLyapunov}}
 CalculateMaxLyapunov <-

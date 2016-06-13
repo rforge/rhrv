@@ -2,7 +2,7 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 #-------------------------------
 # Loads beats from a WFDB file
 #-------------------------------
-#	RecordName -> record containing values
+#	RecordName -> record containing values 
 #	RecordPath -> path
 #	annotator -> type of file
 #-------------------------------

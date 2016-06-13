@@ -43,7 +43,6 @@ function(HRVData, Data, m, tau) {
 #' @note This function is based on the \code{\link[nonlinearTseries]{buildTakens}} function from the 
 #' nonlinearTseries package.
 #' @references H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
-#' @author Constantino A. Garcia
 BuildTakens = function(HRVData, embeddingDim, timeLag){
   CheckNIHR(HRVData)
   buildTakens(HRVData$Beat$RR,embedding.dim = embeddingDim,time.lag = timeLag)

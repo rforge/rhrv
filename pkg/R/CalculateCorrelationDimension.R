@@ -70,7 +70,6 @@
 #'  hrv.data = EstimateCorrDim(hrv.data,indexNonLinearAnalysis=1,
 #'              useEmbeddings=6:8,regressionRange=c(1,10))
 #' }
-#' @author Constantino A. Garcia
 #' @rdname CalculateCorrDim
 #' @seealso \code{\link[nonlinearTseries]{corrDim}}.
 CalculateCorrDim <-

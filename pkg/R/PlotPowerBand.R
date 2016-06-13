@@ -27,7 +27,10 @@
 #' variability spectral analysis", Computer Methods and Programs in 
 #' Biomedicine 103(1):39-50, july 2011.
 #' @author   M. Lado, A. Mendez, D. Olivieri, L. Rodriguez, X. Vila
+#' @note See \code{\link{PlotSinglePowerBand}} for  a more flexible 
+#' function for plotting power bands.
 #' @seealso \code{\link{CalculatePowerBand}} for power calculation
+#' and \code{\link{PlotSinglePowerBand}}
 #' @examples
 #' \dontrun{
 #' # Reading a wfdb register and storing into a data structure:
@@ -353,7 +356,6 @@ PlotPowerBand <-
 #' plot.
 #' @param ... Other graphical parameters for plotting the power band. See 
 #' \code{\link[graphics]{plot.default}}.
-#' @author C.A. Garcia
 #' @seealso \code{\link{CalculatePowerBand}} for power calculation
 #' @examples
 #' \dontrun{

@@ -54,7 +54,6 @@
 #' PlotPSD(HRVData,3)
 #' PlotPSD(HRVData,4)
 #' }
-#' @author Constantino A. Garcia
 #' @rdname CalculatePSD
 #' @seealso \code{\link[stats]{spectrum}}, \code{\link[RHRV]{PlotPSD}}.
 CalculatePSD =
@@ -72,7 +71,6 @@ CalculatePSD =
 # Private Function for CalculatePSD. Performs periodogram 
 # estimation using AR modelling. It is just an adapter of the
 # spec.ar function from the stats package
-# @author Constantino A. Garcia
 spec.arAdapter = function(HRVData, indexFreqAnalysis, doPlot = TRUE,
                           n.freq, order = NULL,
                           na.action = na.fail,  method = "yule-walker",
@@ -208,7 +206,6 @@ lombAdapter = function(HRVData,indexFreqAnalysis,doPlot=TRUE,
 #' PlotPSD(HRVData,3)
 #' PlotPSD(HRVData,4)
 #' }
-#' @author Constantino A. Garcia
 #' @rdname PlotPSD
 #' @seealso \code{\link[stats]{spectrum}}, \code{\link[lomb]{lsp}}, \code{\link[RHRV]{CalculatePSD}}.
 #' 
@@ -375,7 +372,6 @@ plotUnderCurve = function(x,y,xlim,ylim,col){
 #' # We modify the limits for the HF band
 #' CalculateEnergyInPSDBands(HRVData, 1, HFmin = 0.15, HFmax = 0.3) 
 #' }
-#' @author Constantino A. Garcia
 #' @seealso \code{\link{PlotPSD}}, \code{\link{CalculatePSD}}. 
 CalculateEnergyInPSDBands = function(HRVData,
                                    indexFreqAnalysis = length(HRVData$FreqAnalysis),
@@ -475,7 +471,6 @@ getEnergyInBand = function(psd,freq.min, freq.max){
 #' Eke, A., Herman, P., Kocsis, L., & Kozak, L. R. (2002). Fractal 
 #' characterization of complexity in temporal physiological signals. 
 #' Physiological measurement, 23(1), R1.
-#' @author Constantino A. Garcia
 #' @seealso \code{\link[stats]{spectrum}},\code{\link[lomb]{lsp}},
 #'  \code{\link[RHRV]{CalculatePSD}}.
 EstimatePSDSlope = function(HRVData, 

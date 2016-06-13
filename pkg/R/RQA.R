@@ -97,14 +97,15 @@ RQA <-
 #' @param timeLag Integer denoting the number of time steps that will be use to construct the 
 #' Takens' vectors.
 #' @param radius Maximum distance between two phase-space points to be considered a recurrence.
+#' @param ... Additional plotting parameters.
 #' @references Zbilut, J. P. and C. L. Webber. Recurrence quantification analysis. Wiley Encyclopedia of Biomedical Engineering  (2006).
-#' @author Constantino A. Garcia
 #' @rdname RecurrencePlot
 #' @note This function is based on the \code{\link[nonlinearTseries]{recurrencePlot}} function from the 
 #' nonlinearTseries package.
 #' @seealso \code{\link[nonlinearTseries]{recurrencePlot}}, \code{\link{RQA}}
 RecurrencePlot <-
-  function(HRVData, numberPoints = 1000, embeddingDim = NULL, timeLag = NULL, radius = 1) {
+  function(HRVData, numberPoints = 1000, embeddingDim = NULL, timeLag = NULL,
+           radius = 1, ...) {
     # -------------------------------------
     # Recurrence Plot
     # -------------------------------------
@@ -128,7 +129,7 @@ RecurrencePlot <-
     
     recurrencePlot(takens = NULL,time.series = tseries,
                    embedding.dim = embeddingDim,
-                   time.lag = timeLag,radius = radius)
+                   time.lag = timeLag,radius = radius, ...)
     
 }
 

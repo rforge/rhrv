@@ -49,7 +49,6 @@
 #' This function is based on the \code{\link[nonlinearTseries]{timeLag}} function from the 
 #' nonlinearTseries package.
 #' @references H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
-#' @author Constantino A. Garcia
 #' @examples
 #' \dontrun{
 #' data(HRVProcessedData)
@@ -65,7 +64,7 @@ CalculateTimeLag <-
   function(HRVData, technique = c("acf","ami"), 
            method = c("first.e.decay", "first.zero", 
                       "first.minimum", "first.value"), value = 1/exp(1),
-           lagMax = NULL, doPlot = TRUE,...) {
+           lagMax = NULL, doPlot = TRUE, ...) {
     # -------------------------------------
     # Calculates optimum time lag for embedding
     # -------------------------------------
@@ -179,7 +178,6 @@ automaticEstimation <- function(HRVData,timeLag,embeddingDim){
 #' @references 
 #' Cao, L. Practical method for determining the minimum embedding dimension of a scalar time series. Physica D: Nonlinear Phenomena,
 #' 110,1, pp. 43-50 (1997).
-#' @author Constantino A. Garcia
 #' @examples
 #' \dontrun{
 #' data(HRVProcessedData)

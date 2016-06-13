@@ -28,7 +28,6 @@
 #' compatibility, use Tags instead.
 #' @param ... Other graphical parameters for the vertical lines limiting each
 #' episode. See \code{\link[graphics]{plot.default}}.
-#' @author C.A. Garcia
 #' @examples
 #' \dontrun{
 #' # Read file "a03" from the physionet apnea-ecg database

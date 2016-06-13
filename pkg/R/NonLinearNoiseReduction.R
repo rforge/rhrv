@@ -23,7 +23,6 @@
 #' not supplied, the sampling frequency is derived from the RR data.
 #' @return A HRVData structure containing the denoised RR time series.
 #' @references H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
-#' @author Constantino A. Garcia
 #' @rdname nonLinearNoiseReduction
 #' @note This function is based on the \code{\link[nonlinearTseries]{nonLinearNoiseReduction}} function from the 
 #' nonlinearTseries package.

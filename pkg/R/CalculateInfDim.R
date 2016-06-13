@@ -42,7 +42,6 @@
 #' @return  The \emph{CalculateCorrDim} returns the \emph{HRVData} structure containing a \emph{infDim} object storing the results
 #' of the correlation sum (see \code{\link{infDim}}) of the RR time series.
 #' @references H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
-#' @author Constantino A. Garcia
 #' @rdname CalculateInfDim
 #' @seealso \code{\link{CalculateCorrDim}}.
 CalculateInfDim <-

@@ -42,7 +42,6 @@ ExtractTimeSegment <- function(HRVData, starttime, endtime) {
 #' @param end The end time of the period of interest.
 #' @return A new \emph{HRVData} structure containing the subset of RR intervals
 #' within the specified range.  
-#' @author Constantino A. Garcia
 #' @examples
 #' \dontrun{
 #' data(HRVProcessedData)

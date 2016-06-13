@@ -39,7 +39,6 @@
 #' @param doPlot logical value. If TRUE (default value), a plot of the Fluctuation function is shown.
 #' @return The \emph{CalculateDFA} returns a HRVData structure containing the computations  
 #' of the Fluctuation function of the RR time series under the \emph{NonLinearAnalysis} list.
-#' @author Constantino A. Garcia
 #' @note This function is based on the \code{\link[nonlinearTseries]{dfa}} function from the 
 #' nonlinearTseries package.
 #' @rdname CalculateDFA

@@ -31,7 +31,6 @@
 #' PlotSampleEntropy(hrv.data,indexNonLinearAnalysis=1)
 #' hrv.data = EstimateSampleEntropy(hrv.data,indexNonLinearAnalysis=1,regressionRange=c(6,10))
 #' }
-#' @author Constantino A. Garcia
 #' @rdname CalculateSampleEntropy
 #' @seealso \code{\link[nonlinearTseries]{sampleEntropy}} 
 CalculateSampleEntropy <-

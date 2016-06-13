@@ -204,7 +204,6 @@ CalculatePowerBand <-
 #' par(mfrow=c(1,1))
 #' 
 #' }
-#' @author Constantino A. Garcia
 #' @rdname getNormSpectralUnits
 getNormSpectralUnits <- function(HRVData,
                                  indexFreqAnalysis = length(HRVData$FreqAnalysis),

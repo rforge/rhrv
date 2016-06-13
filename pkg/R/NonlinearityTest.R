@@ -73,7 +73,6 @@ NonlinearityTests <-function(HRVData, indexNonLinearAnalysis =length(HRVData$Non
 #' (\emph{data.statistic field}). The \emph{SurrogateTest} list is stored under the \emph{NonLinearAnalysis} structure.
 #' @references SCHREIBER, Thomas; SCHMITZ, Andreas. Surrogate time series. Physica D: 
 #' Nonlinear Phenomena, 2000, vol. 142, no 3, p. 346-382.
-#' @author Constantino A. Garcia
 #' @examples
 #' \dontrun{
 #' data(HRVProcessedData)
