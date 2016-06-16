@@ -64,9 +64,6 @@ embeddingDim = CalculateEmbeddingDim(HRVData,
                                      maxEmbeddingDim = 15)
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 Cao, L. Practical method for determining the minimum embedding dimension of a scalar time series. Physica D: Nonlinear Phenomena,
 110,1, pp. 43-50 (1997).

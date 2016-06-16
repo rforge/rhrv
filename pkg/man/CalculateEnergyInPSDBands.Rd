@@ -54,9 +54,6 @@ HRVData=CalculatePSD(HRVData,1,"pgram",doPlot = F)
 CalculateEnergyInPSDBands(HRVData, 1, HFmin = 0.15, HFmax = 0.3) 
 }
 }
-\author{
-Constantino A. Garcia
-}
 \seealso{
 \code{\link{PlotPSD}}, \code{\link{CalculatePSD}}.
 }

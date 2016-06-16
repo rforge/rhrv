@@ -87,9 +87,6 @@ reliable results).
 This function is based on the \code{\link[nonlinearTseries]{dfa}} function from the 
 nonlinearTseries package.
 }
-\author{
-Constantino A. Garcia
-}
 \seealso{
 \code{\link[nonlinearTseries]{dfa}}
 }

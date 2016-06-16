@@ -13,9 +13,9 @@ related to it}
 
 \item{beatPositions}{Numeric vector with the heartbeats occurrence's times since
 the beginning of the recording. See \emph{scale} parameter to specify the 
-units.}
+units}
 
-\item{scale}{numeric value identifying the temporal units in which
+\item{scale}{Numeric value identifying the temporal units in which
 the beat positions are specified: 1 if beat positions is specified in seconds, 
  0.001 if beat positions in milliseconds, etc.}
 

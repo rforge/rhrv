@@ -27,7 +27,7 @@ LoadBeatAmbit <- function(HRVData, RecordName, RecordPath=".", verbose = NULL) {
 		
 		
 	VerboseMessage(HRVData$Verbose, paste("Date: ", dateAux))
-	VerboseMessage(HRVData$Verbose, paste("Time: ", timeAux))
+	VerboseMessage(HRVData$Verbose, paste("Time: ", time))
 	
 	datetimeinfo = paste(dateAux,time,sep = " ")
 	HRVData$datetime=datetimeinfo

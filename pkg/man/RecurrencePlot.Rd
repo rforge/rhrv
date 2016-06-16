@@ -5,7 +5,7 @@
 \title{Recurrence Plot}
 \usage{
 RecurrencePlot(HRVData, numberPoints = 1000, embeddingDim = NULL,
-  timeLag = NULL, radius = 1)
+  timeLag = NULL, radius = 1, ...)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and information related to it}
@@ -18,6 +18,8 @@ RecurrencePlot(HRVData, numberPoints = 1000, embeddingDim = NULL,
 Takens' vectors.}
 
 \item{radius}{Maximum distance between two phase-space points to be considered a recurrence.}
+
+\item{...}{Additional plotting parameters.}
 }
 \description{
 Plot the recurrence matrix of the RR time series.
@@ -28,9 +30,6 @@ WARNING: This function is computationally very expensive. Use with caution.
 \note{
 This function is based on the \code{\link[nonlinearTseries]{recurrencePlot}} function from the 
 nonlinearTseries package.
-}
-\author{
-Constantino A. Garcia
 }
 \references{
 Zbilut, J. P. and C. L. Webber. Recurrence quantification analysis. Wiley Encyclopedia of Biomedical Engineering  (2006).

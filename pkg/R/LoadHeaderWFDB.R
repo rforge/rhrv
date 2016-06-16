@@ -23,7 +23,7 @@ function(HRVData, RecordName, RecordPath=".", verbose=NULL) {
 	regexptime="[[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}"
 	if (length(headerinfo[regexpr(regexptime,headerinfo)==1])) {
 	  timeinfo=headerinfo[regexpr(regexptime,headerinfo)==1]
-	  verboseMessage(HRVData$Verbose, 
+	  VerboseMessage(HRVData$Verbose, 
 	                 paste("Time information in header:",timeinfo))
 	} else {
 	  timeinfo="00:00:00"

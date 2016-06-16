@@ -81,9 +81,6 @@ embeddingDim = CalculateEmbeddingDim(HRVData,
                                      maxEmbeddingDim = 15)
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
 }

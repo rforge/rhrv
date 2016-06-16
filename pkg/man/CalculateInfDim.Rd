@@ -100,9 +100,6 @@ those needed for the correlation dimension.
 In order to run \emph{EstimateInfDim}, it
 is necessary to have performed the correlation sum before with \emph{ComputeInfDim}.
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
 }

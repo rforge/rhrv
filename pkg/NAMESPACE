@@ -27,6 +27,16 @@ export("AddEpisodes", "AnalyzeHRbyEpisodes","AnalyzePowerBandsByEpisodes",
        "ListEpisodes", "RemoveEpisodes", "ModifyEpisodes"
 )
 
+importFrom("grDevices", "palette", "rainbow", "topo.colors")
+importFrom("graphics", ".filled.contour", "Axis", "abline", "arrows",
+           "axis", "box", "grid", "hist", "layout", "lcm", "legend",
+           "lines", "par", "plot", "plot.new", "plot.window", "points",
+           "polygon", "rect", "text", "title")
+importFrom("stats", "IQR", "approxfun", "coef", "cov", "diffinv",
+           "dist", "fft", "lm", "median", "na.fail", "qchisq",
+           "quantile", "runif", "sd", "splinefun", "ts", "var")
+importFrom("utils", "head", "read.table", "tail")
+
 # Import all packages listed as Imports or Depends
 import(
   tcltk,

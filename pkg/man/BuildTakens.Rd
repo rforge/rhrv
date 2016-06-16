@@ -30,9 +30,6 @@ dynamical system that generated the observed time series) by using the Takens' v
 This function is based on the \code{\link[nonlinearTseries]{buildTakens}} function from the 
 nonlinearTseries package.
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
 }

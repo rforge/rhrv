@@ -43,9 +43,6 @@ with his neighbours (time lag=1). Each neighbourhood is specified with balls
 This function is based on the \code{\link[nonlinearTseries]{nonLinearNoiseReduction}} function from the 
 nonlinearTseries package.
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
 }

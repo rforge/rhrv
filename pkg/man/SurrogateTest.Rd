@@ -85,9 +85,6 @@ HRVData = SurrogateTest(HRVData, indexNonLinearAnalysis = 1,
 
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 SCHREIBER, Thomas; SCHMITZ, Andreas. Surrogate time series. Physica D: 
 Nonlinear Phenomena, 2000, vol. 142, no 3, p. 346-382.

@@ -73,9 +73,6 @@ HRVData=EstimatePSDSlope(HRVData,1,1,
                         regressionRange=c(5e-4,1e-2))
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 Voss, Andreas, et al. "Methods derived from nonlinear dynamics 
 for analysing heart rate variability." Philosophical Transactions of the 

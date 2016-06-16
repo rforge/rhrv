@@ -25,13 +25,14 @@ frequency analysis}
 \item{ymaxratio}{Maximum value for y axis in LF/HF band (normalized and 
 unnormalized plots)}
 
-\item{ymaxnorm}{Maximum value for y axis (normalized plots) 
- @param Tags List of tags to specify which episodes, as apnoea or oxygen 
-desaturation, are included in the plot. Tags="all" plots all episodes present
+\item{ymaxnorm}{Maximum value for y axis (normalized plots)}
+
+\item{Tags}{List of tags to specify which episodes, as apnoea or oxygen 
+desaturation, are included in the plot. Tags = "all" plots all episodes present
 in the data.}
 
 \item{Indexes}{List of indexes to specify which episodes (see ListEpisodes),
-are included in the plot. Indexes="all" plots all episodes present
+are included in the plot. Indexes = "all" plots all episodes present
 in the data.}
 
 \item{Tag}{Deprecated argument, use Tags instead}
@@ -45,6 +46,10 @@ of physiological interest.
 }
 \details{
 PlotPowerBand
+}
+\note{
+See \code{\link{PlotSinglePowerBand}} for  a more flexible 
+function for plotting power bands.
 }
 \examples{
 \dontrun{
@@ -78,6 +83,7 @@ Biomedicine 103(1):39-50, july 2011.
 }
 \seealso{
 \code{\link{CalculatePowerBand}} for power calculation
+and \code{\link{PlotSinglePowerBand}}
 }
 \keyword{hplot}
 

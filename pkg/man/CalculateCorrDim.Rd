@@ -127,9 +127,6 @@ is necessary to have performed the correlation sum before with \emph{ComputeCorr
              useEmbeddings=6:8,regressionRange=c(1,10))
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 H. Kantz  and T. Schreiber: Nonlinear Time series Analysis (Cambridge university press)
 }

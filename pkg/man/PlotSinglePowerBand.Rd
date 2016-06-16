@@ -107,9 +107,6 @@ PlotSinglePowerBand(HRVData, 1, "LF/HF", Tags = "APNEA", epColorPalette = "red",
 par(mfrow = c(1,1))
 }
 }
-\author{
-C.A. Garcia
-}
 \seealso{
 \code{\link{CalculatePowerBand}} for power calculation
 }

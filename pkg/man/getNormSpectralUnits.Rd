@@ -64,9 +64,6 @@ par(mfrow=c(1,1))
 
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 Camm, A. J., et al. "Heart rate variability: standards of measurement, physiological interpretation and clinical use.
 Task Force of the European Society of Cardiology and the North American Society of

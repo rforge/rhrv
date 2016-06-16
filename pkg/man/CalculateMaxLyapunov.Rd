@@ -108,9 +108,6 @@ hrv.data = EstimateMaxLyapunov(hrv.data,indexNonLinearAnalysis=1,
                                regressionRange=c(1,10))
 }
 }
-\author{
-Constantino A. Garcia
-}
 \references{
 Eckmann, Jean-Pierre and Kamphorst, S Oliffson and Ruelle, David and Ciliberto, S and others. Liapunov exponents from time series.
 Physical Review A, 34-6, 4971--4979, (1986).

@@ -36,7 +36,4 @@ newHRVData <- Window(HRVData,2000,4000)
 PlotNIHR(newHRVData)
 }
 }
-\author{
-Constantino A. Garcia
-}
 

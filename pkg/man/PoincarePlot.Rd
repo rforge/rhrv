@@ -7,8 +7,8 @@
 PoincarePlot(HRVData,
   indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis), timeLag = 1,
   confidenceEstimation = FALSE, confidence = 0.95, doPlot = FALSE,
-  main = "Poincare plot", xlab = "RR[n]", ylab = paste(sep = "", "RR[n+",
-  timeLag, "]"), pch = 1, cex = 0.3, ...)
+  main = "Poincare plot", xlab = "RR[n]", ylab = paste0("RR[n+", timeLag,
+  "]"), pch = 1, cex = 0.3, type = "p", xlim = NULL, ylim = NULL, ...)
 }
 \arguments{
 \item{HRVData}{Data structure that stores the beats register and information related to it}
@@ -35,6 +35,12 @@ used for fitting the ellipse and computing the \eqn{SD_1} and
 \item{pch}{Plotting character (symbol to use).}
 
 \item{cex}{Character (or symbol) expansion.}
+
+\item{type}{What type of plot should be drawn. See \code{\link[graphics]{plot.default}}.}
+
+\item{xlim}{x coordinates range. If not specified, a proper x range is selected.}
+
+\item{ylim}{y coordinates range. If not specified, a proper y range is selected.}
 
 \item{...}{Additional parameters for the Poincare plot figure.}
 }

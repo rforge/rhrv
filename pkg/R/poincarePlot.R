@@ -21,6 +21,9 @@
 #' @param main An overall title for the Poincare plot.
 #' @param pch Plotting character (symbol to use).
 #' @param cex Character (or symbol) expansion.     
+#' @param type What type of plot should be drawn. See \code{\link[graphics]{plot.default}}.
+#' @param xlim x coordinates range. If not specified, a proper x range is selected.
+#' @param ylim y coordinates range. If not specified, a proper y range is selected.
 #' @param ... Additional parameters for the Poincare plot figure.
 #' @details In the HRV literature, when \emph{timeLag = 1}, the \eqn{SD_1} and \eqn{SD_2}
 #' parameters are computed using time domain measures. This is the default approach in this
@@ -42,9 +45,10 @@
 #' stored under the \emph{NonLinearAnalysis} list.
 PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLinearAnalysis),
                         timeLag = 1, confidenceEstimation = FALSE, confidence = 0.95,
-                        doPlot =FALSE, main = "Poincare plot",xlab="RR[n]", 
-                        ylab = paste(sep="","RR[n+",timeLag,"]"), pch=1,
-                        cex=0.3, ...){
+                        doPlot =FALSE, main = "Poincare plot", xlab="RR[n]", 
+                        ylab = paste0("RR[n+",timeLag,"]"), pch=1,
+                        cex=0.3, type = "p", xlim = NULL, ylim = NULL,
+                        ...){
   # -------------------------------------
   # Poincare plot and SD1 and SD2 index
   # -------------------------------------
@@ -75,19 +79,35 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
     VerboseMessage(HRVData$Verbose,   
                    paste("Creating Poincare Plot with time lag = ",timeLag))
     # get 2D-phase space
-    takens = buildTakens(rrSeries, embedding.dim=2, time.lag = timeLag)
-    mu = c(mean(takens[,1]),mean(takens[,2]))
-    ifelse(confidenceEstimation, yes = {maxLen = (2.1 - confidence) * sd2},
-           no = {maxLen = 1.5 * sd2})
-    # plotting
-    plot(takens[,1],takens[,2], 'p', col=2, pch=pch, cex=cex, xlab=xlab,
-         ylab = ylab, main = main, ...)
-    # a will denote the largest axis of the ellipse and b the shortest one.
-    drawEllipse(a=sd2*cv,b=sd1*cv,aVector=sd2Direction, bVector=sd1Direction,
-                mu=mu)
-    drawArrows(mu = mu, a = sd2*cv, b = sd1*cv, aVector = sd2Direction,
-               bVector = sd1Direction, maxLen = maxLen )
-    legend("bottomright", c("SD1","SD2"),
+    takens = buildTakens(rrSeries, embedding.dim = 2, time.lag = timeLag)
+    mu = c(mean(takens[,1]), mean(takens[,2]))
+    # Compute the ellipse sorrounding the points: a will denote the largest 
+    # axis of the ellipse and b the shortest one.
+    ellipse  = getEllipse(a = sd2 * cv, b = sd1 * cv, 
+                          aVector = sd2Direction, bVector = sd1Direction,
+                          mu = mu)
+    # Compute end-points for the SD1 and SD2 arrows 
+    SD1_end = mu + sd2 * cv * sd2Direction
+    SD2_end = mu + sd1 * cv * sd1Direction
+    # compute xlim and ylim if necessary
+    if (is.null(xlim)) {
+      xlim = range(c(takens[,1], ellipse[,1], SD1_end[[1]], SD2_end[[1]]))
+    }
+    if (is.null(ylim)) {
+      ylim = range(c(takens[,2], ellipse[,2], SD1_end[[2]], SD2_end[[2]]))
+    }
+    plot(takens[,1],takens[,2], type = type, col = 2, pch = pch, cex = cex,
+         xlab = xlab, ylab = ylab, main = main, xlim = xlim, ylim = ylim,
+         ...)
+    # Plot the ellipse
+    lines(ellipse, col = "black", lwd = 5)  
+    # plot SD1 
+    arrows(x0 = mu[[1]], y0 = mu[[2]], x1 = SD1_end[[1]], y1 = SD1_end[[2]],
+           angle = 15, col = 3, code = 2, lty = 1, lwd = 2)
+    # plot SD2
+    arrows(x0 = mu[[1]], y0 = mu[[2]], x1 = SD2_end[[1]], y1 = SD2_end[[2]],
+           angle = 15, col = 4, code = 2, lty = 1, lwd = 2)
+    legend("bottomright", c("SD1","SD2"),  bty = "n",
            col = c(3,4), lty = c(1,1), lwd = c(2,2))
   }
   
@@ -102,57 +122,35 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
 
 computeSD <- function(timeSeries, timeLag, confidenceEstimation, confidence){
   # compute parameters
-  if (confidenceEstimation){
-    takens = buildTakens(time.series=timeSeries,embedding.dim=2,time.lag=timeLag)
-    SD = confidenceEllipse(x = takens[,1], y = takens[,2], confidence=confidence)
-    
+  if (confidenceEstimation) {
+    takens = buildTakens(time.series = timeSeries,
+                         embedding.dim = 2,
+                         time.lag = timeLag)
+    SD = confidenceEllipse(x = takens[, 1],
+                           y = takens[, 2],
+                           confidence = confidence)
   }else{
-    sd1 = sd( diff(timeSeries) )/sqrt(2)
-    sd2 = sqrt( 2*var(timeSeries)-sd1^2 )  
-    directions = matrix(c(1,1,-1,1)/sqrt(2),2, byrow=FALSE)
+    sd1 = sd(diff(timeSeries)) / sqrt(2)
+    sd2 = sqrt(2 * var(timeSeries) - sd1 ^ 2)  
+    directions = matrix(c(1, 1, -1, 1) / sqrt(2), 2, byrow = FALSE)
     # return values in decreasing order
-    SD = list(sd = c(sd2,sd1), directions = directions)
+    SD = list(sd = c(sd2, sd1), directions = directions)
   }
-  return (SD)
+  return(SD)
 }
 
-drawEllipse <- function(a, aVector, b, bVector, mu){
-  angle = seq(0, 2*pi, len=100)
+getEllipse <- function(a, aVector, b, bVector, mu){
+  angle = seq(0, 2*pi, len = 100)
   # Get the ellipse
   xEllipse = a * cos(angle)
   yEllipse = b * sin(angle)
   ellipse = cbind(xEllipse, yEllipse)
-  # Rotate the ellipse
-  auxiliar = cbind(aVector,bVector) %*% t(ellipse)
-  ellipse =  t(auxiliar)
-  # Plot 
-  lines(ellipse + mu,col="black",lwd=5)  
-  
-}
-
-drawArrows <- function(mu,a,b, aVector=c(1,1)/sqrt(2), bVector=c(-1,1)/sqrt(2),maxLen){
-  meanX = mu[[1]]
-  meanY = mu[[2]]
-  #Plot main axis
-  end = c(meanX,meanY) + maxLen * aVector
-  arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 = end[[2]],
-         angle = 15, col = "black", code = 2, lty = 1, lwd = 2)
-  end = c(meanX,meanY) + maxLen * bVector
-  arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 =  end[[2]],
-         angle = 15, col = "black", code = 2, lty = 1, lwd = 2)
-  # Plot axis of the ellipse
-  end = c(meanX,meanY) + a * aVector
-  arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 = end[[2]],
-         angle = 15, col = 3, code = 2, lty = 1, lwd = 2)
-  end = c(meanX,meanY) + b * bVector
-  arrows(x0 = meanX, y0 = meanY, x1 = end[[1]], y1 = end[[2]],
-         angle = 15, col = 4, code = 2, lty = 1, lwd = 2)
-  
+  # Rotate the ellipse and return
+  mu + t(cbind(aVector,bVector) %*% t(ellipse))
 }
 
 
-confidenceEllipse <-function(x,y, confidence=0.95){
-  
+confidenceEllipse <- function(x,y, confidence=0.95){
   # Get covariance matrix and mean point
   covMatrix = cov(cbind(x,y))
   # Compute eigenvalues and eigenvectors
@@ -161,10 +159,11 @@ confidenceEllipse <-function(x,y, confidence=0.95){
   eigenvectors = eigenComputations$vectors
   # rotate eigenvectors to obtain "usual" directions
   # first eigenvector must have all components > 0
-  if ( (eigenvectors[1,1]*eigenvectors[1,2]) < 0){
-    rotationMatrix = matrix(c(-1,0,0,-1),ncol=2,byrow=FALSE)
+  if ( (eigenvectors[1,1]*eigenvectors[1,2]) < 0) {
+    rotationMatrix = matrix(c(-1,0,0,-1), ncol = 2,
+                            byrow = FALSE)
     eigenvectors = rotationMatrix %*% eigenvectors
   }
   
-  return (list(sd=sqrt(eigenvalues), directions = eigenvectors))
+  return(list(sd = sqrt(eigenvalues), directions = eigenvectors))
 }

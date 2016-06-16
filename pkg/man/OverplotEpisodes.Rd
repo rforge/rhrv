@@ -86,7 +86,4 @@ OverplotEpisodes(HRVData, markEpisodes=T, ymark=c(0.04,0.0401),
                  epColorPalette = c("white"), lwd=3)
 }
 }
-\author{
-C.A. Garcia
-}
 

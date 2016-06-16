@@ -12,11 +12,11 @@
 #' @param ymaxratio Maximum value for y axis in LF/HF band (normalized and 
 #' unnormalized plots) 
 #' @param ymaxnorm Maximum value for y axis (normalized plots) 
-#'  @param Tags List of tags to specify which episodes, as apnoea or oxygen 
-#' desaturation, are included in the plot. Tags="all" plots all episodes present
-#' in the data. 
+#' @param Tags List of tags to specify which episodes, as apnoea or oxygen 
+#' desaturation, are included in the plot. Tags = "all" plots all episodes present
+#' in the data.     
 #' @param Indexes List of indexes to specify which episodes (see ListEpisodes),
-#' are included in the plot. Indexes="all" plots all episodes present
+#' are included in the plot. Indexes = "all" plots all episodes present
 #' in the data. 
 #' @param Tag Deprecated argument, use Tags instead
 #' @param verbose Deprecated argument maintained for compatibility, use 
@@ -396,21 +396,24 @@ PlotSinglePowerBand <-
   function(HRVData, indexFreqAnalysis = length(HRVData$FreqAnalysis),
            band = c("LF","HF","ULF","VLF","LF/HF"),
            normalized = FALSE,  main = paste(band, "Power Band"), xlab ="Time",
-           ylab = paste("Power in",band), type = "l",
+           ylab = paste("Power in", band), type = "l",
            Tags = NULL, Indexes = NULL,
            eplim = NULL,  epColorPalette = NULL,
            markEpisodes = TRUE, ymark = NULL,
            showEpLegend = TRUE, epLegendCoords = NULL, Tag = NULL,
            ...){
     
-    VerboseMessage(HRVData$Verbose, "Plotting power per band")
-
+    CheckAnalysisIndex(indexFreqAnalysis, length(HRVData$FreqAnalysis), 
+                       "frequency")
+    CheckPowerBand(HRVData, indexFreqAnalysis)
     Tags = HandleDeprecatedTagArgument(Tag = Tag, Tags = Tags)
-    checkPlotPowerBandOpts(HRVData, indexFreqAnalysis, Tags, Indexes)
+    Tags = CheckTags(Tags, HRVData$Episodes)
+    Indexes = CheckIndexes(Indexes, HRVData$Episodes)
     band = match.arg(band)
     if (band == "LF/HF") {
       band = "LFHF"
     }
+    VerboseMessage(HRVData$Verbose, "Plotting power per band")
     
     bandData = HRVData$FreqAnalysis[[indexFreqAnalysis]][[band]]
     if (normalized) {
@@ -437,3 +440,4 @@ PlotSinglePowerBand <-
                        ymark = ymark)
     }
   }
+

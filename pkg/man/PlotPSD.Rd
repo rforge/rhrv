@@ -92,9 +92,6 @@ PlotPSD(HRVData,3)
 PlotPSD(HRVData,4)
 }
 }
-\author{
-Constantino A. Garcia
-}
 \seealso{
 \code{\link[stats]{spectrum}}, \code{\link[lomb]{lsp}}, \code{\link[RHRV]{CalculatePSD}}.
 }
