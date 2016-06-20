@@ -105,7 +105,7 @@ EstimateDFA <-
     
     VerboseMessage(HRVData$Verbose, 
                    paste("Scaling Exponent number", idxScaling,"=", 
-                         scalingExponentEstimate))  
+                         rhrvFormat(scalingExponentEstimate)))  
     return(HRVData)
   }
 

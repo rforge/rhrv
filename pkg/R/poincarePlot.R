@@ -114,8 +114,8 @@ PoincarePlot = function(HRVData, indexNonLinearAnalysis = length(HRVData$NonLine
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PoincarePlot$SD1 = sd1
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PoincarePlot$SD2 = sd2
   
-  VerboseMessage(HRVData$Verbose, paste("SD1 = ", round(sd1,4)))
-  VerboseMessage(HRVData$Verbose, paste("SD2 = ", round(sd2,4)))
+  VerboseMessage(HRVData$Verbose, paste("SD1 = ", rhrvFormat(sd1)))
+  VerboseMessage(HRVData$Verbose, paste("SD2 = ", rhrvFormat(sd2)))
   
   return(HRVData)
 }

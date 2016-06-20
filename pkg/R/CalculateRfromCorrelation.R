@@ -22,12 +22,12 @@ function(HRVData, Data, m, tau, Cra, Crb) {
 	Cmra = length(mutualDistance[mutualDistance <= ra]) / numelem
 	Cmrb = length(mutualDistance[mutualDistance <= rb]) / numelem
 	
-	VerboseMessage(HRVData$Verbose, paste("ra =", ra))
-	VerboseMessage(HRVData$Verbose, paste("rb =", rb))
+	VerboseMessage(HRVData$Verbose, paste("ra =", rhrvFormat(ra)))
+	VerboseMessage(HRVData$Verbose, paste("rb =", rhrvFormat(rb)))
 
 
-	VerboseMessage(HRVData$Verbose, paste("Cmra =", Cmra * 100))
-	VerboseMessage(HRVData$Verbose, paste("Cmrb =", Cmrb * 100))
+	VerboseMessage(HRVData$Verbose, paste("Cmra =", rhrvFormat(Cmra * 100)))
+	VerboseMessage(HRVData$Verbose, paste("Cmrb =", rhrvFormat(Cmrb * 100)))
 
 	randC[1,1] = ra
 	randC[1,2] = rb

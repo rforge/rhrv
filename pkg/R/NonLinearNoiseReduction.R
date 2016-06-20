@@ -52,7 +52,8 @@ NonLinearNoiseReduction <- function(HRVData, embeddingDim = NULL, radius = NULL 
     }
     # Let Ts be in milliseconds
     Ts = median(RRresolution)
-    VerboseMessage(HRVData$Verbose, paste("Estimated ECG resolution is ", round(Ts,digits = 4)," ms"))
+    VerboseMessage(HRVData$Verbose,
+                   paste("Estimated ECG resolution is ", rhrvFormat(Ts)," ms"))
   }else {
     # Transform Ts to milliseconds
     Ts = 1000 / ECGsamplingFreq

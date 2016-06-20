@@ -480,7 +480,6 @@ EstimatePSDSlope = function(HRVData,
                             main="PSD power law", xlab = "Frequency (Hz)",
                             ylab="Spectrum", pch = NULL,
                             log="xy",...){
-  kdigits = 4
   CheckAnalysisIndex(indexFreqAnalysis,length(HRVData$FreqAnalysis),"frequency")
   CheckAnalysisIndex(indexNonLinearAnalysis,length(HRVData$NonLinearAnalysis),
                                                    "nonlinear")     
@@ -512,15 +511,15 @@ EstimatePSDSlope = function(HRVData,
   }
   # get values of beta and H
   beta = -coef(fit)[[2]]
-  VerboseMessage(HRVData$Verbose,paste("Spectral index =",round(beta,kdigits)))
+  VerboseMessage(HRVData$Verbose,paste("Spectral index =",rhrvFormat(beta)))
   if (beta > 1){
     HfBm = (beta - 1) / 2
     HfGn = NULL
-    VerboseMessage(HRVData$Verbose,paste("H_fBm =",round(HfBm,kdigits)))
+    VerboseMessage(HRVData$Verbose,paste("H_fBm =",rhrvFormat(HfBm)))
   }else{
     HfBm = NULL 
     HfGn = (beta + 1) / 2
-    VerboseMessage(HRVData$Verbose,paste("H_fGn =",round(HfGn,kdigits)))
+    VerboseMessage(HRVData$Verbose,paste("H_fGn =",rhrvFormat(HfGn)))
   }  
   
   HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$PSDSlope = 

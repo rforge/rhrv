@@ -134,7 +134,7 @@ EstimateMaxLyapunov <-
       HRVData$Verbose,
       paste(
         "Maximum Lyapunov exponent =",
-        HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$statistic
+        rhrvFormat(HRVData$NonLinearAnalysis[[indexNonLinearAnalysis]]$lyapunov$statistic)
       )
     )  
     

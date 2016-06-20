@@ -19,7 +19,7 @@ function(HRVData, Data, m, tau, r) {
 	  Cmr[i] = length(iDistance[iDistance <= r]) / numelem
 	}
 	
-	VerboseMessage(HRVData$Verbose, paste("Integral Correlation:", sum(Cmr)))
+	VerboseMessage(HRVData$Verbose, paste("Integral Correlation:", rhrvFormat(sum(Cmr))))
 	return(Cmr)
 }
 

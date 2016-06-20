@@ -100,16 +100,16 @@ CreateTimeAnalysis <-
       HRVData$Verbose,
       c(
         paste("Data has now", num + 1, "time analyses\n"),
-        paste(" SDNN:", HRVData$TimeAnalysis[[num + 1]]$SDNN, "msec.\n"),
-        paste(" SDANN:", HRVData$TimeAnalysis[[num + 1]]$SDANN, "msec.\n"),
-        paste(" SDNNIDX:", HRVData$TimeAnalysis[[num + 1]]$SDNNIDX, "msec.\n"),
-        paste(" pNN50:", HRVData$TimeAnalysis[[num + 1]]$pNN50, "%\n"),
-        paste(" SDSD:", HRVData$TimeAnalysis[[num + 1]]$SDSD, "msec.\n"),
-        paste(" r-MSSD:", HRVData$TimeAnalysis[[num + 1]]$rMSSD, "msec.\n"),
-        paste(" IRRR:", HRVData$TimeAnalysis[[num + 1]]$IRRR, "msec.\n"),
-        paste(" MADRR:", HRVData$TimeAnalysis[[num + 1]]$MADRR, "msec.\n"),
-        paste(" TINN:", HRVData$TimeAnalysis[[num + 1]]$TINN, "msec.\n"),
-        paste(" HRV index:", HRVData$TimeAnalysis[[num + 1]]$HRVi)
+        paste(" SDNN:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$SDNN), "msec.\n"),
+        paste(" SDANN:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$SDANN), "msec.\n"),
+        paste(" SDNNIDX:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$SDNNIDX), "msec.\n"),
+        paste(" pNN50:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$pNN50), "%\n"),
+        paste(" SDSD:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$SDSD), "msec.\n"),
+        paste(" r-MSSD:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$rMSSD), "msec.\n"),
+        paste(" IRRR:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$IRRR), "msec.\n"),
+        paste(" MADRR:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$MADRR), "msec.\n"),
+        paste(" TINN:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$TINN), "msec.\n"),
+        paste(" HRV index:", rhrvFormat(HRVData$TimeAnalysis[[num + 1]]$HRVi))
       )
     )    
     return(HRVData)

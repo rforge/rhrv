@@ -25,3 +25,9 @@ MissingNonLinearObjectMessage = function(missing, use_before, use_after) {
          use_before, " before using ", 
          use_after,"!")
 }
+
+# format numbers for VerboseMessage
+rhrvFormat = function(x){
+  kNDIGITS = 4
+  round(x, digits = kNDIGITS)
+}
