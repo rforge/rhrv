@@ -20,18 +20,18 @@ void filterhr(double *hr,int *n,int *lon,int *last,int *minbpm,int *maxbpm,int *
 		}
 		if((100*abs(hr[i]-hr[i-1])/hr[i-1] < ulast || 100*abs(hr[i]-hr[i+1])/hr[i+1] < ulast || 100*abs(hr[i]-med)/med < umean) && hr[i]>(*minbpm) && hr[i]<(*maxbpm)){
 			index[i]=1;
-			if(i%(*lon)==0 && i>=(*lon)){
-				tmp=10+desv(buffer,med,(*lon));
-				if(tmp<12)
-					tmp=12;
-				if(tmp>20)
-					tmp=20;
-				ulast=(int)tmp;
-			
-			}
 		}
 		else
 			index[i]=0;
+		if(i%(*lon)==0 && i>=(*lon)){
+			tmp=10+desv(buffer,med,(*lon));
+			if(tmp<12)
+				tmp=12;
+			if(tmp>20)
+				tmp=20;
+			ulast=(int)tmp;	
+			umean=(int)(1.5*ulast);
+		}
 	}
 }
 
