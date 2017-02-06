@@ -1,4 +1,5 @@
 RPROG=  $(R_HOME)/bin/R
+RSCRIPT=$(R_HOME)/bin/Rscript
  
 all: RHRV-quickstart.pdf
 
@@ -8,5 +9,5 @@ clean:
  
 
 RHRV-quickstart.pdf: clean RHRV-quickstart.Rnw
-	# Generate the concordance.tex
-	$(RPROG) CMD Sweave --clean --pdf RHRV-quickstart.Rnw
+	$(RSCRIPT) -e "require( 'highlight'); require('tools'); Sweave('RHRV-quickstart.Rnw', driver=HighlightWeaveLatex()); texi2dvi('RHRV-quickstart.tex', pdf=TRUE, clean=TRUE)"
+	rm -f RHRV-quickstart.tex  Rplots.pdf
