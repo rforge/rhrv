@@ -28,6 +28,6 @@ Depends:
     nonlinearTseries (>= 0.2.3),
     lomb (>= 1.0)
 Suggests:
-    highlight
-VignetteBuilder: highlight
+    knitr
+VignetteBuilder: knitr
 RoxygenNote: 5.0.1
