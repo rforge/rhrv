@@ -29,7 +29,7 @@ have download and installed R, you can install **RHRV** by typing:
 install.packages("RHRV", dependencies = TRUE)
 ```
 
-You can also install it by downloading it from the [CRAN](https://cran.r-project.org/web/packages/RHRV/index.html). Once the 
+You can also install it by downloading it from the [CRAN](https://cran.r-project.org/package=RHRV). Once the 
 download has finished, open **R**, move to the directory where you have download 
 it (by using the **R** command `setwd` and type:
 
