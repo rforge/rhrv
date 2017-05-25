@@ -7,7 +7,7 @@ CalculatePowerBand <-
            LFmin = 0.05, LFmax = 0.15,
            HFmin = 0.15, HFmax = 0.4,
            type = c("fourier", "wavelet"), wavelet = "d4",
-           bandtolerance = 0.1, relative = FALSE,
+           bandtolerance = 0.01, relative = FALSE,
            verbose = NULL) {
     # -------------------------
     # Calculates power per band
@@ -20,7 +20,7 @@ CalculatePowerBand <-
     #  HF band: from 0.15 to 0.4Hz
     #  type: type of analysis, "fourier" or "wavelet"
     #  wavelet: nama of the wavelet for analysis
-    #  bandtolerance: bandtolerance in % for the wavelet tree decomposition
+    #  bandtolerance: bandtolerance for the wavelet tree decomposition
     
     HRVData = HandleVerboseArgument(HRVData, verbose)
     VerboseMessage(HRVData$Verbose, "Calculating power per band")
