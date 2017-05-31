@@ -162,7 +162,6 @@ See \figref{fig:#2}.
 \begin{center}
 \includegraphics[width=#1\linewidth]{recurrence-#2}
 \caption{Signal and linear interpolation #3.}
-%\caption{Recurrence plot. #3. Time used: \Sexpr{laptime()} sec.}
 \label{fig:#2}
 \end{center}
 \end{figure}
@@ -176,7 +175,6 @@ See \figref{fig:#2}.
 \begin{center}
 \includegraphics[width=#1\linewidth]{recurrence-#2}
 \caption{Recurrence plot. #3.}
-%\caption{Recurrence plot. #3. Time used: \Sexpr{laptime()} sec.}
 \label{fig:#2}
 \end{center}
 \end{figure}
@@ -384,7 +382,8 @@ save.RNGkind <- RNGkind()
 set.seed(save.RNGseed, save.RNGkind[1])
 save.RNGkind
 @
-%:   function laptime
+<<>>=
+options(warn=1)
 <<>>=
 laptime <- function(){
 return(round(structure(proc.time() - chunk.time.start, class = "proc_time")[3],3))
@@ -392,10 +391,16 @@ chunk.time.start <<- proc.time()
 }
 
 <<>>=
+if (!require("sintro")) {
 # install.packages("sintro",repos="http://r-forge.r-project.org",type="source")
 library(sintro)
+}
 
+if (!require("nonlinearTseries")) {
+install.packages("nonlinearTseries") 
 library(nonlinearTseries)
+}
+
 @
 
 \subsubsection{Takens States}
@@ -551,6 +556,9 @@ statecoplot <- function(states, main,
 
 To allow experimental implementations, functions from \code{nonlinearTseries} are aliased here.
 <<>>=
+
+
+
 local.buildTakens <- function (time.series, 
 	embedding.dim, time.lag=1, 
 	id=deparse(substitute(time.series))) 
@@ -1630,6 +1638,7 @@ try(detach(geyser), silent=TRUE)
 
 library(MASS)
 data(geyser)
+attach(geyser)
 @
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
