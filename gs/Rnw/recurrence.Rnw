@@ -2620,8 +2620,13 @@ Time used: \Sexpr{laptime()} sec.
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
+<<hrvRRtakens4, fig=TRUE, include=FALSE>>=
+hrvRRtakens4 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
+	embedding.dim=4,time.lag=1)
+statepairs(hrvRRtakens4)
+@
 
-\insertrecurrence{hrvRRtakens4}{RHRV tutorial example.beats.}
+\insertrecurrence{hrvRRtakens4}{RHRV tutorial example.beats.}%bad
 
 <<>>=
 hrvRRneighs4  <- local.findAllNeighbours(hrvRRtakens4, radius=16)
