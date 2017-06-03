@@ -30,7 +30,7 @@
 %\usepackage{gssda}
 \usepackage{SIntro}
 
-\newenvironment{DAnote}{\emph{\textcolor{red}{Note for data analysis:} }}{}
+\newenvironment{sdanote}{\emph{\textcolor{red}{Note for data analysis:} }}{}
 
 %\usepackage{Rd}
 \newlength{\ldescriptionwidth}
@@ -186,14 +186,13 @@ See \figref{fig:#2}.
 
 %:   insertrqua
 %! width should be adjusted to recurrence plot
-% [width] #2: label #3: caption
-\newcommand\insertrqua[3][0.64]{
-RQA #3. For graphical ouput, see \figref{fig:recurrence-#2}.
+% [width] #2: label #3: caption #4: time
+\newcommand\insertrqua[4][0.64]{RQA #3. Time used: #4 sec. For graphical ouput, see \figref{fig:recurrence-#2}.
 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=#1\linewidth]{recurrence-#2}
-\caption{RQA. #3, radius=#1}
+\caption{RQA. #3, #1}
 \label{fig:recurrence-#2}
 \end{center}
 \end{figure}
@@ -1486,9 +1485,9 @@ local.recurrencePlotAux(sin10neighs, dim=dim(sintakens)[2], radius=0.8)
 <<sin10rqa, fig=TRUE, include=FALSE>>=
 sin10rqa <- showrqa(sintakens, radius=0.8, log=TRUE)
 @
-\insertrqua{sin10rqa}{Test case: sinus. Radius=0.8.Time used: \Sexpr{laptime()} sec.}
+\insertrqua{sin10rqa}{Test case: sinus. Radius=0.8.}{\Sexpr{laptime()}}
 
-%: sin lag 16
+% : sin lag 16
 <<sin10lag16rec, fig=TRUE, include=FALSE>>=
 sin10lag16neighs <- local.findAllNeighbours(sintakenslag16, radius=0.2)
 save(sin10lag16neighs, file="sin10lag16neighs.Rdata")
@@ -1501,9 +1500,7 @@ local.recurrencePlotAux(sin10lag16neighs, dim=4, radius=0.2)
 <<sin10lag16rqa, fig=TRUE, include=FALSE>>=
 sin10lag16rqa <- showrqa(sintakenslag16, radius=0.2)
 @
-\insertrqua{sin10lag16rqa}{Test case: sinus curve, time lag 16.
-Time used: \Sexpr{laptime()} sec.
-}
+\insertrqua{sin10lag16rqa}{Test case: sinus curve, time lag 16}{\Sexpr{laptime()}}
 
 \clearpage
 
@@ -1519,14 +1516,12 @@ save(unifneighs, file="unifneighs.RData")
 # load(file="unifneighs.RData")
 local.recurrencePlotAux(unifneighs, radius=0.6)
 @
-\insertrecurrence{unifrec}{Test case: uniform random numbers}{ \Sexpr{laptime()}}
+\insertrecurrence{unifrec}{Test case: uniform random numbers}{\Sexpr{laptime()}}
 
 <<uniftakensrqa106, fig=TRUE, include=FALSE >>=
 showrqa(uniftakens, radius=0.6, log=TRUE)
 @
-\insertrqua{uniftakensrqa106}{Test case: uniform random numbers, radius=0.6.
-Time used: \Sexpr{laptime()} sec.
-}
+\insertrqua{uniftakensrqa106}{Test case: uniform random numbers, radius=0.6}{\Sexpr{laptime()}}
 
 \clearpage
 
@@ -1547,8 +1542,7 @@ local.recurrencePlotAux(chirpneighs, radius=0.6)
 <<chirprqa, fig=TRUE, include=FALSE>>=
 showrqa(chirptakens, radius=0.6)
 @
-\insertrqua{chirprqa}{Test case: chirp signal.
-Time used: \Sexpr{laptime()} sec.}
+\insertrqua{chirprqa}{Test case: chirp signal}{\Sexpr{laptime()}}
 
 \clearpage
 \subsubsection{Doppler Recurrence Plots}
@@ -1583,10 +1577,9 @@ chunk.time.start<- proc.time()
 <<dopplerrqa, fig=TRUE, include=FALSE>>=
 showrqa(dopplertakens, radius=0.2)
 @
-\insertrqua{dopplerrqa}{Test case: Doppler.
-Time used: \Sexpr{laptime()} sec.}
+\insertrqua{dopplerrqa}{Test case: Doppler}{\Sexpr{laptime()}}
 
-%: doppler lag 16
+% : doppler lag 16
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -1602,15 +1595,14 @@ local.recurrencePlotAux(dopplerlag16neighs, dim=4, radius=0.2)
 <<dopplerlag16rqa, fig=TRUE, include=FALSE>>=
 showrqa(dopplertakenslag16, radius=0.2)
 @
-\insertrqua{dopplerlag16rqa}{RQA. Test case: Doppler.
-Time used: \Sexpr{laptime()} sec.
-}
+\insertrqua{dopplerlag16rqa}{RQA. Test case: Doppler}{\Sexpr{laptime()}}
 
 \clearpage
 
-\section{Geyser example: Bivariate recurrence plots}
+\section{Geyser example and Bivariate recurrence plots}
 \label{sec:geyser}
 
+\subsection{Paired sequences}
 \index{Geyser}
 \todo{double check: \code{MASS:::geyser} should be used, not \code{faithful}}
 
@@ -1620,13 +1612,13 @@ More specific the Geyser is a marked point process, with points marked as durati
 
 Decomposing it, we get two sequences, duration and waiting. Both sequences have (at least) bi-modal structures - a peculiarity of this data set. The main application problem is to predict waiting, based on the available information from the past.
 
-\begin{DAnote}
+\begin{sdanote}
 The time to predict is the waiting time for the next eruption; so for prediction use a shifted sequence $waiting[-1]$.
-\end{DAnote}
+\end{sdanote}
 
-\begin{DAnote}
+\begin{sdanote}
 Some data are not recorded, but replaced by codes such as short, long. Handling of partially encoded data is required.
-\end{DAnote}
+\end{sdanote}
 
 
 After decomposition, both sequences can be handled separately.
@@ -1672,7 +1664,7 @@ attach(geyser)
 takens.duration4 <- buildTakens( time.series=duration, embedding.dim=4, time.lag=1)
 takens.waiting4 <- buildTakens( time.series=waiting, embedding.dim=4,  time.lag=1)
 @
-
+% takens.duration4 replaces  takens.duration4
 Time used: \Sexpr{laptime()} sec. 
 
 <<durationtakens4no1, fig=TRUE, include=FALSE>>=
@@ -1683,6 +1675,18 @@ statepairs(takens.waiting4) #dim=4
 @
 Example case: Old Faithful Geyser eruption data.
 Time used: \Sexpr{laptime()} sec. See \Vref{fig:geyserpairs4}.
+\todo{use nooverlap ?}
+%<<takens.duration4no, fig=TRUE, include=FALSE>>=
+%statepairs(takens.duration4, nooverlap=TRUE) #dim=4
+%@
+%\insertrecurrence{takens.duration4no}{Old Faithful Geyser eruption durations. Dim=4} {\Sexpr{laptime()}}
+
+<<takens_duration4no, fig=TRUE, include=FALSE>>=
+	statecoplot(takens.duration4) #dim=4
+@
+
+\plotco{takens_duration4no}{Example case: Old Faithful Geyser eruption durations.
+Time used: \Sexpr{laptime()} sec.}
 
 %35
 \begin{figure}[htp]
@@ -1696,7 +1700,7 @@ Time used: \Sexpr{laptime()} sec. See \Vref{fig:geyserpairs4}.
 \end{figure}
 
 <<>>=
-durationneighs4<- findAllNeighbours(takens.duration4, radius=2.0)
+durationneighs4<- findAllNeighbours(takens.duration4, radius=2.4)
 waitingneighs4<-findAllNeighbours(takens.waiting4, radius=20.0)
 @
 
@@ -1718,7 +1722,7 @@ See \Vref{fig:recurrence4rec}.
 \label{fig:recurrence4rec}
 \end{center}
 \end{figure}
-%:---31.05.2017, 17:32:00
+
 Assuming that labels etc. are propragated as attributes, we can use a modified version of \code{recurencePlot()}
 <<>>=
 # univariate variant, assuming attributes
@@ -1791,6 +1795,12 @@ par(oldpar)
 %local.recurrencePlot1(waitingneighs4)
 %par(oldpar)
 
+<<takens_duration4rqa1, fig=TRUE, include=FALSE>>=
+showrqa(takens.duration4, radius=3*0.8)
+@
+\insertrqua{takens_duration4rqa1}{Example case:  Old Faithful Geyser eruption durations. Dim=4}{\Sexpr{laptime()}}
+
+%: 2*1 recurrence
 Each plot shows a symmetric matrix. Since dimensions match, we can use the upper and ower triangle to allow comparison of both series in one plot, comparing the upper and lower triangle.
 
 <<>>=
@@ -1901,26 +1911,30 @@ See \Vref{fig:recurrencePlot2}.
 
 
 
-So far, the data have been handled as a pair of one-dimensional problems. Looking at the data as a bivariate problem requires to use a bivariate distance to define neighbours.
+So far, the data have been handled as a pair of one-dimensional problems. Looking at the data as a bivariate problem requires to use a bivariate distance to define neighbours. See \citep{marwan2002nonlinear}.
 
+\gsnote{this is an early draft}
+
+ Marwan uses a ``covariance''
+$$ CR[i,j] = \Theta( \epsilon - \norm{xv[i] - yv[j]})$$
+a maximumdistance  as $\norm{}$
+
+Here is a brute force implmentaation
+
+Signed distances may be used for experiments.
 <<>>=
-#
-# covariance 
-# see \cite{marwan2002nonlinear}
-# CR[i,j] = \Theta( \epsilon - \norm( xv[i] - yv[j] ))
-
-# Brute force
-
-# signed distances may be used for experiments.
 maxdist <- function (x){ max(abs(x))} # works on delta
-cordist <- function (x, y){ suppressWarnings(cor(x,y))} # using signed. Warnings for zero #
+cordist <- function (x, y){ suppressWarnings(cor(x,y))}
+@
+\todo{Epsilon/radius and heaviside not use here - may be handled in image rendering.}
+
+\todo{propagate names from takens}
+
+<<CR0>>=
+CR0 <- function (xtakens, ytakens, sdist= maxdist) {
+# using signed. Warnings for zero #
 # variances are suppressed
 
-# epsilon/radius and heaviside not use here - may be added in image rendering.
-
-# propagate names from takens
-
-CR0 <- function (xtakens, ytakens, sdist= maxdist) {
 	xl <- nrow(xtakens); yl <- nrow(ytakens)
 	xname <- deparse(substitute(xtakens))
 	yname <- deparse(substitute(ytakens))
@@ -1932,8 +1946,9 @@ CR0 <- function (xtakens, ytakens, sdist= maxdist) {
 	}
 	return(cr)
 }
-
-
+@
+Variant $CR2$ alows a distance that is not facored via $x-y$.
+<<CR2>>=
 CR2 <- function (xtakens, ytakens, cdist= cordist) {
 	xl <- nrow(xtakens); yl <- nrow(ytakens)
 	xname <- deparse(substitute(xtakens))
@@ -1946,8 +1961,8 @@ CR2 <- function (xtakens, ytakens, cdist= cordist) {
 	}
 	return(cr)
 }
-
-
+@
+<<>>=
 ## for experiments only. do not copy large matrices
 crossrecurrencePlotFromMatrix <- function(neighs.matrix,
 		zlim= range(neighs.matrix, na.rm=TRUE), 
@@ -1965,23 +1980,26 @@ print(rec.plot)
 rec.plot
 }
 
-# raw data may give a poor impression. Adjust e.g. for scale and location
+@
+
+Raw data may give a poor impression. Adjust e.g. for scale and location.
+
+@
+<<>>=
 cr4 <- CR0(takens.duration4,takens.waiting4)
 cr4C <- CR2(takens.duration4,takens.waiting4)
 @
-<<fig=TRUE>>=
+<<cr4-fig=TRUE>>=
 image(cr4)
 # neighs.matrix <- cr4;range(cr4) #  70.5500 107.1667
 @
-<<fig=TRUE>>=
-
-
-# a max distance
+A max distance.
+<<>>=
 crossrecurrencePlotFromMatrix(cr4, 
 main="Cross Recurrence plot\nmax",
 xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
 @
-<<fig=TRUE>>=
+<<crossrecurrencePlot, fig=TRUE>>=
 
 crossrecurrencePlotFromMatrix(cr4, zlim=c(85,108), col=grey((1:10)/10),
 main="Cross Recurrence plot\nmax",
@@ -2026,71 +2044,32 @@ xlab="duration4 index", ylab="waiting4 index")
 chunk.time.start<- proc.time()
 @
 %
-<<duration_takens4L1, fig=TRUE, include=FALSE>>=
-takens_duration4_x1 <- 
-	local.buildTakens( time.series=geyser$duration, 
-		embedding.dim=4, time.lag=1)
-	statepairs(takens_duration4_x1) #dim=4
-@
+%takens.duration4 <- takens.duration4
 
 \insertrecurrence{duration_takens4L1}{Old Faithful Geyser eruption durations}{\Sexpr{laptime()}}
  
-%
-<<takens_duration4_x1no, fig=TRUE, include=FALSE>>=
-	statecoplot(takens_duration4_x1) #dim=4
-@
 
-\plotco{takens_duration4_x1no}{Example case: Old Faithful Geyser eruption durations.
-Time used: \Sexpr{laptime()} sec.}
-%
 
 %:**** here
-%    <<takens_duration4_x1no1, fig=TRUE, include=FALSE>>=
-%    	statepairs(takens_duration4_x1no1, nooverlap=TRUE) #dim=4
+%    <<takens.duration4no1, fig=TRUE, include=FALSE>>=
+%    	statepairs(takens.duration4no1, nooverlap=TRUE) #dim=4
 %    @
 %    \begin{figure}[htbp]
 %    \begin{center}
-%    \includegraphics[width=1.0\linewidth]{recurrence-takens_duration4_x1no1}
+%    \includegraphics[width=1.0\linewidth]{recurrence-takens.duration4no1}
 %    \caption{Example case: Old Faithful Geyser eruption durations.
 %    Time used: \Sexpr{laptime()} sec.
 %     }
 %    
-%    \label{fig:takens_duration4_x1no1}
+%    \label{fig:takens.duration4no1}
 %    \end{center}
 %    \end{figure}
 %    
-\%
-
-%<<eruptionsneighs>>=
-%
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
-<<>>=
-eruptionsneighs4 <- local.findAllNeighbours(takens_duration4_x1, radius=3*0.8)
-save(eruptionsneighs4, file="eruptionsneighs4.RData")
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
-
-<<eruptionsrec41, fig=TRUE, include=FALSE>>=
-#load(file="eruptionsneighs4.RData")
-local.recurrencePlotAux(eruptionsneighs4)
-@
-\insertrecurrence{eruptionsrec41}{Old Faithful Geyser eruption durations. Dim=4.}{\Sexpr{laptime()}}
-<<takens_duration4_x1rqa1, fig=TRUE, include=FALSE>>=
-showrqa(takens_duration4_x1, radius=3*0.8)
-@
-\insertrqua{takens_duration4_x1rqa1}{Example case:  Old Faithful Geyser eruption durations. Dim=4.
-Time used: \Sexpr{laptime()} sec.}
-
+%:03.06.2017 to delete
 \subsubsection{Geyser eruption durations. Dim=2}
 
 \todo{remove this section}
 
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
 %
 <<eruptionstakens2, fig=TRUE, include=FALSE>>=
 eruptionstakens2 <- 
@@ -2135,38 +2114,13 @@ local.recurrencePlotAux(eruptionsneighs2)
 <<eruptionstakens2rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens2, radius=0.8)
 @
-\insertrqua{eruptionstakens2rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=2.
-Time used: \Sexpr{laptime()} sec.}
-
+\insertrqua{eruptionstakens2rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=2}{\Sexpr{laptime()}}
 
 \subsubsection{Geyser eruptions. Dim=4}
 
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
-%
-<<takens_duration4_x1, fig=TRUE, include=FALSE>>=
-takens_duration4_x1 <- local.buildTakens( time.series=geyser$duration,
-	embedding.dim=4, time.lag=1)
-statepairs(takens_duration4_x1) #dim=4
-@
-\insertrecurrence{takens_duration4_x1}{Old Faithful Geyser eruption durations. Dim=4} {\Sexpr{laptime()}}
 
-%
-<<takens_duration4_x1no, fig=TRUE, include=FALSE>>=
-statepairs(takens_duration4_x1, nooverlap=TRUE) #dim=4
-@
-\insertrecurrence{takens_duration4_x1no}{Old Faithful Geyser eruption durations. Dim=4} {\Sexpr{laptime()}}
-
-%
-
-%<<eruptionsneighs>>=
-%
-<<print=FALSE, echo=FALSE>>=
-chunk.time.start<- proc.time()
-@
 <<>>=
-eruptionsneighs4 <- local.findAllNeighbours(takens_duration4_x1, 
+eruptionsneighs4 <- local.findAllNeighbours(takens.duration4, 
 	radius=0.8)
 save(eruptionsneighs4, file="eruptionsneighs4.RData")
 <<print=FALSE, echo=FALSE>>=
@@ -2179,10 +2133,10 @@ local.recurrencePlotAux(eruptionsneighs4)
 @
 \insertrecurrence{eruptionsrec42}{Example case:  Old Faithful Geyser eruption durations. Dim=4} {\Sexpr{laptime()}}
 
-<<takens_duration4_x1rqa, fig=TRUE, include=FALSE>>=
-showrqa(takens_duration4_x1, radius=0.8)
+<<takens_duration4rqa, fig=TRUE, include=FALSE>>=
+showrqa(takens.duration4, radius=0.8)
 @
-\insertrecurrence{takens_duration4_x1rqa}{Old Faithful Geyser eruption durations. Dim=4}{\Sexpr{laptime()}}
+\insertrecurrence{takens_duration4rqa}{Old Faithful Geyser eruption durations. Dim=4}{\Sexpr{laptime()}}
 
 \subsubsection{Geyser eruption durations. Dim=8}
 
@@ -2232,9 +2186,7 @@ local.recurrencePlotAux(eruptionsneighs8)
 <<eruptionstakens8rqa, fig=TRUE, include=FALSE>>=
 showrqa(eruptionstakens8, radius=2.6)
 @
-\insertrqua{eruptionstakens8rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=8.
-Time used: \Sexpr{laptime()} sec.
-}
+\insertrqua{eruptionstakens8rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=8}{\Sexpr{laptime()}}
 
 \clearpage
 \subsubsection{Geyser eruption durations: Comparison by Dimension}
@@ -2289,15 +2241,13 @@ chunk.time.start<- proc.time()
 <<waitingneighsrqa, fig=TRUE, include=FALSE>>=
 showrqa(waitingtakens, radius=16)
 @
-\insertrqua{waitingneighsrqa}{Example case:  Old Faithful Geyser waiting.
-Time used: \Sexpr{laptime()} sec.
-}
+\insertrqua{waitingneighsrqa}{Example case:  Old Faithful Geyser waiting}{\Sexpr{laptime()}}
 
 <<waitingrec, fig=TRUE, include=FALSE>>=
 load(file="waitingneighs.RData")
 local.recurrencePlotAux(waitingneighs)
 @
-\insertrecurrence{waitingrec}{Example case:  Old Faithful Geyser waiting.}{\Sexpr{laptime()}}
+\insertrecurrence{waitingrec}{Example case:  Old Faithful Geyser waiting}{\Sexpr{laptime()}}
 
 %\subsection{Geyser - linearized}
 %
@@ -2333,36 +2283,36 @@ local.recurrencePlotAux(waitingneighs)
 %<<glprint=FALSE, echo=FALSE>>=
 %chunk.time.start<- proc.time()
 %@
-%<<glintakens_duration4_x1, fig=TRUE, include=FALSE>>=
-%glintakens_duration4_x1 <- 
+%<<glintakens.duration4, fig=TRUE, include=FALSE>>=
+%glintakens.duration4 <- 
 %	local.buildTakens( time.series=geyserlin, 
 %		embedding.dim=4, time.lag=2)
-%statepairs(glintakens_duration4_x1) #dim=4
+%statepairs(glintakens.duration4) #dim=4
 %@
-%See \figref{fig:glintakens_duration4_x1}.
+%See \figref{fig:glintakens.duration4}.
 %@
 %\begin{figure}[htbp]
 %\begin{center}
-%\includegraphics[width=0.8\linewidth]{recurrence-glintakens_duration4_x1}
+%\includegraphics[width=0.8\linewidth]{recurrence-glintakens.duration4}
 %\caption{Example case: Old Faithful Geyser eruptions.
 %Time used: \Sexpr{laptime()} sec.
 % }
-%\label{fig:glintakens_duration4_x1}
+%\label{fig:glintakens.duration4}
 %\end{center}
 %\end{figure}
 %%<<glineruptionsneighs>>=
 %%
 %
 %<<gl01>>=
-%glineruptionsneighs4 <- local.findAllNeighbours(glintakens_duration4_x1, radius=0.8)
+%glineruptionsneighs4 <- local.findAllNeighbours(glintakens.duration4, radius=0.8)
 %save(glineruptionsneighs4, file="glineruptionsneighs4.RData")
 %<<print=FALSE, echo=FALSE>>=
 %chunk.time.start<- proc.time()
 %@
-%<<glintakens_duration4_x1rqa, fig=TRUE, include=FALSE>>=
-%showrqa(glintakens_duration4_x1, radius=0.8)
+%<<glintakens.duration4rqa, fig=TRUE, include=FALSE>>=
+%showrqa(glintakens.duration4, radius=0.8)
 %@
-%\insertrecurrence{glintakens_duration4_x1rqa}{Old Faithful Geyser - both. Dim=4.
+%\insertrecurrence{glintakens.duration4rqa}{Old Faithful Geyser - both. Dim=4.
 %Time used: \Sexpr{laptime()} sec.
 %}
 %
@@ -2510,12 +2460,10 @@ local.recurrencePlotAux(waitingneighs)
 \label{sec:hrv}
 \gsnote{Only \Sexpr{nsignal} data points used in recurrence plots in this section}
 
-\begin{DAnote}
-The data include missing beats, or spurious artefacts. These need to be handled. Graphical display is heaily affected by the scales implied by outliers.
-\end{DAnote}
+\begin{sdanote}
+The data include missing beats, or spurious artefacts. These need to be handled. Graphical display is heavily affected by the scales implied by outliers.
+\end{sdanote}
 
-%:**** \end{document}
-%\end{document}
 <<>>=
 
 #stop("Stopping before RHRV")
