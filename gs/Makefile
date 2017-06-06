@@ -1,5 +1,6 @@
 #$Header:$
 #SUBDIRS= 
+#./rhrv/gs/Makefile
 .PHONY: clean
 clean:
 	-rm -f *.aux *.log *.bbl *.blg *.glo \

@@ -157,7 +157,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \newcommand\codex[1]{\textsl{\texttt{#1}}\index{#1@\texttt{#1}|textit}}
 
 %:* task specific
-% scale factor - fig name  - source
+% scale factor - fig name  - source. Source is a graphics with signal/linear
 \newcommand\insertsignal[3][0.80]{
 See \figref{fig:#2}.
 
@@ -335,7 +335,17 @@ We can gain additional freedom by using a correlation view: instead of looking f
 along the diagonal, using two reference axis. 
 
 Helpful hints how to interpret recurrence plots are in ``Recurrence Plots At A Glance''  \url{<http://
-www.recurrence-plot.tk/glance.php>}.
+www.recurrence-plot.tk/glance.php>}, for example \figref{fig:RPexamples}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=1.0\linewidth]{RPexamples}
+\caption{Characteristic typology of recurrence plots: (A) homogeneous (uniformly distributed noise), (B) periodic (super-positioned harmonic oscillations), (C) drift (logistic map corrupted with a linearly increasing term) and (D) disrupted (Brownian motion). These examples illustrate how different RPs can be. The used data have the length 400 (A, B, D) and 150 (C), respectively; no embeddings are used; the thresholds are $\epsilon = 0.2$ (A, C, D) and $\epsilon = 0.4$ (B).   From \url{<http://
+www.recurrence-plot.tk/glance.php>}}
+\label{fig:RPexamples}
+\end{center}
+\end{figure}
+
 
 \subsection{Recurrence Quantification Analysis}
 \label{sec:rqa}
@@ -343,10 +353,8 @@ www.recurrence-plot.tk/glance.php>}.
 \index{recurrence quantification analysis}
 While visual inspection is the prime way to assess recurrence plots, quantification of some aspects 
 revealed of the plot may be helpful. A collection of indices is provided by a recurrence quantification 
-analysis (RQA)
-\cite{zbilut2006recurrence},  \cite{webber2005recurrence}.
-
-See  \Vref{tab:rqa}.
+analysis (RQA). References: 
+\citep{zbilut2006recurrence},  \citep{webber2005recurrence}. See  \Vref{tab:rqa}.
 
 \begin{table}[htp]
 \caption{Recurrence Quantification Analysis (RQA)}
@@ -387,6 +395,10 @@ save.RNGkind
 @
 <<>>=
 options(warn=1)
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
 <<>>=
 laptime <- function(){
 return(round(structure(proc.time() - chunk.time.start, class = "proc_time")[3],3))
@@ -748,29 +760,30 @@ Needs improvement.
 
 \todo{improve to a full \code{show} method for class \code{rqa}.}
 
-%:   function showrqa
+%:   function showrqa()
+%RQA Prototype
+%<<sin10rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
+%sin10rqa <- showrqa(sintakens, radius=0.8, log=TRUE)
+%@
+%\insertrqua{sin10rqa}{Test case: sinus. Radius=0.8.}{\Sexpr{laptime()}}
+\clearpage
 <<showrqa>>=
 showrqa <- function(takens, dim=NULL, radius, 
 		digits=3,
 		do.hist = TRUE, rm.hist = TRUE, 
 		log = TRUE ,...)
-{
-	xxrqa <- rqa(takens=takens,radius=radius)
-	xxrqa$radius <- radius
+{	#takens <- takens[!is.na(takens)]
+	xxrqa <- rqa(takens=takens, radius=radius); xxrqa$radius <- radius
 	id <- attr(takens,"id") 
-	if (is.null(id)) id <- deparse(substitute(takens))
-	xxrqa$id<- id
+	if (is.null(id)) id <- deparse(substitute(takens)); xxrqa$id<- id
 	xxrqa$time.lag <- attr(takens,"time.lag") 
 	cat(id, " n:", dim(takens)[1], " Dim:", dim(takens)[2], "\n")
 	xxrqa$n <- dim(takens)[1]
 	xxrqa$dim <- dim(takens)[2]
-	#str(xxrqa)
-	#str(digits)
-	#browser()
+
 	cat(paste("Radius:", radius, 
 		" Recurrence coverage REC:", round(xxrqa$REC, digits), 
-		" log(REC)/log(R):", 
-		round(log(xxrqa$REC)/log(radius), digits), "\n"))
+		" log(REC)/log(R):", 		round(log(xxrqa$REC)/log(radius), digits), "\n"))
 	xxrqa$logratio <- log(xxrqa$REC)/log(radius)	
 	cat(paste("Determinism:", round(xxrqa$DET, digits), 
 		" Laminarity:",round(xxrqa$LAM, digits), "\n"))
@@ -782,40 +795,34 @@ showrqa <- function(takens, dim=NULL, radius,
 		" Mean off main:",round(xxrqa$LmeanWithoutMain, digits), "\n"))
 	cat(paste("Vertical lines max:", round(xxrqa$Vmax, digits), 
 		" Mean:",round(xxrqa$Vmean, digits), "\n"))
-		# str(xxrqa[4:12])
-  
+
 	if (do.hist){
-	if (log==TRUE) log<-"y"
-	oldpar <- par(mfrow=c(2,1))
+	if (log==TRUE) log<-"y"; 	oldpar <- par(mfrow=c(2,1))
 	
 	xxrqa$diagonalHistogram[xxrqa$diagonalHistogram==0] <- NA # hack for log zero counts
-	dh<- xxrqa$diagonalHistogram
-	#if (log=="y")  {dh <- dh+1}
+	dh<- xxrqa$diagonalHistogram  	#if (log=="y")  {dh <- dh+1}
 		
 	id <- attr(takens,"id"); if (is.null(id) ) id <- deparse(substitute(takens))
-	pars <- paste("\n n=", dim(takens)[1], " Dim:", 
-		dim(takens)[2])
+	pars <- paste("\n n=", dim(takens)[1], " Dim:", dim(takens)[2])
 	lag<- attr(takens,"time.lag")
 	if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
-	plot(dh, type="h", main=paste( id, " Diagonal:", 
+	try(plot(dh, type="h", main=paste( id, " Diagonal:", 
 		pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
 		xlab="length of diagonals",
-		log = log, ...)
+		log = log, ...))
+	#needs handling of nan, Inf.
 			
 	xxrqa$recurrenceRate[xxrqa$recurrenceRate==0] <- NA # hack for log zero counts
-	drR<- xxrqa$recurrenceRate
-	#if (log=="y")  {drR <- drR+1}
+	drR<- xxrqa$recurrenceRate 	#if (log=="y")  {drR <- drR+1}
 		
 	id <- attr(takens,"id"); if (is.null(id) ) id <- deparse(substitute(takens))
-	pars <- paste("\n n=", dim(takens)[1], " Dim:", 
-		dim(takens)[2])
+	pars <- paste("\n n=", dim(takens)[1], " Dim:",  dim(takens)[2])
 	lag<- attr(takens,"time.lag")
 	if (!is.null(lag) && (lag !=1) ) pars <- paste(pars, " Lag:", lag)
 	plot(drR, type="h", 
 		main=paste( id," Recurrence Rate",
 		pars," Radius: ",radius, " REC:", round(xxrqa$REC, digits)),
 		xlab="distance to diagonal",
-		#ylim=c(1,3),
 		log = log, ...)
 	par(oldpar)
 		}
@@ -845,21 +852,25 @@ showrqa <- function(takens, dim=NULL, radius,
 \clearpage
 
 \section{Test Signals}
+
+<<print=FALSE, echo=FALSE>>=
+chunk.time.start<- proc.time()
+@
+
 @
 We set up a small series of test signals. Some synthetic test signals are introduced here.
 More test cases used later are the Geyser data set (\Vref{sec:geyser}) and two examples of heart rate data sets (\Vref{sec:hrv} and \Vref{sec:hrv2}) from \code{library(rhrv)}. The Geyser data set gives an example of a bi-variate point process. The HRV data sets give real live point orocess examples
 
 For convenience, some source code from other libraries is included to make this self-contained.
 
-As a global constant, we set up the length of the series to be used for test signals.
+As a global constant, we set up the length of the series to be used for test signals, if restricting is appropriate.
+
 %:  nsignal
 <<nsignal>>=
-#nsignal <- 256
-nsignal <- 1024
-#nsignal <- 4096
+nsignal <- 1024 #nsignal <- 4096 #nsignal <- 256
 system.time.start <- proc.time()
-
 @
+
 For signal representation, we use a common layout.
 %see insertsignal for imbedding
 %:   function plotsignal
@@ -919,6 +930,7 @@ See \figref{fig:recurrence-unif},
 \end{center}
 \end{figure}
 
+\clearpage
 \subsection{Chirp Signal}
 
 <<chirp, fig=TRUE, include=FALSE, width=10, height=5 >>=
@@ -958,7 +970,7 @@ See \figref{fig:recurrence-chirp},
 \label{fig:recurrence-chirp}
 \end{center}
 \end{figure}
-%\clearpage
+\clearpage
 \subsection{Doppler signal}
 @
 %  doppler {waveslim}}
@@ -982,24 +994,39 @@ See \figref{fig:recurrence-doppler},
 
 \clearpage
 \section{nonlinearTseries Quick-Start}
+
+\newcommand\inserttau[3][0.7]{
+See \figref{fig:recurrence-#2}.
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=#1\linewidth]{recurrence-#2}
+\caption{\tau_{delay} estimation. #3 Left: based on the autocorrelation function. Right: AMI}
+\label{fig:recurrence-#2}
+\end{center}
+\end{figure}
+}
+
 <<>>=
 #suppressMessages(library('nonlinearTseries'))
 library('plot3D')
 # by default, the simulation creates a RGL plot of the system's phase space
 @
 \subsection{Sinus}
-<<acfsin, fig=TRUE>>=
+<<acfsin, fig=TRUE, width=10, height=5>>=
 sinN <- sin10()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(sinN, technique = "acf", do.plot = T,
-main=paste("acf\n",deparse(substitute(x))))
+main=paste("taudelay estimation based on acf\n","sin()"))
 
 cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami=NA
-try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T,
-main=paste("ami\n",deparse(substitute(x)))))
+#try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T,
+#main=paste("taudelay estimation based on ami\n","sin()")) )
+try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T, selection.method="first.minimum",
+main=paste("taudelay estimation based on ami\n","sin()")) )
 
 cat("tau.ami:",tau.ami)
 par(oldpar)
@@ -1041,20 +1068,21 @@ Note: fails. See Rnw source code.
 
 @
 \subsection{Uniform Random Numbers}
-<<acfunif, fig=TRUE>>=
+<<acfunif, fig=TRUE, width=10, height=5>>=
 unifN <- unif()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(unifN, technique = "acf", do.plot = T,
-main=paste("acf\n",deparse(substitute(x))))
+main=paste("taudelay estimation based on acf\n", deparse(substitute(x))))
 
 cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(unifN, technique = "ami", do.plot = T,
-main=paste("ami\n",deparse(substitute(x))))
+main=paste("taudelay estimation based on ami\n", deparse(substitute(x))))
 
 cat("tau.ami:",tau.ami)
 par(oldpar)
+@
 <<embedfunifN, fig=TRUE>>=
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,
@@ -1072,7 +1100,7 @@ col = 1, type="o",cex = 0.3)
 @
 
 \subsection{Chirp}
-<<acfchirp, fig=TRUE>>=
+<<acfchirp, fig=TRUE, width=10, height=5>>=
 chirpN <- chirp()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
@@ -1159,7 +1187,7 @@ plot(st)
 
 @
 \subsection{Doppler}
-<<acfdoppler, fig=TRUE>>=
+<<acfdoppler, fig=TRUE, width=10, height=5>>=
 dopplerN <- doppler()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
@@ -1667,6 +1695,17 @@ takens.waiting4 <- buildTakens( time.series=waiting, embedding.dim=4,  time.lag=
 % takens.duration4 replaces  takens.duration4
 Time used: \Sexpr{laptime()} sec. 
 
+<<duration4rqa, fig=TRUE, include=FALSE>>=
+duration4rqa <- showrqa(takens.duration4, radius=0.8, log=TRUE)
+@
+\insertrqua{duration4rqa}{Geyser duration. Radius=0.8.}{\Sexpr{laptime()}}
+
+<<waiting4rqa, fig=TRUE, include=FALSE>>=
+waiting4rqa <- showrqa(takens.waiting4, radius=2.4, log=TRUE)
+@
+\insertrqua{waiting4rqa}{Geyser waiting. Radius=2.4.}{\Sexpr{laptime()}}
+
+
 <<durationtakens4no1, fig=TRUE, include=FALSE>>=
 statepairs(takens.duration4) #dim=4
 @
@@ -1798,7 +1837,7 @@ par(oldpar)
 <<takens_duration4rqa1, fig=TRUE, include=FALSE>>=
 showrqa(takens.duration4, radius=3*0.8)
 @
-\insertrqua{takens_duration4rqa1}{Example case:  Old Faithful Geyser eruption durations. Dim=4}{\Sexpr{laptime()}}
+\insertrqua{takens_duration4rqa1}{Example case:  Old Faithful Geyser eruption durations. Radius=2.4 Dim=4}{\Sexpr{laptime()}}
 
 %: 2*1 recurrence
 Each plot shows a symmetric matrix. Since dimensions match, we can use the upper and ower triangle to allow comparison of both series in one plot, comparing the upper and lower triangle.
@@ -1911,7 +1950,9 @@ See \Vref{fig:recurrencePlot2}.
 
 
 
-So far, the data have been handled as a pair of one-dimensional problems. Looking at the data as a bivariate problem requires to use a bivariate distance to define neighbours. See \citep{marwan2002nonlinear}.
+So far, the data have been handled as a pair of one-dimensional problems. Looking at the 
+data as a bivariate problem requires to use a bivariate distance to define neighbours. 
+See  \cite{marwan2002nonlinear}, \cite{marwan2002cross}.
 
 \gsnote{this is an early draft}
 
@@ -1923,7 +1964,7 @@ Here is a brute force implmentaation
 
 Signed distances may be used for experiments.
 <<>>=
-maxdist <- function (x){ max(abs(x))} # works on delta
+maxdist <- function (x){ max(abs(x), na.rm=TRUE)} # works on delta
 cordist <- function (x, y){ suppressWarnings(cor(x,y))}
 @
 \todo{Epsilon/radius and heaviside not use here - may be handled in image rendering.}
@@ -3590,7 +3631,7 @@ Time used: \Sexpr{laptime()} sec.
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible
 %\bibliographystyle{authordate3}% bib/din1505/alphadin.bst
-\bibliography{../pulse}
+\bibliography{../pulse}{../sda}
 %
 \clearpage
 

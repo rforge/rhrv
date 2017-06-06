@@ -1,5 +1,9 @@
+# 06.06.2017, 16:46:50
 # 26.05.2017, 20:03:15 added in svn rhrv/gs/R/geyserRecurrrence.R 
 # 25.05.2017, 17:24:33
+
+setwd("/Users/gs/projects/rforge/rhrv/gs/Rnw_out"); Sweave(file= "../Rnw/recurrence.Rnw", output="recurrence.tex", debug=TRUE, eps=FALSE, figs.only=FALSE); 
+
 # test set for bivariate recurrence plot
 
 library(MASS)
