@@ -12,7 +12,7 @@
 %
 
 \typeout{Clear R workspace??}
-%global flags for conditional builds
+%global flags for conditional buildss
 %:flags
 \def\private{true}% comment out for public version
 \def\solutions{true}% comment out to hide solutions
@@ -103,7 +103,7 @@ colorlinks=true, linkcolor=black, citecolor=black, urlcolor=black]{hyperref}
 \usepackage{colortbl}
 \usepackage{verbatim}        % small example code
 \usepackage{graphicx, fancyvrb, fancyref}
-%\graphicspath{{./}{./media/}{../media/}}%Graetzer, p. 420
+\graphicspath{{./}{./media/}{../media/}}%Graetzer, p. 420
 
 \newcommand{\figref}[1]{\Vref{#1}}
 
@@ -187,7 +187,7 @@ See \figref{fig:#2}.
 %:   insertrqua
 %! width should be adjusted to recurrence plot
 % [width] #2: label #3: caption #4: time
-\newcommand\insertrqua[4][0.64]{RQA #3. Time used: #4 sec. For graphical ouput, see \figref{fig:recurrence-#2}.
+\newcommand\insertrqua[4][0.82]{RQA #3. Time used: #4 sec. For graphical ouput, see \figref{fig:recurrence-#2}.
 
 \begin{figure}[htbp]
 \begin{center}
@@ -212,7 +212,7 @@ See \figref{fig:recurrence-#2}.
 }
 
 %:   plotco
-\newcommand\plotco[3][0.7]{
+\newcommand\plotco[3][0.64]{
 See \figref{fig:recurrence-#2}.
 
 \begin{figure}[htbp]
@@ -259,30 +259,39 @@ The other toolkit is that of stochastics processes, in particular Markov models.
 
 Recurrence, coming back to some state, is often a key to understand a near periodic system. A classical field is the movement of celestial bodies.
 
-Hydrodynamics is a challenging problem. Understanding planetary motion is a historical challenge, and may be useful as an illustration.
+Hydrodynamics is a challenging problem. Understanding planetary motion is a historical challenge, and 
+may be useful as an illustration.
 
-As a simple illustration, let $x=(x_i)$ be a sequence, maybe near periodic. For now, think of $i$ as a time index.
+As a simple illustration, let $x=(x_i)$ be a sequence, maybe near periodic. For now, think of $i$ as a time 
+index.
 
-Recurrence plots have two steps. The first was a bold step by Floris Takens. If you do not know the state space of a system, for a choice of ``dimension''  $d$, take the sequence of $d$ tuples taken from your data to define the states.
+Recurrence plots have two steps. The first was a bold step by Floris Takens. If you do not know the 
+phase space of a system, for a choice of ``dimension''  $d$, take the sequence of $d$ tuples taken from 
+your data to define the states.
 $$ u_i = (x_i,\ldots , x_{i+(d-1)})$$
-This is Takens' delay embedding state (re)construction \cite{takens1981detecting}.
+Under mild conditions, this  Takens' delay embedding allows to reconstruct the topogy of the 
+phase space   from this embedded sequence
+\citep{takens1981detecting}.
 \index{Takens state}
 \index{recurrence plot}
 \index{delay embedding}
 
-As a mere technical refinement: you may know that your data are a flattened representation of $m$ 
-dimensional data. So you take
+The delay imbedding implicitly depends on the sampling rate with which the signal has been 
+sampled. For 
+example, if the rate is sufficiently high, all differentiable dynamics appear to be linear sine linear 
+approximation holds.  The imbedding construction allows a sub-sampling using a lag parameter $m$. So 
+you take
 $$ u_i = (x_i, x_{i+m}\ldots, x_{i+(d-1)*m}).$$
-This may be a relict of FORTRAN times, where it was common to flatten two-dimensional structures by 
-case. 
 \todo{add support for higher dimensional signals}
 
 Conceptually, you define states by observed histories. For classical Markov setup, the state is defined by 
-the previous information $x_{i-1}$, but for more complex situations you may have to step back in the past. 
+the previous information $x_{i-1}$, but for more complex situations you may have to step back in the 
+past. 
 Finding the appropriate $d$ is the challenge. So it may be appropriate to view the Takens' states as a 
 family, indexed by the time scope $d$. The rest is structural information how to arrange items.
 
-Of course it is possible to compress information here, sorting states and removing duplicates. Keeping the 
+Of course it is possible to compress information here, sorting states and removing duplicates. Keeping 
+the 
 original definition as the advantage that we have the index $i$, so that $u_i$ is the state at index position 
 $i$.
 
@@ -355,6 +364,7 @@ While visual inspection is the prime way to assess recurrence plots, quantificat
 revealed of the plot may be helpful. A collection of indices is provided by a recurrence quantification 
 analysis (RQA). References: 
 \citep{zbilut2006recurrence},  \citep{webber2005recurrence}. See  \Vref{tab:rqa}.
+\todo{check RATIO - remove  $RR =^? Radius^2$}
 
 \begin{table}[htp]
 \caption{Recurrence Quantification Analysis (RQA)}
@@ -415,7 +425,32 @@ if (!require("nonlinearTseries")) {
 install.packages("nonlinearTseries") 
 library(nonlinearTseries)
 }
+#suppressMessages(library('nonlinearTseries'))
+library('plot3D')
+# by default, the simulation creates a RGL plot of the system's phase space
 
+@
+For signal representation, we use a common layout.
+% see insertsignal{} for imbedding
+%:   function plotsignal
+<<>>=
+plotsignal <- function(signal, main, ylab, alpha=0.4) {
+	if (missing(ylab)) { ylab <- deparse(substitute(signal)) }
+
+	par(mfrow = c(1, 2))
+	plot(signal, 
+		main = "", xlab = "index",  ylab = ylab,
+		col = rgb(0, 0, 1, 0.75*alpha), pch = 20)
+
+	plot(signal, type = "l", 
+		main = "",  xlab = "index", ylab = ylab,
+		col = rgb(0, 0, 0, alpha))
+	points(signal, 
+		col = rgb(0, 0, 1, 0.75*alpha), pch = 20)
+	if (missing(main)) { main = deparse(substitute(signal)) }
+	title(main = paste("signal and linear interpolation\n",main), 
+		outer = TRUE, line = -2, cex.main = 1.2)
+}
 @
 
 \subsubsection{Takens States}
@@ -783,9 +818,10 @@ showrqa <- function(takens, dim=NULL, radius,
 
 	cat(paste("Radius:", radius, 
 		" Recurrence coverage REC:", round(xxrqa$REC, digits), 
-		" log(REC)/log(R):", 		round(log(xxrqa$REC)/log(radius), digits), "\n"))
-	xxrqa$logratio <- log(xxrqa$REC)/log(radius)	
-	cat(paste("Determinism:", round(xxrqa$DET, digits), 
+		" log(REC)/log(R):", round(log(xxrqa$REC)/log(radius), digits), "\n"))
+	xxrqa$logratio <- log(xxrqa$REC)/log(radius)
+	cat("Ratio", xxrqa$RATIO)
+	cat(paste(" Determinism:", round(xxrqa$DET, digits), 
 		" Laminarity:",round(xxrqa$LAM, digits), "\n"))
 	cat(paste("DIV:", round(xxrqa$DIV, digits), "\n"))
 	cat(paste("Trend:", round(xxrqa$TREND, digits), 
@@ -797,7 +833,7 @@ showrqa <- function(takens, dim=NULL, radius,
 		" Mean:",round(xxrqa$Vmean, digits), "\n"))
 
 	if (do.hist){
-	if (log==TRUE) log<-"y"; 	oldpar <- par(mfrow=c(2,1))
+	if (log==TRUE) log<-"y"; 	oldpar <- par(mfrow=c(1,2))
 	
 	xxrqa$diagonalHistogram[xxrqa$diagonalHistogram==0] <- NA # hack for log zero counts
 	dh<- xxrqa$diagonalHistogram  	#if (log=="y")  {dh <- dh+1}
@@ -859,7 +895,7 @@ chunk.time.start<- proc.time()
 
 @
 We set up a small series of test signals. Some synthetic test signals are introduced here.
-More test cases used later are the Geyser data set (\Vref{sec:geyser}) and two examples of heart rate data sets (\Vref{sec:hrv} and \Vref{sec:hrv2}) from \code{library(rhrv)}. The Geyser data set gives an example of a bi-variate point process. The HRV data sets give real live point orocess examples
+More test cases used later are the Geyser data set (\Vref{sec:geyser}) and two examples of heart rate data sets (\Vref{sec:hrv} and \Vref{sec:hrv2}) from \code{library(rhrv)}. The Geyser data set gives an example of a bi-variate point process. The HRV data sets give real live point process examples.
 
 For convenience, some source code from other libraries is included to make this self-contained.
 
@@ -871,31 +907,6 @@ nsignal <- 1024 #nsignal <- 4096 #nsignal <- 256
 system.time.start <- proc.time()
 @
 
-For signal representation, we use a common layout.
-%see insertsignal for imbedding
-%:   function plotsignal
-<<>>=
-plotsignal <- function(signal, main, ylab) {
-	#! alpha level should depend on expected number of overlaps
-	
-	if (missing(ylab)) { ylab <- deparse(substitute(signal)) }
-
-	par(mfrow = c(1, 2))
-	plot(signal, 
-		main = "", xlab = "index",  ylab = ylab,
-		col = rgb(0, 0, 1, 0.3), pch = 20)
-
-	plot(signal, type = "l", 
-		main = "",  xlab = "index", ylab = ylab,
-		col = rgb(0, 0, 0, 0.4))
-	points(signal, 
-		col = rgb(0, 0, 1, 0.3), pch = 20)
-	if (missing(main)) { main = deparse(substitute(signal)) }
-	title(main = paste("signal and linear interpolation\n",main), 
-		outer = TRUE, line = -2, cex.main = 1.2)
-}
-@
-
 \subsection{Sinus}
 
 <<sin10, fig=TRUE, include=FALSE, width=10, height=5 >>=
@@ -905,13 +916,6 @@ plotsignal(sin10())
 %\insertsignal{"a1","a2", "a3")
 See \figref{fig:recurrence-sin10}.
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.8\linewidth]{recurrence-sin10}
-\caption{Test case: sin10. Signal and linear interpolation.}
-\label{fig:recurrence-sin10}
-\end{center}
-\end{figure}
 
 \subsection{Uniform Random Numbers}
 
@@ -922,15 +926,7 @@ plotsignal(xunif)
 @
 See \figref{fig:recurrence-unif},
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.8\linewidth]{recurrence-unif}
-\caption{Test case: unif - uniform random numbers. Signal and linear interpolation.}
-\label{fig:recurrence-unif}
-\end{center}
-\end{figure}
 
-\clearpage
 \subsection{Chirp Signal}
 
 <<chirp, fig=TRUE, include=FALSE, width=10, height=5 >>=
@@ -963,14 +959,6 @@ plotsignal(chirp())
 @
 See \figref{fig:recurrence-chirp},
 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=0.8\linewidth]{recurrence-chirp}
-\caption{Test case: chirp signal. Signal and linear interpolation.}
-\label{fig:recurrence-chirp}
-\end{center}
-\end{figure}
-\clearpage
 \subsection{Doppler signal}
 @
 %  doppler {waveslim}}
@@ -984,15 +972,46 @@ plotsignal(doppler())
 @
 See \figref{fig:recurrence-doppler},
 
+
+
+\clearpage
+
+\clearpage
+
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=0.8\linewidth]{recurrence-doppler}
+\includegraphics[width=0.52\linewidth]{recurrence-sin10}
+\caption{Test case: sin10. Signal and linear interpolation.}
+\label{fig:recurrence-sin10}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.52\linewidth]{recurrence-unif}
+\caption{Test case: unif - uniform random numbers. Signal and linear interpolation.}
+\label{fig:recurrence-unif}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.52\linewidth]{recurrence-chirp}
+\caption{Test case: chirp signal. Signal and linear interpolation.}
+\label{fig:recurrence-chirp}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=0.52\linewidth]{recurrence-doppler}
 \caption{Test case: Doppler signal. Signal and linear interpolation.}
 \label{fig:recurrence-doppler}
 \end{center}
 \end{figure}
-
 \clearpage
+
 \section{nonlinearTseries Quick-Start}
 
 \newcommand\inserttau[3][0.7]{
@@ -1001,102 +1020,89 @@ See \figref{fig:recurrence-#2}.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=#1\linewidth]{recurrence-#2}
-\caption{\tau_{delay} estimation. #3 Left: based on the autocorrelation function. Right: AMI}
+\caption{$\tau_{delay}$ estimation. #3 Left: based on the autocorrelation function. Right ACF: AMI}
 \label{fig:recurrence-#2}
 \end{center}
 \end{figure}
 }
 
-<<>>=
-#suppressMessages(library('nonlinearTseries'))
-library('plot3D')
-# by default, the simulation creates a RGL plot of the system's phase space
 @
 \subsection{Sinus}
-<<acfsin, fig=TRUE, width=10, height=5>>=
+<<acfsin, fig=TRUE, width=10, height=5, include=FALSE>>=
 sinN <- sin10()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
-tau.acf = timeLag(sinN, technique = "acf", do.plot = T,
-main=paste("taudelay estimation based on acf\n","sin()"))
+	tau.acf = timeLag(sinN, technique = "acf", do.plot = T,
+	main=paste("$\tau_{delay}$ estimation based on acf\n","sin()")) 
 
-cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami=NA
-#try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T,
-#main=paste("taudelay estimation based on ami\n","sin()")) )
-try(tau.ami <- timeLag(sinN, technique = "ami", do.plot = T, selection.method="first.minimum",
-main=paste("taudelay estimation based on ami\n","sin()")) )
-
-cat("tau.ami:",tau.ami)
+try(tau.ami <- timeLag(sinN, technique = "ami", 
+	do.plot = T, selection.method="first.minimum",
+	main=paste("$\tau_{delay}$ estimation based on ami\n","sin()")) )
 par(oldpar)
-
+cat("tau.ami:",tau.ami)
+cat("tau.acf:",tau.acf)
 @
 
-Note: fails. See Rnw source code.
-%        Rnw>  cat("tau.ami:",tau.ami) 
-%        tau.ami: NA
-%        Rnw>  par(oldpar) 
-%        tau.acf: 20Error in get.position.decays(fx, fx[1]/exp(1), technique) : 
-%          The ami function does not cross 0.802894698328813. Choose another "cross" value!
-%        
-%        tau.ami: NA21 : echo keep.source term verbatim pdf  (label = embedfsinN, recurrence.Rnw:937)
-%        
-%        Rnw>  if (is.numeric(tau.ami)) {
-%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
-%        +  max.embedding.dim = 15)}  else  {
-%        +  emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
-%        +  max.embedding.dim = 15)}  
-%        
-%        Error:  chunk 21 (label = embedfsinN) 
-%        Error in if ((embedding.dim == 0) && (E1.vector[[dimension - 2]] >= threshold) &&  : 
-%          missing value where TRUE/FALSE needed
+ \inserttau{"acfsin"}{"Sinus"}
  
-%<<embedfsinN, fig=TRUE>>=
-%if (is.numeric(tau.ami)) {
-%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
-%max.embedding.dim = 15)}  else  {
-%emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
-%max.embedding.dim = 15)} 
-%cat("Estimated embedding dim:", emb.dim)
-%
-%<<takfsinN, fig=TRUE>>=
-%tak = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)
-%scatter3D(tak[,1], tak[,2], tak[,3],
-%main = paste("Reconstructed phase space",deparse(substitute(time.series))),
-%col = 1, type="o",cex = 0.3)
-
+<<embedfsinN, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.ami,
+max.embedding.dim = 15)
+cat("sin() Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
+emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
+max.embedding.dim = 15)
+cat("sin() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
+#@
+#%%
+#%<<takfsinN, fig=TRUE>>=
+taksinN = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(taksinN[,1], taksinN[,2], taksinN[,3],
+#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space\n sin n=",length(sinN)),
+col = 1, type="o",cex = 0.3)
+par(oldpar)
 @
+
 \subsection{Uniform Random Numbers}
 <<acfunif, fig=TRUE, width=10, height=5>>=
 unifN <- unif()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(unifN, technique = "acf", do.plot = T,
-main=paste("taudelay estimation based on acf\n", deparse(substitute(x))))
+main=paste("taudelay estimation based on acf\n", "unif"))
 
 cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(unifN, technique = "ami", do.plot = T,
-main=paste("taudelay estimation based on ami\n", deparse(substitute(x))))
+main=paste("taudelay estimation based on ami\n", "unif"))
 
 cat("tau.ami:",tau.ami)
 par(oldpar)
 @
-<<embedfunifN, fig=TRUE>>=
+<<embedfunifN, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,
-max.embedding.dim = 15)}  else  {
+max.embedding.dim = 15)
+cat("unif Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
 emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,
-max.embedding.dim = 15)} 
-cat("Estimated embedding dim:", emb.dim)
+max.embedding.dim = 15)
+cat("unif Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
 
-<<takfunifN, fig=TRUE>>=
+#<<takfunifN, fig=TRUE>>=
 tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(tak[,1], tak[,2], tak[,3],
-main = paste("Reconstructed phase space",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space","unif n=",length(unifN)),
 col = 1, type="o",cex = 0.3)
-
+par(oldpar)
 @
 
 \subsection{Chirp}
@@ -1105,28 +1111,34 @@ chirpN <- chirp()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(chirpN, technique = "acf", do.plot = T,
-main=paste("acf\n",deparse(substitute(x))))
+main=paste("taudelay estimation based on acf\n","chirp()"))
 
 cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(chirpN, technique = "ami", do.plot = T,
-main=paste("ami\n",deparse(substitute(x))))
+main=paste("taudelay estimation based on ami\n n=",length(chirpN),"chirp()")) 
 cat("tau.ami:",tau.ami)
 par(oldpar)
-
-<<embedfchirpN, fig=TRUE>>=
+#
+@
+<<embedfchirpN, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,
-max.embedding.dim = 15)}  else  {
+max.embedding.dim = 15)
+cat("chirp Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
 emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,
-max.embedding.dim = 15)} 
-cat("Estimated embedding dim:", emb.dim)
+max.embedding.dim = 15)
+cat("chirp Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
 
-<<takfchirpN, fig=TRUE>>=
+#<<takfchirpN, fig=TRUE>>=
 tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(tak[,1], tak[,2], tak[,3],
 main = paste("Reconstructed phase space\n","Chirp"),
 col = 1, type="o",cex = 0.3)
+par(oldpar)
 @
 
 <<corrDimchirpN, fig=TRUE>>=
@@ -1138,6 +1150,7 @@ min.radius = 0.001, max.radius = 50,
 n.points.radius = 40,
 do.plot=FALSE)
 plot(cd)
+par(oldpar)
 @
 %cd.est = estimate(cd, regression.range=c(0.75,3),
 %use.embeddings = 5:7)
@@ -1200,19 +1213,25 @@ main=paste("ami\n",deparse(substitute(x))))
 cat("tau.ami:",tau.ami)
 par(oldpar)
 
-<<embedfdopplerN, fig=TRUE>>=
+<<embedfdopplerN, fig=TRUE, width=10, height=5 >>=
+
+oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,
-max.embedding.dim = 15)}  else  {
+max.embedding.dim = 15)
+cat("Doppler lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
 emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,
-max.embedding.dim = 15)} 
-cat("Estimated embedding dim:", emb.dim)
+max.embedding.dim = 15)
+cat("Doppler lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
 
-<<takfdopplerN, fig=TRUE>>=
+#<<takfdopplerN, fig=TRUE>>=
 tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(tak[,1], tak[,2], tak[,3],
 main = "Reconstructed phase space \n doppler" ,
 col = 1, type="o",cex = 0.3)
+par(oldpar)
 @
 
 
@@ -1510,7 +1529,7 @@ local.recurrencePlotAux(sin10neighs, dim=dim(sintakens)[2], radius=0.8)
 \insertrecurrence{sin10rec}{Test case: sinus}{\Sexpr{laptime()}}
 
 
-<<sin10rqa, fig=TRUE, include=FALSE>>=
+<<sin10rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 sin10rqa <- showrqa(sintakens, radius=0.8, log=TRUE)
 @
 \insertrqua{sin10rqa}{Test case: sinus. Radius=0.8.}{\Sexpr{laptime()}}
@@ -1525,7 +1544,7 @@ local.recurrencePlotAux(sin10lag16neighs, dim=4, radius=0.2)
 
 \insertrecurrence{sin10lag16rec}{Test case: sinus curve, time lag 16}{\Sexpr{laptime()}}
 
-<<sin10lag16rqa, fig=TRUE, include=FALSE>>=
+<<sin10lag16rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 sin10lag16rqa <- showrqa(sintakenslag16, radius=0.2)
 @
 \insertrqua{sin10lag16rqa}{Test case: sinus curve, time lag 16}{\Sexpr{laptime()}}
@@ -1546,7 +1565,7 @@ local.recurrencePlotAux(unifneighs, radius=0.6)
 @
 \insertrecurrence{unifrec}{Test case: uniform random numbers}{\Sexpr{laptime()}}
 
-<<uniftakensrqa106, fig=TRUE, include=FALSE >>=
+<<uniftakensrqa106, fig=TRUE, include=FALSE , width=10, height=5>>=
 showrqa(uniftakens, radius=0.6, log=TRUE)
 @
 \insertrqua{uniftakensrqa106}{Test case: uniform random numbers, radius=0.6}{\Sexpr{laptime()}}
@@ -1567,7 +1586,7 @@ local.recurrencePlotAux(chirpneighs, radius=0.6)
 @
 \insertrecurrence{chirprec}{Test case: chirp signal}{\Sexpr{laptime()}}
 
-<<chirprqa, fig=TRUE, include=FALSE>>=
+<<chirprqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(chirptakens, radius=0.6)
 @
 \insertrqua{chirprqa}{Test case: chirp signal}{\Sexpr{laptime()}}
@@ -1602,7 +1621,7 @@ local.recurrencePlotAux(dopplerneighs, dim=4, radius=0.2)
 chunk.time.start<- proc.time()
 @
 
-<<dopplerrqa, fig=TRUE, include=FALSE>>=
+<<dopplerrqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(dopplertakens, radius=0.2)
 @
 \insertrqua{dopplerrqa}{Test case: Doppler}{\Sexpr{laptime()}}
@@ -1620,7 +1639,7 @@ local.recurrencePlotAux(dopplerlag16neighs, dim=4, radius=0.2)
 
 \insertrecurrence{dopplerlag16rec}{Test case: Doppler}{\Sexpr{laptime()}}
 
-<<dopplerlag16rqa, fig=TRUE, include=FALSE>>=
+<<dopplerlag16rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(dopplertakenslag16, radius=0.2)
 @
 \insertrqua{dopplerlag16rqa}{RQA. Test case: Doppler}{\Sexpr{laptime()}}
@@ -1685,8 +1704,92 @@ Time used: \Sexpr{laptime()} sec.  Signal components and linear interpolation. S
 \end{center}
 \end{figure}
 
+%:duration quickstart
+<<acfduration, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(duration, technique = "acf", do.plot = T,
+main=paste("taudelay estimation based on acf\n","duration()"))
+cat("tau.acf:",tau.acf)
 
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+#try(tau.ami <- timeLag(duration, technique = "ami", do.plot = T,
+#main=paste("taudelay estimation based on ami\n","duration")) )
+try(tau.ami <- timeLag(duration, technique = "ami", 
+	do.plot = T, selection.method="first.minimum",
+main=paste("taudelay estimation based on ami\n","sin()")) )
 
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+@
+ 
+<<embedfduration, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(duration, time.lag = tau.ami,
+max.embedding.dim = 15)
+cat("duration Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
+emb.dim = estimateEmbeddingDim(duration, time.lag = tau.acf,
+max.embedding.dim = 15)
+cat("duration Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
+#@
+#%%
+#%<<takfsinN, fig=TRUE>>=
+takduration = buildTakens(duration,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(takduration[,1], takduration[,2], takduration[,3],
+#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space\n duration=",length(duration)),
+col = 1, type="o",cex = 0.3)
+par(oldpar)
+@
+%:waiting quickstart
+%: stoP???
+<<acfwaiting, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+tau.acf = timeLag(waiting, technique = "acf", do.plot = T,
+main=paste("taudelay estimation based on acf\n","waiting()"))
+cat("tau.acf:",tau.acf)
+
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+#try(tau.ami <- timeLag(waiting, technique = "ami", do.plot = T,
+#main=paste("taudelay estimation based on ami\n","waiting()")) )
+try(tau.ami <- timeLag(waiting, technique = "ami", 
+	do.plot = T, selection.method="first.minimum",
+main=paste("taudelay estimation based on ami\n","waiting()")) )
+
+cat("tau.ami:",tau.ami)
+par(oldpar)
+
+@
+ 
+<<embedfwaiting, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(waiting, time.lag = tau.ami,
+max.embedding.dim = 15)
+cat("waiting Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
+emb.dim = estimateEmbeddingDim(waiting, time.lag = tau.acf,
+max.embedding.dim = 15)
+cat("waiting Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
+#@
+#%%
+#%<<takfwaiting, fig=TRUE>>=
+takwaiting = buildTakens(waiting,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(takwaiting[,1], takwaiting[,2], takwaiting[,3],
+#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space\n waiting n=",length(waiting)),
+col = 1, type="o",cex = 0.3)
+par(oldpar)
+@
+%:buildTakens
 <<>>=
 attach(geyser)
 takens.duration4 <- buildTakens( time.series=duration, embedding.dim=4, time.lag=1)
@@ -1695,12 +1798,12 @@ takens.waiting4 <- buildTakens( time.series=waiting, embedding.dim=4,  time.lag=
 % takens.duration4 replaces  takens.duration4
 Time used: \Sexpr{laptime()} sec. 
 
-<<duration4rqa, fig=TRUE, include=FALSE>>=
+<<duration4rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 duration4rqa <- showrqa(takens.duration4, radius=0.8, log=TRUE)
 @
 \insertrqua{duration4rqa}{Geyser duration. Radius=0.8.}{\Sexpr{laptime()}}
 
-<<waiting4rqa, fig=TRUE, include=FALSE>>=
+<<waiting4rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 waiting4rqa <- showrqa(takens.waiting4, radius=2.4, log=TRUE)
 @
 \insertrqua{waiting4rqa}{Geyser waiting. Radius=2.4.}{\Sexpr{laptime()}}
@@ -1834,7 +1937,7 @@ par(oldpar)
 %local.recurrencePlot1(waitingneighs4)
 %par(oldpar)
 
-<<takens_duration4rqa1, fig=TRUE, include=FALSE>>=
+<<takens_duration4rqa1, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(takens.duration4, radius=3*0.8)
 @
 \insertrqua{takens_duration4rqa1}{Example case:  Old Faithful Geyser eruption durations. Radius=2.4 Dim=4}{\Sexpr{laptime()}}
@@ -2152,7 +2255,7 @@ local.recurrencePlotAux(eruptionsneighs2)
 
 \insertrecurrence{eruptionsrec2}{Old Faithful Geyser eruption durations. Dim=2} {\Sexpr{laptime()}}
 
-<<eruptionstakens2rqa, fig=TRUE, include=FALSE>>=
+<<eruptionstakens2rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(eruptionstakens2, radius=0.8)
 @
 \insertrqua{eruptionstakens2rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=2}{\Sexpr{laptime()}}
@@ -2174,7 +2277,7 @@ local.recurrencePlotAux(eruptionsneighs4)
 @
 \insertrecurrence{eruptionsrec42}{Example case:  Old Faithful Geyser eruption durations. Dim=4} {\Sexpr{laptime()}}
 
-<<takens_duration4rqa, fig=TRUE, include=FALSE>>=
+<<takens_duration4rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(takens.duration4, radius=0.8)
 @
 \insertrecurrence{takens_duration4rqa}{Old Faithful Geyser eruption durations. Dim=4}{\Sexpr{laptime()}}
@@ -2224,7 +2327,7 @@ local.recurrencePlotAux(eruptionsneighs8)
 @
 \insertrecurrence{eruptionsrec8}{Example case:  Old Faithful Geyser eruption durations. Dim=8} {\Sexpr{laptime()}}
 
-<<eruptionstakens8rqa, fig=TRUE, include=FALSE>>=
+<<eruptionstakens8rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(eruptionstakens8, radius=2.6)
 @
 \insertrqua{eruptionstakens8rqa}{Example case:  Old Faithful Geyser eruption durations. Dim=8}{\Sexpr{laptime()}}
@@ -2279,7 +2382,7 @@ save(waitingneighs, file="waitingneighs.Rdata")
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
-<<waitingneighsrqa, fig=TRUE, include=FALSE>>=
+<<waitingneighsrqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(waitingtakens, radius=16)
 @
 \insertrqua{waitingneighsrqa}{Example case:  Old Faithful Geyser waiting}{\Sexpr{laptime()}}
@@ -2495,6 +2598,157 @@ local.recurrencePlotAux(waitingneighs)
 %
 \clearpage
 
+\section{Case Study: Tension data}
+
+\todo{add logistic transform}
+
+The tension data set (from \citep{Ebner-Priemer2007Ambulatory-asse})is one sample case of recordings of psychological tension data, recorded in regular interval on a subjective tension level ranked $0 \ldots 9$. The data are ranked data, and may contain missing data.
+<<tension, fig=TRUE>>=
+tension <- scan("../media/tension.dat")
+plotsignal(tension,"tension","level")
+ tension<-tension[!is.na(tension)]
+@
+\todo{fix segfault in \code{mutualInformation()} if NA is included}
+% this crashes, e.g.
+%*** caught segfault ***
+%address 0x7fd5e8603618, cause 'memory not mapped'
+%
+%Traceback:
+% 1: mutualInformation(time.series, lag.max = lag.max, do.plot = do.plot,     main = main, ...)
+% 2: timeLag(tension, technique = "ami", do.plot = T, selection.method = "first.minimum",     main = paste("$\tau_{delay}$ estimation based on ami\n",         "tension()"))
+%
+%Possible actions:
+%1: abort (with core dump, if enabled)
+%2: normal R exit
+%3: exit R without saving workspace
+%4: exit R saving workspace
+<<acftension, fig=TRUE, width=10, height=5, include=FALSE>>=
+
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+	tau.acf = timeLag(tension, technique = "acf", do.plot = T,
+	main=paste("$\tau_{delay}$ estimation based on acf\n","tension()")) 
+
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+try(tau.ami <- timeLag(tension, technique = "ami", 
+	do.plot = T, selection.method="first.minimum",
+	main=paste("$\tau_{delay}$ estimation based on ami\n","tension()")) )
+par(oldpar)
+cat("tau.ami:",tau.ami)
+cat("tau.acf:",tau.acf)
+@
+ \inserttau{"acftension"}{"Tension"}
+ 
+<<embedtension, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(tension, time.lag = tau.ami,
+max.embedding.dim = 15)
+cat("tension() Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
+emb.dim = estimateEmbeddingDim(tension, time.lag = tau.acf,
+max.embedding.dim = 15)
+cat("tension() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
+#@
+#%%
+#%<<takfsinN, fig=TRUE>>=
+taktension = buildTakens(tension,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(taktension[,1], taktension[,2], taktension[,3],
+#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space\n tension n=",length(tension)),
+col = 1, type="o",cex = 0.3)
+par(oldpar)
+@
+<<tensionrec, fig=TRUE, include=FALSE>>=
+tensionneighs <- local.findAllNeighbours(taktension, radius=2)
+save(tensionneighs, file="tensionneighs.Rdata")
+# load(file="tensionneighs.Rdata")
+local.recurrencePlotAux(tensionneighs, dim=dim(taktension)[2], radius=2)
+@
+\insertrecurrence{tensionrec}{Test case: tension}{\Sexpr{laptime()}}
+
+
+<<tensionrqa, fig=TRUE, include=FALSE, width=10, height=5>>=
+tensionrqa <- showrqa(taktension, radius=2, log=TRUE)
+@
+\insertrqua{tensionrqa}{Test case: tension. Radius=2.}{\Sexpr{laptime()}}
+
+%p <- (0:k)*1/(k+2)+1/(k+2)
+%> lp <- log(p/1-p)
+%> lp
+% [1] -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf -Inf
+%> lp <- log(p/(1-p))
+%> lp
+% [1] -2.3025851 -1.5040774 -0.9808293 -0.5596158 -0.1823216  0.1823216  0.5596158
+% [8]  0.9808293  1.5040774  2.3025851
+%> plot(lp)
+@
+
+Try rescaled logits:
+
+<<>>=
+k=9 # levels 0..9
+tension1 <- (tension+1)/(k+2)
+tension1 <- log(tension1/(1-tension1))
+@
+
+<<acftension1, fig=TRUE, width=10, height=5, include=FALSE>>=
+
+oldpar <-  par(mfrow=c(1,2))
+# taudelay estimation based on the autocorrelation function
+	tau.acf = timeLag(tension1, technique = "acf", do.plot = T,
+	main=paste("$\tau_{delay}$ estimation based on acf\n","tension1()")) 
+
+# taudelay estimation based on the mutual information function
+tau.ami=NA
+try(tau.ami <- timeLag(tension1, technique = "ami", 
+	do.plot = T, selection.method="first.minimum",
+	main=paste("$\tau_{delay}$ estimation based on ami\n","tension1()")) )
+par(oldpar)
+cat("tau.ami:",tau.ami, " tau.acf:",tau.acf)
+@
+ \inserttau{"acftension1"}{"tension1"}
+ 
+<<embedtension1, fig=TRUE, width=10, height=5>>=
+oldpar <-  par(mfrow=c(1,2))
+if (is.numeric(tau.ami)) {
+emb.dim = estimateEmbeddingDim(tension1, time.lag = tau.ami,
+max.embedding.dim = 15)
+cat("tension1() Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
+}  else  {
+emb.dim = estimateEmbeddingDim(tension1, time.lag = tau.acf,
+max.embedding.dim = 15)
+cat("tension1() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
+} 
+#@
+#%%
+#%<<takfsinN, fig=TRUE>>=
+taktension1 = buildTakens(tension1,embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(taktension1[,1], taktension1[,2], taktension1[,3],
+#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
+main = paste("Reconstructed phase space\n tension1 n=",length(tension1)),
+col = 1, type="o",cex = 0.3)
+par(oldpar)
+@
+<<tension1rec, fig=TRUE, include=FALSE>>=
+tension1neighs <- local.findAllNeighbours(taktension1, radius=2)
+save(tension1neighs, file="tension1neighs.Rdata")
+# load(file="tension1neighs.Rdata")
+local.recurrencePlotAux(tension1neighs, dim=dim(taktension1)[2], radius=2)
+@
+\insertrecurrence{tension1rec}{Test case: tension1}{\Sexpr{laptime()}}
+
+
+<<tension1rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
+tension1rqa <- showrqa(taktension1, radius=2, log=TRUE)
+@
+\insertrqua{tension1rqa}{Test case: tension1. Radius=2.}{\Sexpr{laptime()}}
+
+
+\clearpage
+
 \section{Case Study: HRV data example.beats}
 \index{heart rate}
 \index{hrv}
@@ -2622,7 +2876,7 @@ local.recurrencePlotAux(hrvRRneighs4)
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRrec2, fig=TRUE, include=FALSE>>=
+<<hrvRRrec2, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRtakens2 <- local.buildTakens( time.series=hrv.data$Beat$RR[1:nsignal],
 	embedding.dim=2,time.lag=1)
 hrvRRneighs2  <- local.findAllNeighbours(hrvRRtakens2, radius=16)
@@ -2868,7 +3122,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec2, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec2, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], 
 	embedding.dim=2, time.lag=1)
 hrvRRVneighs2  <- local.findAllNeighbours(hrvRRVtakens2[-(1:2),], 
@@ -2886,7 +3140,7 @@ Dim=2. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec6, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec6, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=6,time.lag=1)
 hrvRRVneighs6  <- local.findAllNeighbours(hrvRRVtakens6[-(1:2),], radius=0.125)
@@ -2902,7 +3156,7 @@ Dim=6. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 %: dim 8
-<<hrvRRVrec8, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec8, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=8,time.lag=1)
 hrvRRVneighs8  <- local.findAllNeighbours(hrvRRVtakens8[-(1:2),], radius=0.125)
@@ -2919,7 +3173,7 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec12, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec12, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens12 <- 
 	local.buildTakens( time.series=HRRV[1:nsignal],
 		embedding.dim=12,time.lag=1)
@@ -2938,7 +3192,7 @@ Dim=12: Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec16, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec16, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=16,time.lag=1)
 hrvRRVneighs16  <- local.findAllNeighbours(hrvRRVtakens16[-(1:2),], radius=3/16)
@@ -2962,7 +3216,7 @@ Dim=16. Time used: \Sexpr{laptime()} sec.
 \caption{Recurrence Plot. Example case:  RHRV tutorial example.beats variation. Dim=2, 4, 6, 8, 12, 16.
 Time used: \Sexpr{laptime()} sec.
 }
-\label{fig:recurrence-hrvRRVreccomp}
+\label{fig:recurrence-hrvRRVreccomp1}
 \end{center}
 \end{figure}
 %:
@@ -2977,7 +3231,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec2Lag08, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec2Lag08, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens2Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal], 
 	embedding.dim=2, time.lag=8)
 hrvRRVneighs2Lag08  <- local.findAllNeighbours(hrvRRVtakens2Lag08[-(1:2),], 
@@ -2995,7 +3249,7 @@ Dim=2. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec4Lag08, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec4Lag08, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens4Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal], 
 	embedding.dim=4, time.lag=8)
 hrvRRVneighs4Lag08  <- local.findAllNeighbours(hrvRRVtakens4Lag08[-(1:2),], 
@@ -3037,14 +3291,14 @@ statecoplot(hrvRRVtakens4Lag08, range=c(-0.5, 0.5))
 \caption{Takens states. Example case:  RHRV tutorial example.beats variation, trimmed. Dim=4, time.lag=8.
 Time used: \Sexpr{laptime()} sec.
 }
-\label{fig:shrvRRVrec4Lag08}
+\label{fig:shrvRRVrec4Lag081}
 \end{center}
 \end{figure}
 
 %: dim 6
 
 
-<<hrvRRVrec6Lag08, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec6Lag08, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens6Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=6,time.lag=8)
 hrvRRVneighs6Lag08  <- local.findAllNeighbours(hrvRRVtakens6Lag08[-(1:2),], radius=0.125)
@@ -3077,7 +3331,7 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec12Lag08, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec12Lag08, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens12Lag08 <- 
 	local.buildTakens( time.series=HRRV[1:nsignal],
 		embedding.dim=12,time.lag=8)
@@ -3096,7 +3350,7 @@ Dim=12: Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrvRRVrec16Lag08, fig=TRUE, include=FALSE>>=
+<<hrvRRVrec16Lag08, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrvRRVtakens16Lag08 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=16,time.lag=8)
 hrvRRVneighs16Lag08  <- local.findAllNeighbours(hrvRRVtakens16Lag08[-(1:2),], radius=3/16)
@@ -3225,7 +3479,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec4, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec4, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRneighs4  <- local.findAllNeighbours(hrv2RRtakens4, radius=12*16)
 save(hrv2RRneighs4, file="hrv2RRneighs4.Rdata")
 # load(file="hrv2RRneighs4.RData")
@@ -3256,7 +3510,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec2, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec2, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRtakens2 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
 	embedding.dim=2,time.lag=1)
 hrv2RRneighs2  <- local.findAllNeighbours(hrv2RRtakens2, radius=10*16)
@@ -3277,7 +3531,7 @@ See \figref{fig:recurrence-hrv2RRreccomp}.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec6, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec6, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRtakens6 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
 	embedding.dim=6,time.lag=1)
 hrv2RRneighs6  <- local.findAllNeighbours(hrv2RRtakens6, radius=14*16)
@@ -3296,7 +3550,7 @@ See \figref{fig:recurrence-hrv2RRreccomp}.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec8, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec8, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRtakens8 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
 	embedding.dim=8,time.lag=1)
 hrv2RRneighs8  <- local.findAllNeighbours(hrv2RRtakens8, radius=16*16)
@@ -3315,7 +3569,7 @@ See \figref{fig:recurrence-hrv2RRreccomp}.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec12, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec12, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRtakens12 <- local.buildTakens( time.series=hrv2.data$Beat$RR[1:nsignal],
 	embedding.dim=12,time.lag=1)
 hrv2RRneighs12  <- local.findAllNeighbours(hrv2RRtakens12, radius=16*16)
@@ -3331,7 +3585,7 @@ Dim=12. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRrec16, fig=TRUE, include=FALSE>>=
+<<hrv2RRrec16, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRtakens16 <- local.buildTakens( 
 	time.series=hrv2.data$Beat$RR[1:nsignal], 
 	embedding.dim=16,time.lag=1)
@@ -3492,7 +3746,7 @@ chunk.time.start<- proc.time()
 @
 
 %<<hrv2RRVtakens2, fig=TRUE, include=FALSE>>=
-<<hrv2RRVrec2, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec2, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRVtakens2 <- local.buildTakens( time.series=HRRV[1:nsignal], 
 	embedding.dim=2, time.lag=1)
 hrv2RRVneighs2  <- local.findAllNeighbours(hrv2RRVtakens2[-(1:2),], 
@@ -3510,7 +3764,7 @@ Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRVrec6, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec6, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRVtakens6 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=6,time.lag=1)
 hrv2RRVneighs6  <- local.findAllNeighbours(hrv2RRVtakens6[-(1:2),], radius=0.125*1.5)
@@ -3526,7 +3780,7 @@ Dim=6. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRVrec8, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec8, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRVtakens8 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=8,time.lag=1)
 hrv2RRVneighs8  <- local.findAllNeighbours(hrv2RRVtakens8[-(1:2),], radius=3/16)
@@ -3543,7 +3797,7 @@ Dim=8. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRVrec12, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec12, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRVtakens12 <- 
 	local.buildTakens( time.series=HRRV[1:nsignal],
 		embedding.dim=12,time.lag=1)
@@ -3562,7 +3816,7 @@ Dim=12. Time used: \Sexpr{laptime()} sec.
 chunk.time.start<- proc.time()
 @
 
-<<hrv2RRVrec16, fig=TRUE, include=FALSE>>=
+<<hrv2RRVrec16, fig=TRUE, include=FALSE, width=10, height=5>>=
 hrv2RRVtakens16 <- local.buildTakens( time.series=HRRV[1:nsignal],
 	embedding.dim=16,time.lag=1)
 hrv2RRVneighs16  <- local.findAllNeighbours(hrv2RRVtakens16[-(1:2),], radius=4/16)
@@ -3631,7 +3885,7 @@ Time used: \Sexpr{laptime()} sec.
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible
 %\bibliographystyle{authordate3}% bib/din1505/alphadin.bst
-\bibliography{../pulse}{../sda}
+\bibliography{{../pulse}{../sda}}
 %
 \clearpage
 
