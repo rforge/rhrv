@@ -172,7 +172,7 @@ See \figref{fig:#2}.
 
 %:   insertrecurrence #width    data id    fig.name/label	time}
 % set width to 0.9 for split displays
-\newcommand\insertrecurrence[4][0.64]{
+\newcommand\insertrecurrence[4][0.45]{
 See \figref{fig:#2}.
 
 \begin{figure}[htbp]
@@ -365,6 +365,8 @@ revealed of the plot may be helpful. A collection of indices is provided by a re
 analysis (RQA). References: 
 \citep{zbilut2006recurrence},  \citep{webber2005recurrence}. See  \Vref{tab:rqa}.
 \todo{check RATIO - remove  $RR =^? Radius^2$}
+
+\todo{make scale indpendent}
 
 \begin{table}[htp]
 \caption{Recurrence Quantification Analysis (RQA)}
@@ -1020,7 +1022,7 @@ See \figref{fig:recurrence-#2}.
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=#1\linewidth]{recurrence-#2}
-\caption{$\tau_{delay}$ estimation. #3 Left: based on the autocorrelation function. Right ACF: AMI}
+\caption{$\tau_{delay}$ estimation. #3 Left: based on the autocorrelation function ACF. Right: AMI}
 \label{fig:recurrence-#2}
 \end{center}
 \end{figure}
@@ -1642,11 +1644,11 @@ local.recurrencePlotAux(dopplerlag16neighs, dim=4, radius=0.2)
 <<dopplerlag16rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 showrqa(dopplertakenslag16, radius=0.2)
 @
-\insertrqua{dopplerlag16rqa}{RQA. Test case: Doppler}{\Sexpr{laptime()}}
+\insertrqua{dopplerlag16rqa}{Test case: Doppler}{\Sexpr{laptime()}}
 
 \clearpage
 
-\section{Geyser example and Bivariate recurrence plots}
+\section{Case Study: Geyser example and Bivariate recurrence plots}
 \label{sec:geyser}
 
 \subsection{Paired sequences}
@@ -1680,6 +1682,18 @@ library(MASS)
 data(geyser)
 attach(geyser)
 @
+
+To remove scale effects when comparing two sequences, we standardize both.
+
+<<>>=
+duration <- duration - median(duration, na.rm=TRUE)
+iqr_duration <- quantile(duration, probs = c(0.25, 0.75), na.rm = TRUE)
+duration <- duration / (iqr_duration[2]-iqr_duration[1])
+
+waiting <- waiting - median(waiting, na.rm=TRUE)
+iqr_waiting <- quantile(waiting, probs = c(0.25, 0.75), na.rm = TRUE)
+waiting <- waiting / (iqr_waiting[2]-iqr_waiting[1])
+
 <<print=FALSE, echo=FALSE>>=
 chunk.time.start<- proc.time()
 @
@@ -1736,18 +1750,15 @@ emb.dim = estimateEmbeddingDim(duration, time.lag = tau.acf,
 max.embedding.dim = 15)
 cat("duration Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
-#@
-#%%
+
 #%<<takfsinN, fig=TRUE>>=
 takduration = buildTakens(duration,embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(takduration[,1], takduration[,2], takduration[,3],
-#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
-main = paste("Reconstructed phase space\n duration=",length(duration)),
-col = 1, type="o",cex = 0.3)
+	main = paste("Reconstructed phase space\n duration=",length(duration)),
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
-%:waiting quickstart
-%: stoP???
+
 <<acfwaiting, fig=TRUE, width=10, height=5>>=
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
@@ -1791,7 +1802,6 @@ par(oldpar)
 @
 %:buildTakens
 <<>>=
-attach(geyser)
 takens.duration4 <- buildTakens( time.series=duration, embedding.dim=4, time.lag=1)
 takens.waiting4 <- buildTakens( time.series=waiting, embedding.dim=4,  time.lag=1)
 @
@@ -1799,14 +1809,14 @@ takens.waiting4 <- buildTakens( time.series=waiting, embedding.dim=4,  time.lag=
 Time used: \Sexpr{laptime()} sec. 
 
 <<duration4rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
-duration4rqa <- showrqa(takens.duration4, radius=0.8, log=TRUE)
+duration4rqa <- showrqa(takens.duration4, radius=0.5, log=TRUE)
 @
-\insertrqua{duration4rqa}{Geyser duration. Radius=0.8.}{\Sexpr{laptime()}}
+\insertrqua{duration4rqa}{Geyser duration. Radius=0.5.}{\Sexpr{laptime()}}
 
 <<waiting4rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
-waiting4rqa <- showrqa(takens.waiting4, radius=2.4, log=TRUE)
+waiting4rqa <- showrqa(takens.waiting4, radius=0.5, log=TRUE)
 @
-\insertrqua{waiting4rqa}{Geyser waiting. Radius=2.4.}{\Sexpr{laptime()}}
+\insertrqua{waiting4rqa}{Geyser waiting. Radius=0.5.}{\Sexpr{laptime()}}
 
 
 <<durationtakens4no1, fig=TRUE, include=FALSE>>=
@@ -1818,6 +1828,8 @@ statepairs(takens.waiting4) #dim=4
 Example case: Old Faithful Geyser eruption data.
 Time used: \Sexpr{laptime()} sec. See \Vref{fig:geyserpairs4}.
 \todo{use nooverlap ?}
+
+
 %<<takens.duration4no, fig=TRUE, include=FALSE>>=
 %statepairs(takens.duration4, nooverlap=TRUE) #dim=4
 %@
@@ -1842,8 +1854,8 @@ Time used: \Sexpr{laptime()} sec.}
 \end{figure}
 
 <<>>=
-durationneighs4<- findAllNeighbours(takens.duration4, radius=2.4)
-waitingneighs4<-findAllNeighbours(takens.waiting4, radius=20.0)
+durationneighs4<- findAllNeighbours(takens.duration4, radius=0.5)
+waitingneighs4<-findAllNeighbours(takens.waiting4, radius=0.5)
 @
 
 <<durationneighs4rec, fig=TRUE, include=FALSE>>=
@@ -1938,9 +1950,14 @@ par(oldpar)
 %par(oldpar)
 
 <<takens_duration4rqa1, fig=TRUE, include=FALSE, width=10, height=5>>=
-showrqa(takens.duration4, radius=3*0.8)
+showrqa(takens.duration4, radius=0.5)
 @
 \insertrqua{takens_duration4rqa1}{Example case:  Old Faithful Geyser eruption durations. Radius=2.4 Dim=4}{\Sexpr{laptime()}}
+
+<<takens_waiting4rqa1, fig=TRUE, include=FALSE, width=10, height=5>>=
+showrqa(takens.waiting4, radius=0.5)
+@
+\insertrqua{takens_waiting4rqa1}{Example case:  Old Faithful Geyser eruption waiting. Radius=0.5 Dim=4}{\Sexpr{laptime()}}
 
 %: 2*1 recurrence
 Each plot shows a symmetric matrix. Since dimensions match, we can use the upper and ower triangle to allow comparison of both series in one plot, comparing the upper and lower triangle.
@@ -2059,23 +2076,24 @@ See  \cite{marwan2002nonlinear}, \cite{marwan2002cross}.
 
 \gsnote{this is an early draft}
 
- Marwan uses a ``covariance''
+Marwan uses a ``covariance''
 $$ CR[i,j] = \Theta( \epsilon - \norm{xv[i] - yv[j]})$$
-a maximumdistance  as $\norm{}$
+a maximum distance  as $\norm{\cdot}$
 
-Here is a brute force implmentaation
+Here is a brute force implementation
 
 Signed distances may be used for experiments.
 <<>>=
 maxdist <- function (x){ max(abs(x), na.rm=TRUE)} # works on delta
 cordist <- function (x, y){ suppressWarnings(cor(x,y))}
 @
-\todo{Epsilon/radius and heaviside not use here - may be handled in image rendering.}
+\todo{Epsilon/radius and Heaviside not use here - thresholding is handled in image rendering.}
 
-\todo{propagate names from takens}
+\todo{propagate names from Takens}
 
 <<CR0>>=
 CR0 <- function (xtakens, ytakens, sdist= maxdist) {
+# returns a cross distance matrix usin sdist
 # using signed. Warnings for zero #
 # variances are suppressed
 
@@ -2091,9 +2109,10 @@ CR0 <- function (xtakens, ytakens, sdist= maxdist) {
 	return(cr)
 }
 @
-Variant $CR2$ alows a distance that is not facored via $x-y$.
+Variant $CR2$ allows a distance that is not factored via $x-y$.
 <<CR2>>=
 CR2 <- function (xtakens, ytakens, cdist= cordist) {
+# returns a cross distance matrix usin cdist
 	xl <- nrow(xtakens); yl <- nrow(ytakens)
 	xname <- deparse(substitute(xtakens))
 	yname <- deparse(substitute(ytakens))
@@ -2126,48 +2145,53 @@ rec.plot
 
 @
 
-Raw data may give a poor impression. Adjust e.g. for scale and location.
+Raw data may give a poor impression. Adjust e.g. for scale and location. This is done in this section for the Geyser data (see above).
 
 @
 <<>>=
 cr4 <- CR0(takens.duration4,takens.waiting4)
 cr4C <- CR2(takens.duration4,takens.waiting4)
 @
-<<cr4-fig=TRUE>>=
+<<cr4, fig=TRUE, include=FALSE>>=
 image(cr4)
 # neighs.matrix <- cr4;range(cr4) #  70.5500 107.1667
 @
-A max distance.
-<<>>=
-crossrecurrencePlotFromMatrix(cr4, 
-main="Cross Recurrence plot\nmax",
-xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
-@
-<<crossrecurrencePlot, fig=TRUE>>=
+\insertrecurrence{cr4}{cr4 - Cross recurrence ??using cor distance}{\Sexpr{laptime()}}
 
-crossrecurrencePlotFromMatrix(cr4, zlim=c(85,108), col=grey((1:10)/10),
+A max distance.
+<<CRPFromMatrix, fig=TRUE, include=FALSE>>=
+crossrecurrencePlotFromMatrix(cr4, 
+	main="Cross Recurrence plot\n max",
+	xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
+@
+\insertrecurrence{CRPFromMatrix}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
+
+<<crossrecurrencePlot, fig=TRUE, include=FALSE>>=
+crossrecurrencePlotFromMatrix(cr4,  col=grey((1:10)/10),
 main="Cross Recurrence plot\nmax",
 xlab="duration4 index", ylab="waiting4 index") 
 # near conventional bw, 
 # introducing radius/cut by zlim
 @
-<<fig=TRUE>>=
+\insertrecurrence{crossrecurrencePlot}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
 
+<<corrdist, fig=TRUE, include=FALSE>>=
 # a correlation distance
 crossrecurrencePlotFromMatrix(cr4C,
 main="Cross Recurrence plot\n cor",
 xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
 @
-<<fig=TRUE>>=
+\insertrecurrence{corrdist}{Cross recurrence ??using cor distance, heat colours}{\Sexpr{laptime()}}
 
+<<CRPFromMatrixC, fig=TRUE, include=FALSE>>=
 quantile(cr4C, na.rm=TRUE)
 crossrecurrencePlotFromMatrix(cr4C, zlim=c(-0.7,0.7), col=grey((1:10)/10),
 main="Cross Recurrence plot\n cor",
 xlab="duration4 index", ylab="waiting4 index")
 # near conventional 
 # introducing radius/cut by zlim
-
 @
+\insertrecurrence{CRPFromMatrixC}{Cross recurrence ??using cor distance}{\Sexpr{laptime()}}
 
 
 
@@ -2179,7 +2203,7 @@ xlab="duration4 index", ylab="waiting4 index")
     
     Defunct. hopefully completely replaced by bivariate analysis in previous chapter.
 
-
+This section is using original data (not rescaled).
 
 \subsection{Geyser Eruption Durations}
 
@@ -2189,10 +2213,6 @@ chunk.time.start<- proc.time()
 @
 %
 %takens.duration4 <- takens.duration4
-
-\insertrecurrence{duration_takens4L1}{Old Faithful Geyser eruption durations}{\Sexpr{laptime()}}
- 
-
 
 %:**** here
 %    <<takens.duration4no1, fig=TRUE, include=FALSE>>=
@@ -2603,7 +2623,7 @@ local.recurrencePlotAux(waitingneighs)
 \todo{add logistic transform}
 
 The tension data set (from \citep{Ebner-Priemer2007Ambulatory-asse})is one sample case of recordings of psychological tension data, recorded in regular interval on a subjective tension level ranked $0 \ldots 9$. The data are ranked data, and may contain missing data.
-<<tension, fig=TRUE>>=
+<<tension, fig=TRUE, width=10, height=5>>=
 tension <- scan("../media/tension.dat")
 plotsignal(tension,"tension","level")
  tension<-tension[!is.na(tension)]
