@@ -2061,7 +2061,7 @@ See \Vref{fig:recurrencePlot2}.
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=1.0\linewidth]{recurrence-recurrencePlot2}
+\includegraphics[width=0.64\linewidth]{recurrence-recurrencePlot2}
 \caption{Recurrene plot: Lower triangle: duration. Upper triangle: waiting.}
 \label{fig:recurrencePlot2}
 \end{center}
@@ -2074,19 +2074,20 @@ So far, the data have been handled as a pair of one-dimensional problems. Lookin
 data as a bivariate problem requires to use a bivariate distance to define neighbours. 
 See  \cite{marwan2002nonlinear}, \cite{marwan2002cross}.
 
-\gsnote{this is an early draft}
-
 Marwan uses a ``covariance''
 $$ CR[i,j] = \Theta( \epsilon - \norm{xv[i] - yv[j]})$$
-a maximum distance  as $\norm{\cdot}$
+with a maximum distance  as $\norm{\cdot}$, where $xv, yv$ are imbeddings. 
+Other distances may be used.
+Signed distances for example may be used for experiments.
 
-Here is a brute force implementation
-
-Signed distances may be used for experiments.
+We use two examples:
 <<>>=
 maxdist <- function (x){ max(abs(x), na.rm=TRUE)} # works on delta
 cordist <- function (x, y){ suppressWarnings(cor(x,y))}
 @
+
+Here is a brute force implementation. 
+
 \todo{Epsilon/radius and Heaviside not use here - thresholding is handled in image rendering.}
 
 \todo{propagate names from Takens}
@@ -2110,6 +2111,7 @@ CR0 <- function (xtakens, ytakens, sdist= maxdist) {
 }
 @
 Variant $CR2$ allows a distance that is not factored via $x-y$.
+\todo{this needs optimisation on triangle}
 <<CR2>>=
 CR2 <- function (xtakens, ytakens, cdist= cordist) {
 # returns a cross distance matrix usin cdist
@@ -2132,15 +2134,15 @@ crossrecurrencePlotFromMatrix <- function(neighs.matrix,
 		main="Cross Recurrence plot",
 		xlab="x Takens vector's index",
 		ylab="y Takens vector's index",...){
-# need a print because it is (possibly) a trellis object!!
-rec.plot = image(neighs.matrix,	
+	# need a print because it is (possibly) a trellis object!!
+	rec.plot = image(neighs.matrix,	
 		zlim= zlim,
 		x = 1: ncol(neighs.matrix),
 		y = 1: nrow(neighs.matrix),
            	main = main, xlab = xlab, ylab = ylab, 
            	...)
-print(rec.plot)
-rec.plot
+	print(rec.plot)
+	rec.plot
 }
 
 @
@@ -2149,49 +2151,57 @@ Raw data may give a poor impression. Adjust e.g. for scale and location. This is
 
 @
 <<>>=
-cr4 <- CR0(takens.duration4,takens.waiting4)
-cr4C <- CR2(takens.duration4,takens.waiting4)
+cr4 <- CR0(takens.duration4,takens.waiting4) # maxdist by default
+cr4C <- CR2(takens.duration4,takens.waiting4) # cordist by default
 @
-<<cr4, fig=TRUE, include=FALSE>>=
-image(cr4)
+<<cr4, fig=TRUE, include=FALSE, width=10, height=5>>=
+oldpar <- par(mfrow=c(1,2))
+image(cr4, main="CR0") 
+image(cr4C, main="CR2")
 # neighs.matrix <- cr4;range(cr4) #  70.5500 107.1667
+par(oldpar)
+cat("Range cr4:", range(cr4),"Range cr4C:", range(cr4C, na.rm=TRUE, finite=TRUE))
 @
-\insertrecurrence{cr4}{cr4 - Cross recurrence ??using cor distance}{\Sexpr{laptime()}}
+\insertrecurrence[0.8]{cr4}{Cross recurrence. Left:using maxdist distance. Right:cor}{\Sexpr{laptime()}}
 
 A max distance.
-<<CRPFromMatrix, fig=TRUE, include=FALSE>>=
+<<CRPFromMatrix, fig=TRUE, include=FALSE, width=10, height=5>>=
+oldpar <- par(mfrow=c(1,2))
 crossrecurrencePlotFromMatrix(cr4, 
 	main="Cross Recurrence plot\n max",
 	xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
-@
-\insertrecurrence{CRPFromMatrix}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
-
-<<crossrecurrencePlot, fig=TRUE, include=FALSE>>=
+#@
+#\insertrecurrence{CRPFromMatrix}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
+#
+#<<crossrecurrencePlot, fig=TRUE, include=FALSE>>=
 crossrecurrencePlotFromMatrix(cr4,  col=grey((1:10)/10),
 main="Cross Recurrence plot\nmax",
 xlab="duration4 index", ylab="waiting4 index") 
 # near conventional bw, 
 # introducing radius/cut by zlim
+par(oldpar)
 @
-\insertrecurrence{crossrecurrencePlot}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
+%\insertrecurrence{crossrecurrencePlot}{Cross recurrence ??using max distance}{\Sexpr{laptime()}}
+\insertrecurrence[0.8]{CRPFromMatrix}{Cross recurrence using max distance}{\Sexpr{laptime()}}
 
-<<corrdist, fig=TRUE, include=FALSE>>=
+<<corrdist, fig=TRUE, include=FALSE, width=10, height=5>>=
+oldpar <- par(mfrow=c(1,2))
 # a correlation distance
 crossrecurrencePlotFromMatrix(cr4C,
 main="Cross Recurrence plot\n cor",
 xlab="duration4 index", ylab="waiting4 index")  # ugly heat matrix
-@
-\insertrecurrence{corrdist}{Cross recurrence ??using cor distance, heat colours}{\Sexpr{laptime()}}
-
-<<CRPFromMatrixC, fig=TRUE, include=FALSE>>=
+#@
+#\insertrecurrence{corrdist}{Cross recurrence ??using cor distance, heat colours}{\Sexpr{laptime()}}
+#<<CRPFromMatrixC, fig=TRUE, include=FALSE>>=
 quantile(cr4C, na.rm=TRUE)
 crossrecurrencePlotFromMatrix(cr4C, zlim=c(-0.7,0.7), col=grey((1:10)/10),
 main="Cross Recurrence plot\n cor",
 xlab="duration4 index", ylab="waiting4 index")
 # near conventional 
 # introducing radius/cut by zlim
+par(oldpar)
 @
-\insertrecurrence{CRPFromMatrixC}{Cross recurrence ??using cor distance}{\Sexpr{laptime()}}
+\insertrecurrence[0.8]{corrdist}{Cross recurrence using cor distance}{\Sexpr{laptime()}}
 
 
 
@@ -3905,7 +3915,7 @@ Time used: \Sexpr{laptime()} sec.
 \bibliographystyle{jss} % local
 %\bibliographystyle{biblatex} % not natbib compatible
 %\bibliographystyle{authordate3}% bib/din1505/alphadin.bst
-\bibliography{{../pulse}{../sda}}
+\bibliography{../pulse}{../sda}
 %
 \clearpage
 
