@@ -1043,8 +1043,7 @@ try(tau.ami <- timeLag(sinN, technique = "ami",
 	do.plot = T, selection.method="first.minimum",
 	main=paste("$\tau_{delay}$ estimation based on ami\n","sin()")) )
 par(oldpar)
-cat("tau.ami:",tau.ami)
-cat("tau.acf:",tau.acf)
+cat("Sinus tau.ami:",tau.ami," tau.acf:",tau.acf)
 @
 
  \inserttau{"acfsin"}{"Sinus"}
@@ -1060,14 +1059,11 @@ emb.dim = estimateEmbeddingDim(sinN, time.lag = tau.acf,
 max.embedding.dim = 15)
 cat("sin() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
-#@
-#%%
-#%<<takfsinN, fig=TRUE>>=
-taksinN = buildTakens(sinN,embedding.dim = emb.dim, time.lag = tau.ami)
+#taksinN = buildTakens(sinN, embedding.dim = 2, time.lag = 1)
+taksinN = buildTakens(sinN, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(taksinN[,1], taksinN[,2], taksinN[,3],
-#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
-main = paste("Reconstructed phase space\n sin n=",length(sinN)),
-col = 1, type="o",cex = 0.3)
+	main = paste("Reconstructed phase space\n sin n=",length(sinN)),
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
 
@@ -1077,35 +1073,41 @@ unifN <- unif()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(unifN, technique = "acf", do.plot = T,
-main=paste("taudelay estimation based on acf\n", "unif"))
+	main=paste("taudelay estimation based on acf\n", "unif"))
 
-cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(unifN, technique = "ami", do.plot = T,
-main=paste("taudelay estimation based on ami\n", "unif"))
+	main=paste("taudelay estimation based on ami\n", "unif"))
 
-cat("tau.ami:",tau.ami)
+cat("Uniform ", "tau.acf:", tau.acf ," tau.ami:",tau.ami)
 par(oldpar)
 @
 <<embedfunifN, fig=TRUE, width=10, height=5>>=
 oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.ami,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("unif Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
 }  else  {
 emb.dim = estimateEmbeddingDim(unifN, time.lag = tau.acf,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("unif Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
 
 #<<takfunifN, fig=TRUE>>=
-tak = buildTakens(unifN,embedding.dim = emb.dim, time.lag = tau.ami)
-scatter3D(tak[,1], tak[,2], tak[,3],
-main = paste("Reconstructed phase space","unif n=",length(unifN)),
-col = 1, type="o",cex = 0.3)
+takUnif = buildTakens(unifN, embedding.dim = emb.dim, time.lag = tau.ami)
+#range(takUnif[4,])
+col4 <- gray((1-takUnif[,4]),0.1)
+
+scatter3D(takUnif[,1], takUnif[,2], takUnif[,3],
+	main = paste("Reconstructed phase space","unif n=",length(unifN)),
+	col = col4, type="o",cex = 0.3)
 par(oldpar)
 @
+%takUnif = buildTakens(unifN, embedding.dim = emb.dim, time.lag = tau.ami)
+%scatter3D(takUnif[,1], takUnif[,2], takUnif[,3],
+%	main = paste("Reconstructed phase space","unif n=",length(unifN)),
+%	col = 1, type="o",cex = 0.3)
 
 \subsection{Chirp}
 <<acfchirp, fig=TRUE, width=10, height=5>>=
@@ -1114,12 +1116,10 @@ oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(chirpN, technique = "acf", do.plot = T,
 main=paste("taudelay estimation based on acf\n","chirp()"))
-
-cat("tau.acf:",tau.acf)
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(chirpN, technique = "ami", do.plot = T,
 main=paste("taudelay estimation based on ami\n n=",length(chirpN),"chirp()")) 
-cat("tau.ami:",tau.ami)
+cat("Chirp ", "tau.acf:", tau.acf ," tau.ami:",tau.ami)
 par(oldpar)
 #
 @
@@ -1127,30 +1127,35 @@ par(oldpar)
 oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.ami,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("chirp Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
 }  else  {
 emb.dim = estimateEmbeddingDim(chirpN, time.lag = tau.acf,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("chirp Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
-
 #<<takfchirpN, fig=TRUE>>=
-tak = buildTakens(chirpN,embedding.dim = emb.dim, time.lag = tau.ami)
-scatter3D(tak[,1], tak[,2], tak[,3],
-main = paste("Reconstructed phase space\n","Chirp"),
-col = 1, type="o",cex = 0.3)
+takChirp = buildTakens(chirpN, embedding.dim = emb.dim, time.lag = tau.ami)
+scatter3D(takChirp[,1], takChirp[,2], takChirp[,3],
+	main = paste("Reconstructed phase space\n","Chirp"),
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
+%col4 <- gray((takChirp[,4]+1)/2,0.4)
+%
+%takChirp = buildTakens(chirpN, embedding.dim = emb.dim, time.lag = tau.ami)
+%	scatter3D(takChirp[,1], takChirp[,2], takChirp[,3],
+%	main = paste("Reconstructed phase space\n","Chirp"),
+%	col = col4, type="o",cex = 0.3)
 
 <<corrDimchirpN, fig=TRUE>>=
 cd = corrDim(chirpN,
-min.embedding.dim = emb.dim,
-max.embedding.dim = emb.dim + 5,
-time.lag = tau.ami,
-min.radius = 0.001, max.radius = 50,
-n.points.radius = 40,
-do.plot=FALSE)
+	min.embedding.dim = emb.dim,
+	max.embedding.dim = emb.dim + 5,
+	time.lag = tau.ami,
+	min.radius = 0.001, max.radius = 50,
+	n.points.radius = 40,
+	do.plot=FALSE)
 plot(cd)
 par(oldpar)
 @
@@ -1175,18 +1180,18 @@ par(oldpar)
 <<maxLyapchirpN, fig=TRUE>>=
 #sampling.period = diff(lor$time)[1]
 ml = maxLyapunov(chirpN,
-sampling.period=0.01,
-min.embedding.dim = emb.dim,
-max.embedding.dim = emb.dim + 3,
-time.lag = tau.ami,
-radius=1,
-max.time.steps=1000,
-do.plot=FALSE)
+	sampling.period=0.01,
+	min.embedding.dim = emb.dim,
+	max.embedding.dim = emb.dim + 3,
+	time.lag = tau.ami,
+	radius=1,
+	max.time.steps=1000,
+	do.plot=FALSE)
 plot(ml,type="l", xlim = c(0,8))
 ml.est = estimate(ml, regression.range = c(0,3),
-do.plot = T,type="l")
+	do.plot = T,type="l")
 #cat("expected: 0.906 estimate:", ml.est,"\n")
-cat("estimate:", ml.est,"\n")
+	cat("estimate:", ml.est,"\n")
 
 <<surrogchirpN, fig=TRUE>>=
 st = surrogateTest(chirpN,significance = 0.05,one.sided = F,
@@ -1207,44 +1212,44 @@ dopplerN <- doppler()
 oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(dopplerN, technique = "acf", do.plot = T,
-main=paste("acf\n",deparse(substitute(x))))
-cat("tau.acf:",tau.acf)
+	main=paste("acf\n",deparse(substitute(x))))
+
 # taudelay estimation based on the mutual information function
 tau.ami = timeLag(dopplerN, technique = "ami", do.plot = T,
 main=paste("ami\n",deparse(substitute(x))))
-cat("tau.ami:",tau.ami)
+cat("Doppler ", "tau.acf:", tau.acf ," tau.ami:",tau.ami)
 par(oldpar)
+@
 
 <<embedfdopplerN, fig=TRUE, width=10, height=5 >>=
-
 oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.ami,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("Doppler lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
 }  else  {
 emb.dim = estimateEmbeddingDim(dopplerN, time.lag = tau.acf,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("Doppler lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
 
 #<<takfdopplerN, fig=TRUE>>=
-tak = buildTakens(dopplerN,embedding.dim = emb.dim, time.lag = tau.ami)
+tak = buildTakens(dopplerN, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(tak[,1], tak[,2], tak[,3],
-main = "Reconstructed phase space \n doppler" ,
-col = 1, type="o",cex = 0.3)
+	main = "Reconstructed phase space \n doppler" ,
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
 
 
 <<corrDimdopplerN, fig=TRUE>>=
 cd = corrDim(dopplerN,
-min.embedding.dim = emb.dim,
-max.embedding.dim = emb.dim + 5,
-time.lag = tau.ami,
-min.radius = 0.001, max.radius = 50,
-n.points.radius = 40,
-do.plot=FALSE)
+	min.embedding.dim = emb.dim,
+	max.embedding.dim = emb.dim + 5,
+	time.lag = tau.ami,
+	min.radius = 0.001, max.radius = 50,
+	n.points.radius = 40,
+	do.plot=FALSE)
 plot(cd)
 @
 %cd.est = estimate(cd, regression.range=c(0.75,3),
@@ -1259,31 +1264,31 @@ plot(cd)
 
 <<sEntropydopplerN, fig=TRUE>>=
 oldpar <- par(mfrow=c(1,2))
-se = sampleEntropy(cd, do.plot = T)
-se.est = estimate(se, do.plot = T,
-regression.range = c(8,15))
-cat("Sample entropy estimate: ", mean(se.est), "\n")
+se <- sampleEntropy(cd, do.plot = T)
+se.est <- estimate(se, do.plot = T,
+	regression.range = c(8,15))
+	cat("Sample entropy estimate: ", mean(se.est), "\n")
 par(oldpar)
 
 <<maxLyapdopplerN, fig=TRUE>>=
 #sampling.period = diff(lor$time)[1]
 ml = maxLyapunov(dopplerN,
-sampling.period=0.01,
-min.embedding.dim = emb.dim,
-max.embedding.dim = emb.dim + 3,
-time.lag = tau.ami,
-radius=1,
-max.time.steps=1000,
-do.plot=FALSE)
+	sampling.period=0.01,
+	min.embedding.dim = emb.dim,
+	max.embedding.dim = emb.dim + 3,
+	time.lag = tau.ami,
+	radius=1,
+	max.time.steps=1000,
+	do.plot=FALSE)
 plot(ml,type="l", xlim = c(0,8))
 ml.est = estimate(ml, regression.range = c(0,3),
-do.plot = T,type="l")
+	do.plot = T,type="l")
 #cat("expected: 0.906 estimate:", ml.est,"\n")
 cat("estimate:", ml.est,"\n")
 
 <<surrogdopplerN, fig=TRUE>>=
 st = surrogateTest(dopplerN,significance = 0.05,one.sided = F,
-FUN = timeAsymmetry, do.plot=F)
+	FUN = timeAsymmetry, do.plot=F)
 ## Computing statistics
 ##
 ## Null Hypothesis: Data comes from a linear stochastic process
@@ -1293,7 +1298,6 @@ plot(st)
 @
 \clearpage
 
-\clearpage
 \section{Takens' States  for Test Signals}
 
 % sin
@@ -1724,7 +1728,6 @@ oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(duration, technique = "acf", do.plot = T,
 main=paste("taudelay estimation based on acf\n","duration()"))
-cat("tau.acf:",tau.acf)
 
 # taudelay estimation based on the mutual information function
 tau.ami=NA
@@ -1733,10 +1736,8 @@ tau.ami=NA
 try(tau.ami <- timeLag(duration, technique = "ami", 
 	do.plot = T, selection.method="first.minimum",
 main=paste("taudelay estimation based on ami\n","sin()")) )
-
-cat("tau.ami:",tau.ami)
+cat("duration tau.acf:",tau.acf," tau.ami:",tau.ami)
 par(oldpar)
-
 @
  
 <<embedfduration, fig=TRUE, width=10, height=5>>=
@@ -1752,7 +1753,7 @@ cat("duration Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
 
 #%<<takfsinN, fig=TRUE>>=
-takduration = buildTakens(duration,embedding.dim = emb.dim, time.lag = tau.ami)
+takduration = buildTakens(duration, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(takduration[,1], takduration[,2], takduration[,3],
 	main = paste("Reconstructed phase space\n duration=",length(duration)),
 	col = 1, type="o",cex = 0.3)
@@ -1764,7 +1765,6 @@ oldpar <-  par(mfrow=c(1,2))
 # taudelay estimation based on the autocorrelation function
 tau.acf = timeLag(waiting, technique = "acf", do.plot = T,
 main=paste("taudelay estimation based on acf\n","waiting()"))
-cat("tau.acf:",tau.acf)
 
 # taudelay estimation based on the mutual information function
 tau.ami=NA
@@ -1773,10 +1773,8 @@ tau.ami=NA
 try(tau.ami <- timeLag(waiting, technique = "ami", 
 	do.plot = T, selection.method="first.minimum",
 main=paste("taudelay estimation based on ami\n","waiting()")) )
-
-cat("tau.ami:",tau.ami)
+cat("waiting tau.acf:",tau.acf," tau.ami:",tau.ami)
 par(oldpar)
-
 @
  
 <<embedfwaiting, fig=TRUE, width=10, height=5>>=
@@ -1793,7 +1791,7 @@ cat("waiting Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 #@
 #%%
 #%<<takfwaiting, fig=TRUE>>=
-takwaiting = buildTakens(waiting,embedding.dim = emb.dim, time.lag = tau.ami)
+takwaiting = buildTakens(waiting, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(takwaiting[,1], takwaiting[,2], takwaiting[,3],
 #%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
 main = paste("Reconstructed phase space\n waiting n=",length(waiting)),
@@ -2629,10 +2627,19 @@ local.recurrencePlotAux(waitingneighs)
 \clearpage
 
 \section{Case Study: Tension data}
+\label{sec:tension}
 
-\todo{add logistic transform}
+\subsection{Raw data}
 
-The tension data set (from \citep{Ebner-Priemer2007Ambulatory-asse})is one sample case of recordings of psychological tension data, recorded in regular interval on a subjective tension level ranked $0 \ldots 9$. The data are ranked data, and may contain missing data.
+\ 
+
+\sdanote{a logistic transform is used in \ref{subsec:tension1}}
+
+The tension data set (from \citep{ebner2007state}, \citep{Ebner-Priemer2007Ambulatory-asse}) is one 
+sample case of recordings of psychological tension data, recorded in regular interval on a subjective 
+tension level ranked $0 \ldots 10$. The data are ranked data, and may contain missing data. Missing data  
+are just removed here.
+
 <<tension, fig=TRUE, width=10, height=5>>=
 tension <- scan("../media/tension.dat")
 plotsignal(tension,"tension","level")
@@ -2665,8 +2672,7 @@ try(tau.ami <- timeLag(tension, technique = "ami",
 	do.plot = T, selection.method="first.minimum",
 	main=paste("$\tau_{delay}$ estimation based on ami\n","tension()")) )
 par(oldpar)
-cat("tau.ami:",tau.ami)
-cat("tau.acf:",tau.acf)
+cat("tension tau.acf:",tau.acf," tau.ami:",tau.ami)
 @
  \inserttau{"acftension"}{"Tension"}
  
@@ -2674,36 +2680,37 @@ cat("tau.acf:",tau.acf)
 oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(tension, time.lag = tau.ami,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("tension() Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
 }  else  {
-emb.dim = estimateEmbeddingDim(tension, time.lag = tau.acf,
-max.embedding.dim = 15)
+	emb.dim = estimateEmbeddingDim(tension, time.lag = tau.acf,
+	max.embedding.dim = 15)
 cat("tension() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
 #@
 #%%
 #%<<takfsinN, fig=TRUE>>=
-taktension = buildTakens(tension,embedding.dim = emb.dim, time.lag = tau.ami)
+# taktension = buildTakens(tension, embedding.dim = 6, time.lag = 1)
+taktension = buildTakens(tension, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(taktension[,1], taktension[,2], taktension[,3],
 #%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
-main = paste("Reconstructed phase space\n tension n=",length(tension)),
-col = 1, type="o",cex = 0.3)
+	main = paste("Reconstructed phase space\n tension n=",length(tension)),
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
 <<tensionrec, fig=TRUE, include=FALSE>>=
-tensionneighs <- local.findAllNeighbours(taktension, radius=2)
+tensionneighs <- local.findAllNeighbours(taktension, radius=2.0)
 save(tensionneighs, file="tensionneighs.Rdata")
-# load(file="tensionneighs.Rdata")
-local.recurrencePlotAux(tensionneighs, dim=dim(taktension)[2], radius=2)
+ # load(file="tensionneighs.Rdata")
+local.recurrencePlotAux(tensionneighs, dim=dim(taktension)[2], radius=2.0)
 @
 \insertrecurrence{tensionrec}{Test case: tension}{\Sexpr{laptime()}}
 
 
 <<tensionrqa, fig=TRUE, include=FALSE, width=10, height=5>>=
-tensionrqa <- showrqa(taktension, radius=2, log=TRUE)
+tensionrqa <- showrqa(taktension, radius=2.0, log=TRUE)
 @
-\insertrqua{tensionrqa}{Test case: tension. Radius=2.}{\Sexpr{laptime()}}
+\insertrqua{tensionrqa}{Test case: tension. Radius=2.0}{\Sexpr{laptime()}}
 
 %p <- (0:k)*1/(k+2)+1/(k+2)
 %> lp <- log(p/1-p)
@@ -2716,10 +2723,13 @@ tensionrqa <- showrqa(taktension, radius=2, log=TRUE)
 %> plot(lp)
 @
 
+\subsection{Tension: transformed scale}
+\label{subsec:tension1}
 Try rescaled logits:
 
 <<>>=
-k=9 # levels 0..9
+k=11 # levels 0..11
+#
 tension1 <- (tension+1)/(k+2)
 tension1 <- log(tension1/(1-tension1))
 @
@@ -2737,7 +2747,7 @@ try(tau.ami <- timeLag(tension1, technique = "ami",
 	do.plot = T, selection.method="first.minimum",
 	main=paste("$\tau_{delay}$ estimation based on ami\n","tension1()")) )
 par(oldpar)
-cat("tau.ami:",tau.ami, " tau.acf:",tau.acf)
+cat("tension rescaled. tau.acf:",tau.acf," tau.ami:",tau.ami)
 @
  \inserttau{"acftension1"}{"tension1"}
  
@@ -2745,28 +2755,25 @@ cat("tau.ami:",tau.ami, " tau.acf:",tau.acf)
 oldpar <-  par(mfrow=c(1,2))
 if (is.numeric(tau.ami)) {
 emb.dim = estimateEmbeddingDim(tension1, time.lag = tau.ami,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("tension1() Lag tau.ami", tau.ami,"Estimated embedding dim:", emb.dim)
 }  else  {
 emb.dim = estimateEmbeddingDim(tension1, time.lag = tau.acf,
-max.embedding.dim = 15)
+	max.embedding.dim = 15)
 cat("tension1() Lag tau.acf", tau.acf,"Estimated embedding dim:", emb.dim)
 } 
-#@
-#%%
 #%<<takfsinN, fig=TRUE>>=
-taktension1 = buildTakens(tension1,embedding.dim = emb.dim, time.lag = tau.ami)
+taktension1 = buildTakens(tension1, embedding.dim = emb.dim, time.lag = tau.ami)
 scatter3D(taktension1[,1], taktension1[,2], taktension1[,3],
-#%main = paste("Reconstructed phase space\n",deparse(substitute(time.series))),
-main = paste("Reconstructed phase space\n tension1 n=",length(tension1)),
-col = 1, type="o",cex = 0.3)
+	main = paste("Reconstructed phase space\n tension1 n=",length(tension1)),
+	col = 1, type="o",cex = 0.3)
 par(oldpar)
 @
 <<tension1rec, fig=TRUE, include=FALSE>>=
-tension1neighs <- local.findAllNeighbours(taktension1, radius=2)
+tension1neighs <- local.findAllNeighbours(taktension1, radius=1.4)
 save(tension1neighs, file="tension1neighs.Rdata")
 # load(file="tension1neighs.Rdata")
-local.recurrencePlotAux(tension1neighs, dim=dim(taktension1)[2], radius=2)
+local.recurrencePlotAux(tension1neighs, dim=dim(taktension1)[2], radius=1.4)
 @
 \insertrecurrence{tension1rec}{Test case: tension1}{\Sexpr{laptime()}}
 
@@ -2774,7 +2781,7 @@ local.recurrencePlotAux(tension1neighs, dim=dim(taktension1)[2], radius=2)
 <<tension1rqa, fig=TRUE, include=FALSE, width=10, height=5>>=
 tension1rqa <- showrqa(taktension1, radius=2, log=TRUE)
 @
-\insertrqua{tension1rqa}{Test case: tension1. Radius=2.}{\Sexpr{laptime()}}
+\insertrqua{tension1rqa}{Test case: tension1. Radius=1.4.}{\Sexpr{laptime()}}
 
 
 \clearpage
