@@ -83,10 +83,13 @@ CalculatePowerBand <-
       for (i in 1:nw) {
         beg=1+(shiftsamples*(i-1))
         window = signal[beg:(beg + sizesamples - 1)]
+        
+        window[is.na(window)] = 0
+        
         window = window - mean(window)
         window = window * hamming
         window = c(window,rep(0,len = lenZeroPadding))
-        
+
         spec_tmp=Mod(fft(window))**2
         spec = spec_tmp[1:(length(spec_tmp)/2)]
         
