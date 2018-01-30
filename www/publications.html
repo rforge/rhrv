@@ -1,6 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113301931-1"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-113301931-1');
+      </script>
         <title>The RHRV project</title>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="css/style.css" type="text/css" media="all" />
@@ -25,13 +34,13 @@
                         <li><a href="about-us.html"><span>About us</span></a></li>
                     </ul>
                 </div>
-            </div>   
+            </div>
             <!-- slider -->
-            <div id="slider"> 
+            <div id="slider">
                 <div id="slider-content">
                     <ul>
                         <li>
-                            <div class="left-side"> <img src="css/images/episodicFrequency2.png" width="350"  alt="" /> </div>
+                            <div class="left-side"> <img src="css/images/cover.png" width="350"  alt="" /> </div>
                             <div class="right-side">
                                 <h2>Publications</h2>
                                 <p> In this section you may find a list of publications describing
@@ -52,22 +61,28 @@
                 <div class="post">
                     <h3>Publications and Conferences</h3>
                     <ul>
+                      <li>
+                            <strong>Heart Rate Variability Analysis with the R package RHRV</strong>, C.A. Garc&iacute;a,
+                            A. Otero, X.A. Vila, M.J. Lado, L. Rodr&iacute;guez-Liñares, J.M. Presedo, and A.J. M&eacute;dez.
+                            Springer International Publishing, 2017. <a href="http://www.springer.com/gp/book/9783319653549" class="link" >Springer book page</a>
+                            <br/><br/>
+                      </li>
                         <li>
-                            <strong>A Software Toolkit for Nonlinear Heart Rate Variability Analysis</strong>, Constantino A. Garc&iacute;a, Abraham
-                            Otero, Jes&uacute;s Presedo, Xos&eacute; Vila and Paulo F&eacute;lix. In Computing in Cardiology Conference (CinC), 2013 (pp. 393-396).
+                            <strong>A Software Toolkit for Nonlinear Heart Rate Variability Analysis</strong>, C.A. Garc&iacute;a, A.
+                            Otero, J.M. Presedo, X.A. Vila and P. F&eacute;lix. In Computing in Cardiology Conference (CinC), 2013 (pp. 393-396).
                             IEEE. <a href="http://cinc.mit.edu/archives/2013/pdf/0393.pdf" class="link" >Download</a>
                             <br/><br/>
                         </li>
                         <li>
-                            <strong>Heart Rate Variability analysis in R with RHRV</strong>, Constantino A. Garc&iacute;a, Abraham
-                            Otero, Jes&uacute;s Presedo and Xos&eacute; Vila. The 9th International R User Conference, Albacete (Spain), July 10-12. <br/>
-                            You may download <a href="pdfs/useR.pdf" class="link" >here</a> the slides from our presentation at the useR! conference 2013.  
+                            <strong>Heart Rate Variability analysis in R with RHRV</strong>, C.A. Garc&iacute;a, A. Otero, J.M. Presedo and X.A. Vila.
+                            The 9th International R User Conference, Albacete (Spain), July 10-12. <br/>
+                            You may download <a href="pdfs/useR.pdf" class="link" >here</a> the slides from our presentation at the useR! conference 2013.
                             <br/><br/>
                         </li>
 
                         <li>
-                            <strong>A new algorithm for wavelet-based heart rate variability analysis</strong>, Constantino A. Garc&iacute;a,
-                            Abraham Otero,  Xos&eacute; Vila and David G. M&iacute;rquez}, Biomedical Signal Processing and Control 8 (6), pp. 542--550,
+                            <strong>A new algorithm for wavelet-based heart rate variability analysis</strong>, C.A. Garc&iacute;a,
+                            A. Otero,  X.A. Vila and D.G. M&iacute;rquez}, Biomedical Signal Processing and Control 8 (6), pp. 542--550,
                             2013. <br/>
                             In <a href="http://www.sciencedirect.com/science/article/pii/S1746809413000803" class="link">this page</a> you may read
                             the full article or watch an <strong>open access presentation</strong>.
@@ -76,13 +91,13 @@
                         </li>
                         <li>
                             <strong>An open source for tool heart rate variability heart rate variability wavelet-based
-                                spectral analysis</strong>, Constantino A. Garc&iacute;a, Abraham Otero, Xos&eacute; Vila and Mar&iacute;a J. Lado.
+                            spectral analysis</strong>, C.A. Garc&iacute;a, A. Otero, X.A. Vila and M.J. Lado.
                             International Joint Conference on Biomedical Engineering Systems and Technologies,
                             BIOSIGNALS 2012, Algarve (Portugal), 1-4 Febrero. In Proceedings of the BioSignals 2012 Conference pages 206-211, 2012.<br/><br/>
                         </li>
                         <li>
                             <strong>An open source tool for heart rate variability spectral analysis</strong>,
-                            Rodr&iacute;guez-Liñares, L., A. M&eacute;ndez, M. Lado, D. Olivieri, X. Vila, and I. G&oacute;mez-Conde . Computer methods and programs in
+                            L. Rodr&iacute;guez-Liñares,, A. M&eacute;ndez, M.J. Lado, D. Olivieri, X.A. Vila, and I. G&oacute;mez-Conde . Computer methods and programs in
                             biomedicine 103(1), pp. 39–50, 2011.<br/><br/>
                         </li>
                         <li>
@@ -90,7 +105,8 @@
                             on Intelligent Signal Processing, pp. 217–222, 2009.<br/><br/>
                         </li>
                         <li>
-                            <strong>R-HRV: An R-based software package for Heart Rate Variability analysis of ECG recordings</strong>, Rodr&iacute;guez-Liñares, L., X. Vila, A. J. M&eacute;ndez, M. J. Lado, and D. Olivieri. In 3rd Iberian Conference in
+                            <strong>R-HRV: An R-based software package for Heart Rate Variability analysis of ECG recordings</strong>, L. Rodr&iacute;guez-Liñares, X.A. Vila,
+                            A. J. M&eacute;ndez, M. J. Lado, and D. Olivieri. In 3rd Iberian Conference in
                             Systems and Information Technologies (CISTI 2008), Ourense, Spain, pp. 565–574, 2008.<br/><br/>
                         </li>
                     </ul>
