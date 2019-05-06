@@ -71,7 +71,7 @@ LoadBeatWFDB <- function (HRVData, RecordName, RecordPath = ".", annotator = "qr
 					  acumulator=acumulator+time
 					}
 					else
-						if(code!=60 && code!=61 && code!=62 && code!=22 && code!=0)
+						if(code!=60 && code!=61 && code!=62 && ode!=22 && code!=0)
 						{
 							acumulator=acumulator+time
 						}
