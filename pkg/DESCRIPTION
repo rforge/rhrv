@@ -16,7 +16,7 @@ Authors@R: c(person("Leandro", "Rodriguez-Linares",
              person("Matti", "Lassila",
                      role = "ctb"))
 URL: http://rhrv.r-forge.r-project.org/
-Description: Allows users to import data files containing heartbeat	positions in the most broadly used formats, to remove outliers or points with unacceptable physiological values present in the time series, to plot HRV data, and to perform time domain, frequency domain and nonlinear HRV analysis.
+Description: Allows users to import data files containing heartbeat	positions in the most broadly used formats, to remove outliers or points with unacceptable physiological values present in the time series, to plot HRV data, and to perform time domain, frequency domain and nonlinear HRV analysis. See Garcia et al. (2017) <DOI:10.1007/978-3-319-65355-6>.
 License: GPL-2
 Copyright: Code for the wavelet transform is based on Brandon Whitcher's work.
     See file COPYRIGHT for details
@@ -31,6 +31,3 @@ Suggests:
     knitr
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
-Note:
-	Constantino Antonio Garcia; Abraham Otero; Xose Anton Vila; Maria Jose Lado; Leandro Rodriguez-Linares; Jose Maria Rodriguez-Presedo; Arturo Jose Mendez. Heart Rate Variability Analysis with the R package RHRV. Springer International Publishing AG, 2017. ISBN 978-3-319-65354-9
-	DOI: 10.1007/978-3-319-65355-6
