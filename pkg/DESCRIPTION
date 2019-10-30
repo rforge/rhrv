@@ -31,3 +31,6 @@ Suggests:
     knitr
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
+Note:
+	Constantino Antonio Garcia; Abraham Otero; Xose Anton Vila; Maria Jose Lado; Leandro Rodriguez-Linares; Jose Maria Rodriguez-Presedo; Arturo Jose Mendez. Heart Rate Variability Analysis with the R package RHRV. Springer International Publishing AG, 2017. ISBN 978-3-319-65354-9
+	DOI: 10.1007/978-3-319-65355-6
