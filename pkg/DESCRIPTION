@@ -26,8 +26,9 @@ Depends:
     nonlinearTseries (>= 0.2.3),
     lomb (>= 1.0)
 Suggests:
-    tcltk(>= 2.4.1),
-    tkrplot(>= 0.0-18),
-    knitr
+    tcltk,
+    tkrplot,
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
